@@ -1,16 +1,39 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useRef } from "react";
 import { PROJECTS } from "@/lib/projects";
 import { useSite } from "@/components/SiteProvider";
 import shell from "./Modal.module.css";
 import styles from "./CaseModal.module.css";
 
-/** Opened from either case-study column; backdrop click or Escape closes it. */
+/**
+ * Opened from either case-study column; backdrop click or Escape closes it.
+ *
+ * The overlay is kept mounted and hidden rather than unmounted, so it can
+ * transition. That means its buttons stay in the DOM while it is shut, and
+ * `aria-hidden` alone was the wrong way to hide them: clicking Close leaves
+ * focus *on* the close button, and the very next render puts `aria-hidden` on
+ * an ancestor of the focused element. Chrome refuses that outright —
+ * "Blocked aria-hidden on an element because its descendant retained focus" —
+ * and the dialog stays exposed to assistive technology.
+ *
+ * `inert` is the fix the spec points at: it hides the subtree from the
+ * accessibility tree *and* makes it unfocusable, and the browser moves focus
+ * out on its own instead of blocking. Where that focus lands is handled by
+ * <SiteProvider>, which returns it to whatever opened the modal.
+ */
 export function CaseModal() {
   const { caseIdx, closeCase } = useSite();
   const open = caseIdx >= 0;
   const p = PROJECTS[Math.max(0, caseIdx)];
+  const closeRef = useRef<HTMLButtonElement | null>(null);
+
+  // Move focus into the dialog when it opens, so the keyboard is not left
+  // behind the overlay on the row that opened it.
+  useEffect(() => {
+    if (open) closeRef.current?.focus({ preventScroll: true });
+  }, [open]);
 
   return (
     <div
@@ -19,7 +42,7 @@ export function CaseModal() {
       role="dialog"
       aria-modal="true"
       aria-label={open ? `${p.name} case study` : undefined}
-      aria-hidden={!open}
+      inert={!open}
     >
       <button
         type="button"
@@ -48,6 +71,7 @@ export function CaseModal() {
             </div>
 
             <button
+              ref={closeRef}
               type="button"
               className={`${shell.close} ${styles.close}`}
               onClick={closeCase}

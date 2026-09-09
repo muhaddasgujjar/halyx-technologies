@@ -23,7 +23,10 @@ export function Story() {
                 , we started with one product and a small team. Today 200&#8211;500 people build AI
                 systems for clients across four regions.
               </p>
-              <p className={`${styles.hint} hx-mono`}>HOVER THE MARKERS TO FOLLOW THE STORY</p>
+              <p className={`${styles.hint} hx-mono`}>
+                <span className="hx-pointer-only">HOVER THE MARKERS TO FOLLOW THE STORY</span>
+                <span className="hx-touch-only">TAP THE MARKERS TO FOLLOW THE STORY</span>
+              </p>
             </Reveal>
           </div>
 

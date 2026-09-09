@@ -72,7 +72,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: clamp(20px, 2.6vw, 34px);
   align-items: stretch;
 }
@@ -457,6 +457,8 @@
 }
 
 .review {
+  /* Resets the UA figure margin; see the note in TrustedBy.tsx. */
+  margin: 0;
   border: 1px solid rgba(255, 255, 255, 0.085);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.028);
@@ -517,4 +519,214 @@
   border: 0;
   cursor: pointer;
   display: block;
+}
+
+/* --------------------------------------------------------------------------
+   Small screens.
+
+   The orbit panel positions five portraits at percentage coordinates around a
+   centred video card, with tooltips that open sideways from each one. Every part
+   of that assumes a stage wider than it is tall. At 360px the portraits sit on
+   top of the video card and the 210px-minimum tooltips hang off both edges,
+   where the panel's `overflow: hidden` silently eats them.
+
+   So below 760px the stage stops being a stage: the video card becomes a normal
+   full-width block, the portraits become a plain grid beneath it, and a tapped
+   testimonial slides up as a full-width sheet over the bottom of the panel
+   instead of trying to fit beside a face.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  .stage {
+    /* `position: relative` is kept — it becomes the tooltip's containing block. */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(94px, 100%), 1fr));
+    gap: 20px 10px;
+    align-content: start;
+    justify-items: center;
+    aspect-ratio: auto;
+    min-height: 0;
+    padding-bottom: 0;
+  }
+
+  /* Dashed connectors join coordinates that no longer exist. */
+  .connectors {
+    display: none;
+  }
+
+  .videoCard {
+    position: static;
+    order: -1;
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    transform: none;
+    margin-bottom: 4px;
+  }
+
+  /*
+   * Dropping `position: absolute` is what makes the inline `left`/`top` on each
+   * portrait inert, so the grid can place them instead.
+   */
+  .person {
+    position: static;
+    transform: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .personLabel {
+    max-width: 100%;
+  }
+
+  /*
+   * The portrait drift has to stop here, and not only because a 15px wander looks
+   * like jitter once the portraits are lined up in a grid.
+   *
+   * `.personFloat` animates `transform`, and a transformed element becomes the
+   * containing block for its absolutely positioned descendants. The full-width
+   * tooltip below resolves `left: 0; right: 0` against that block — so with the
+   * animation running it sized itself to the 86px portrait instead of to the
+   * panel, and the testimonial came out as a sliver. Removing the transform is
+   * what hands the tooltip back to `.stage`.
+   *
+   * `!important` is required because the animation is an inline style.
+   */
+  .personFloat {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  /*
+   * With `.person` and `.personFloat` both static, the nearest positioned
+   * ancestor is `.stage`, so one rule turns the little sideways tooltip into a
+   * sheet across the full width of the panel. The `!important` on `width` is
+   * unavoidable: the design's per-person tooltip width is an inline style.
+   */
+  .tip,
+  .tipUp,
+  .tipDown {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: 0;
+    width: auto !important;
+    z-index: 20;
+    transform: translateY(10px);
+  }
+
+  .person:hover .tip,
+  .person:focus-within .tip,
+  .person[data-open="true"] .tip {
+    transform: translateY(0);
+  }
+
+  .tipQuote {
+    font-size: 12.5px;
+  }
+
+  /* Two columns of metrics beats three columns of three-line labels. */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(136px, 100%), 1fr));
+    gap: 16px 18px;
+  }
+
+  /* --- Testimonial rail: the same quarter-turn as the case-study strip ---- */
+
+  /*
+   * The rail is a vertical marquee of the reviews rendered twice, travelling
+   * `-50%` so the loop is seamless. On a phone it turns horizontal and runs on
+   * `hx-marquee` instead of `hx-vmarquee`. The gap moves onto each card as a
+   * `margin-right` so that ten cards produce ten gaps and half the track is
+   * exactly one loop; with the flex `gap` there would be nine, and the strip
+   * would jump a half-gap sideways once a cycle.
+   */
+  .railViewport {
+    height: auto;
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+
+  .railTrack {
+    flex-direction: row;
+    gap: 0;
+    width: max-content;
+    animation: var(--hx-kf-marquee) 52s linear infinite;
+    will-change: transform;
+  }
+
+  /* Hover has no touch equivalent; a resting finger is the pause. */
+  .railViewport:active .railTrack,
+  .railViewport:focus-within .railTrack {
+    animation-play-state: paused;
+  }
+
+  .review {
+    /* `vw` not `%` — a percentage basis cannot resolve inside a max-content track. */
+    flex: 0 0 min(84vw, 330px);
+    margin-right: 12px;
+  }
+
+}
+
+@media (max-width: 760px) and (prefers-reduced-motion: reduce) {
+  /* No motion to carry the second copy past the edge: fall back to swiping. */
+  .railViewport {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .railViewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  .railTrack {
+    width: auto;
+  }
+
+  .review {
+    scroll-snap-align: start;
+  }
+
+  .review[aria-hidden="true"] {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .stage {
+    /* Three 94px columns no longer fit; two wider ones read better than three. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Tapping a portrait must not leave it scaled up for good. */
+@media (hover: none) {
+  .person:hover .ring {
+    transform: none;
+    box-shadow:
+      0 18px 44px -18px rgba(0, 0, 0, 0.95),
+      0 0 34px -12px rgba(150, 136, 255, 0.6);
+  }
+
+  .person[data-open="true"] .ring {
+    transform: scale(1.06);
+    box-shadow:
+      0 20px 50px -18px rgba(0, 0, 0, 0.95),
+      0 0 44px -10px rgba(150, 136, 255, 0.85);
+  }
+
+  .review:hover {
+    border-color: rgba(255, 255, 255, 0.085);
+    box-shadow: none;
+  }
 }

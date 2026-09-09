@@ -12,6 +12,7 @@ import {
   type RefObject,
 } from "react";
 import { SITE_CONFIG } from "@/lib/config";
+import { applyScrollLock } from "@/lib/scroll-lock";
 
 /**
  * One store for the state that crosses section boundaries:
@@ -113,19 +114,67 @@ export function SiteProvider({ children }: { children: ReactNode }) {
     pausedRef.current = false;
   }, []);
 
-  /* The services row auto-advances until the visitor takes over by hovering. */
+  /*
+   * The services row auto-advances until the visitor takes over by hovering.
+   *
+   * There is no hovering on a touchscreen, so the pause never fires there and the
+   * carousel would move the selection out from under a visitor four seconds after
+   * they tapped a card open. On a coarse pointer the tap is the only way to
+   * choose, so it wins outright and the auto-advance never starts.
+   */
   useEffect(() => {
     if (!motion) return;
-    const id = setInterval(() => {
-      if (pausedRef.current || document.hidden) return;
-      setSvcState((s) => (s + 1) % SERVICE_COUNT);
-    }, CAROUSEL_MS);
-    return () => clearInterval(id);
+
+    const coarse = window.matchMedia("(hover: none), (pointer: coarse)");
+    let id: ReturnType<typeof setInterval> | null = null;
+
+    const sync = () => {
+      if (id) {
+        clearInterval(id);
+        id = null;
+      }
+      if (coarse.matches) return;
+      id = setInterval(() => {
+        if (pausedRef.current || document.hidden) return;
+        setSvcState((s) => (s + 1) % SERVICE_COUNT);
+      }, CAROUSEL_MS);
+    };
+
+    sync();
+    coarse.addEventListener("change", sync);
+
+    return () => {
+      if (id) clearInterval(id);
+      coarse.removeEventListener("change", sync);
+    };
   }, [motion]);
 
-  const openCase = useCallback((i: number) => setCaseIdx(i), []);
+  /*
+   * The control that opened the current overlay.
+   *
+   * Both modals are `inert` while closed, and the browser's response to a
+   * subtree becoming inert is to move focus out of it — to `<body>`. That is the
+   * right thing for the modal and the wrong thing for the visitor, who is
+   * dropped at the top of the document instead of on the row they opened. It is
+   * captured in the handler rather than in an effect on purpose: child effects
+   * run before the parent's, so by the time this component's effect ran the
+   * modal would already have moved focus onto its own Close button.
+   */
+  const returnFocusRef = useRef<HTMLElement | null>(null);
+  const rememberFocus = () => {
+    const el = document.activeElement;
+    returnFocusRef.current = el instanceof HTMLElement ? el : null;
+  };
+
+  const openCase = useCallback((i: number) => {
+    rememberFocus();
+    setCaseIdx(i);
+  }, []);
   const closeCase = useCallback(() => setCaseIdx(-1), []);
-  const openVideo = useCallback(() => setVideoOpen(true), []);
+  const openVideo = useCallback(() => {
+    rememberFocus();
+    setVideoOpen(true);
+  }, []);
   const closeVideo = useCallback(() => setVideoOpen(false), []);
 
   const toggleBot = useCallback(
@@ -198,6 +247,26 @@ export function SiteProvider({ children }: { children: ReactNode }) {
       if (toastTimer.current) clearTimeout(toastTimer.current);
     };
   }, []);
+
+  /*
+   * A full-bleed overlay on a phone must not let the page scroll behind it —
+   * on iOS that also drags the overlay itself around under the finger.
+   */
+  const overlayOpen = caseIdx >= 0 || videoOpen;
+
+  useEffect(() => applyScrollLock(overlayOpen), [overlayOpen]);
+
+  /* Hand focus back to whatever opened the overlay once it closes. */
+  const overlayWasOpen = useRef(false);
+  useEffect(() => {
+    if (overlayWasOpen.current && !overlayOpen) {
+      const el = returnFocusRef.current;
+      returnFocusRef.current = null;
+      // The element can be gone if the page re-rendered underneath the modal.
+      if (el && el.isConnected) el.focus({ preventScroll: true });
+    }
+    overlayWasOpen.current = overlayOpen;
+  }, [overlayOpen]);
 
   /* Escape closes whichever overlay is open. */
   useEffect(() => {

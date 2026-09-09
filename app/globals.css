@@ -47,7 +47,27 @@
   --hx-ease-long: cubic-bezier(0.16, 0.94, 0.24, 1);
 
   /* Section rhythm */
-  --hx-gutter: clamp(18px, 3vw, 40px);
+  --hx-gutter: clamp(16px, 3vw, 40px);
+
+  /*
+   * Fixed-chrome geometry. The nav is `position: fixed`, so its height is what
+   * the hero has to clear and what every `#anchor` has to be pushed past. One
+   * token keeps those three places from drifting apart.
+   */
+  --hx-nav-h: 62px;
+
+  /*
+   * Notch / home-indicator insets, resolved to 0 on hardware without them.
+   * Fixed overlays add these to their own offsets rather than reading `env()`
+   * inline, so a value only has to be corrected in one place.
+   */
+  --hx-safe-t: env(safe-area-inset-top, 0px);
+  --hx-safe-r: env(safe-area-inset-right, 0px);
+  --hx-safe-b: env(safe-area-inset-bottom, 0px);
+  --hx-safe-l: env(safe-area-inset-left, 0px);
+
+  /* Smallest comfortable touch target. */
+  --hx-tap: 44px;
 
   /*
    * Keyframe-name handles.
@@ -85,6 +105,7 @@
   --hx-kf-float-c: hx-float-c;
   --hx-kf-float-d: hx-float-d;
   --hx-kf-float-e: hx-float-e;
+  --hx-kf-float-sm: hx-float-sm;
 
   color-scheme: dark;
 }
@@ -96,15 +117,57 @@ body {
   background: var(--hx-bg);
 }
 
+html {
+  /* iOS inflates text in landscape unless told not to. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* In-page anchors land below the fixed nav instead of under it. */
+  scroll-padding-top: calc(var(--hx-nav-h) + 12px);
+  scroll-behavior: smooth;
+}
+
 body {
   color: var(--hx-ink);
   font-family: var(--font-sans), Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
+  /*
+   * Several sections bleed ambient glows past the viewport edge. `clip` trims
+   * them without turning <body> into a scroll container the way `hidden` does —
+   * which is what lets `position: fixed` children keep working on iOS.
+   */
   overflow-x: hidden;
+  overflow-x: clip;
+}
+
+/* Set while a modal or the mobile menu is open, so the page can't scroll under it. */
+body[data-locked="true"] {
+  overflow: hidden;
+  /* Reserve the scrollbar's width so locking doesn't shift the layout. */
+  padding-right: var(--hx-lock-pad, 0px);
 }
 
 * {
   box-sizing: border-box;
+}
+
+/* Nothing decorative may widen the page. */
+img,
+svg,
+video,
+canvas,
+iframe {
+  max-width: 100%;
+}
+
+/* Long unbroken strings (URLs, hostnames) must wrap rather than push the page. */
+h1,
+h2,
+h3,
+p,
+li,
+figcaption,
+blockquote {
+  overflow-wrap: break-word;
 }
 
 a {
@@ -195,6 +258,17 @@ a:hover {
 @keyframes hx-float-e {
   0%, 100% { transform: translate3d(0, 0, 0); }
   50% { transform: translate3d(5px, 4px, 0); }
+}
+
+/*
+ * Small-screen drift. The `hx-float-a…e` set travels up to 15px, which reads as
+ * ambient when the elements are scattered across a 1280px hero and as collision
+ * once they are stacked into a wrapped row on a phone. Same idea, a third of the
+ * amplitude; components swap to it inside their own media queries.
+ */
+@keyframes hx-float-sm {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -5px, 0); }
 }
 
 @keyframes hx-badge {
@@ -331,9 +405,126 @@ a:hover {
   }
 }
 
+/* --------------------------------------------------------------------------
+   Reveal geometry on small screens.
+
+   The desktop distances are tuned against a 1280px stage. On a 360px phone a
+   64px horizontal slide is a fifth of the screen, the -38vw wordmark letters
+   travel further than the viewport is wide, and a 16px blur on a full-width
+   card costs real frames on mobile GPUs. The animations stay — they just travel
+   proportionally, which is what makes them read as intentional rather than as
+   content jumping around.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 860px) {
+  /*
+   * `:not(.hx-in)` is load-bearing, not decoration.
+   *
+   * The desktop start states above are plain `[data-reveal][data-variant="…"]`
+   * selectors and rely on `[data-reveal].hx-in` — identical specificity (0,2,0) —
+   * coming later in the file to override them. These rules come later still, so
+   * without the `:not()` they would outrank `.hx-in` and every revealed element
+   * on a phone would stay parked at its start offset forever: permanently blurred
+   * and shifted 28px off-centre, with the animation appearing never to finish.
+   */
+  [data-reveal][data-variant="rise"]:not(.hx-in) {
+    transform: translate3d(0, 20px, 0);
+    filter: blur(3px);
+  }
+
+  [data-reveal][data-variant="slideL"]:not(.hx-in) {
+    transform: translate3d(-28px, 0, 0);
+  }
+
+  [data-reveal][data-variant="slideR"]:not(.hx-in) {
+    transform: translate3d(28px, 0, 0);
+  }
+
+  [data-reveal][data-variant="scale"]:not(.hx-in) {
+    transform: scale(0.94) translate3d(0, 12px, 0);
+  }
+
+  [data-reveal][data-variant="blur"]:not(.hx-in) {
+    transform: translate3d(0, 12px, 0);
+    filter: blur(9px);
+  }
+
+  [data-reveal][data-variant="tilt"]:not(.hx-in) {
+    transform: rotate(-1.2deg) translate3d(0, 22px, 0);
+  }
+
+  [data-reveal][data-variant="letter"]:not(.hx-in) {
+    transform: translate3d(-18vw, 0, 0);
+    filter: blur(4px);
+  }
+
+  /* Shorter travel wants a shorter settle, or the page feels sluggish. */
+  [data-reveal].hx-in {
+    --hx-rdur: 700ms;
+  }
+
+  [data-reveal][data-variant="mask"].hx-in { --hx-rdur: 850ms; }
+  [data-reveal][data-variant="letter"].hx-in { --hx-rdur: 1100ms; }
+}
+
+/* --------------------------------------------------------------------------
+   Touch input.
+
+   On a touchscreen a tap leaves `:hover` latched on until the next tap
+   elsewhere, so lift-and-glow effects stick to whatever was last touched. The
+   `.hx-hover-*` utilities below let a component opt a hover flourish out of
+   touch entirely; the `[data-open]` state each of those components already
+   tracks is what drives it instead.
+   -------------------------------------------------------------------------- */
+
+@media (hover: none) {
+  /* A sticky translate is the worst offender — it shifts layout, not just paint. */
+  .hx-hover-lift:hover {
+    transform: none !important;
+  }
+}
+
+/* Anything interactive has to be reachable with a thumb. */
+@media (pointer: coarse) {
+  .hx-tap-target {
+    min-width: var(--hx-tap);
+    min-height: var(--hx-tap);
+  }
+}
+
+/*
+ * The travelling particle cloud.
+ *
+ * Its radius is derived from the hero dock, which on a desktop is a 560px stage
+ * the cloud sits diffusely behind. On a phone the stage is barely taller than the
+ * headline, so the same cloud lands directly on top of the copy at full density
+ * and turns the sub-line into a dot screen. Dialling the whole canvas back keeps
+ * it reading as atmosphere instead of as interference.
+ */
+@media (max-width: 720px) {
+  .hx-particles {
+    opacity: 0.55;
+  }
+}
+
 /* Shared utility: the mono eyebrow treatment used across every section. */
 .hx-mono {
   font-family: var(--font-mono), ui-monospace, monospace;
+}
+
+/* Copy that differs between pointer and touch (“hover” vs “tap”). */
+.hx-touch-only {
+  display: none;
+}
+
+@media (hover: none) {
+  .hx-pointer-only {
+    display: none;
+  }
+
+  .hx-touch-only {
+    display: revert;
+  }
 }
 
 .hx-sr-only {

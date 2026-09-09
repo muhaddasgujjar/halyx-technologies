@@ -33,7 +33,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
   gap: 20px;
 }
 
@@ -152,4 +152,52 @@
   font-size: 9.5px;
   letter-spacing: 0.14em;
   color: var(--hx-mono-dim);
+}
+
+/* --------------------------------------------------------------------------
+   Small screens.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 700px) {
+  .card {
+    /*
+     * 300px of card for two lines of copy is a lot of empty glass once the grid
+     * is one column wide; the absolute `.cardTop` still needs headroom, which is
+     * what the padding-top reserves.
+     */
+    min-height: 240px;
+    padding: 22px;
+    padding-top: 78px;
+    border-radius: 18px;
+  }
+
+  .cardTop {
+    top: 22px;
+    left: 22px;
+    right: 22px;
+  }
+
+  /*
+   * A single-column card is much narrower, so `more` runs to more lines than the
+   * desktop 220px cap allows and the last sentence was being clipped.
+   */
+  .card[data-open="true"] .cardMore {
+    max-height: 420px;
+  }
+
+  .metricLabel {
+    max-width: 46%;
+  }
+}
+
+/* On touch the lift latches after a tap, so state drives the emphasis instead. */
+@media (hover: none) {
+  .card:hover {
+    transform: none;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .card[data-open="true"] {
+    border-color: rgba(188, 178, 255, 0.5);
+  }
 }

@@ -20,7 +20,7 @@
   max-width: 1320px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
   gap: clamp(20px, 3vw, 48px);
   align-items: center;
 }
@@ -205,4 +205,94 @@
   letter-spacing: 0.12em;
   color: rgba(255, 255, 255, 0.5);
   margin-bottom: 5px;
+}
+
+/* --------------------------------------------------------------------------
+   Small screens.
+   -------------------------------------------------------------------------- */
+
+/*
+ * `.grid` is `auto-fit, minmax(min(300px, 100%), 1fr)`, so under ~660px it resolves to a
+ * single column — at which point `.body`'s `grid-column: span 2` asks for a
+ * second column that does not exist. Grid obliges by creating an implicit one,
+ * and the section becomes twice as wide as the viewport. Releasing the span is
+ * the fix; the collapse to one column is already what the layout wants.
+ */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .body {
+    grid-column: auto;
+  }
+
+  /* The particle dock is decoration; it should not own half the screen. */
+  .visual {
+    min-height: clamp(190px, 42vw, 300px);
+  }
+}
+
+@media (max-width: 700px) {
+  /*
+   * Five side-by-side cards that grow on selection is a pointer interaction. On a
+   * phone they stack into an accordion: each card is content-height, and the row
+   * that is open shows its detail rather than growing wider.
+   */
+  .row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .card {
+    flex: none;
+    min-width: 0;
+    min-height: 0;
+    border-radius: 16px;
+  }
+
+  /* Width no longer encodes selection, so the flex growth has to be switched off. */
+  .card[data-active="true"] {
+    flex-grow: 0;
+  }
+
+  .cardInner {
+    padding: 16px;
+  }
+
+  .cardTop {
+    margin-bottom: 12px;
+  }
+
+  /*
+   * Stacked cards are much narrower than a desktop column, so the same copy runs
+   * to far more lines. 300px clipped the stack list mid-item.
+   */
+  .card[data-active="true"] .cardDetail {
+    max-height: 720px;
+  }
+
+  .cardBlurb {
+    max-width: none;
+  }
+
+  /* The dotted corner motif is sized for a tall card. */
+  .cardDots {
+    width: 90px;
+    height: 90px;
+  }
+
+  .glow {
+    left: -140px;
+    width: 460px;
+    height: 460px;
+  }
+}
+
+@media (max-width: 380px) {
+  /* Two columns of five-word service names is one word per line. */
+  .cardLists {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
 }

@@ -190,3 +190,60 @@
   color: var(--hx-mono-dim);
   word-break: break-all;
 }
+
+/* --------------------------------------------------------------------------
+   Small screens.
+   -------------------------------------------------------------------------- */
+
+.panelBorder {
+  /* Keep the modal's own scroll from chaining into the page behind it. */
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 640px) {
+  .header {
+    padding: 18px 16px;
+    gap: 11px;
+  }
+
+  .body {
+    padding: 16px;
+    gap: 14px;
+  }
+
+  .block {
+    padding: 15px 16px;
+  }
+
+  /* 16:9 leaves very little of a phone screen for the copy below it. */
+  .hero {
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+  }
+
+  .close {
+    width: 38px;
+    height: 38px;
+  }
+
+  .facts {
+    gap: 14px;
+  }
+
+  .fact {
+    min-width: 108px;
+  }
+
+  .linkRow {
+    /* Stacked, so the button is full width and the URL wraps under it. */
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .liveLink {
+    justify-content: center;
+    padding: 14px 20px;
+  }
+}

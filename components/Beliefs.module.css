@@ -149,3 +149,94 @@
   color: var(--hx-muted-2);
   max-width: 640px;
 }
+
+/*
+ * Transparent tap target across the whole row. It sits behind the row's own
+ * content so the text stays selectable with a pointer, and the row still has
+ * `cursor: default` on desktop where hover is the affordance.
+ */
+.toggle {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.num,
+.arrow,
+.rowBody {
+  position: relative;
+  z-index: 1;
+  /* Let taps fall through to the toggle underneath. */
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Small screens.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 700px) {
+  .row {
+    gap: 14px;
+    padding: 18px 4px;
+    align-items: flex-start;
+  }
+
+  .lead {
+    font-size: clamp(15px, 4.3vw, 18px);
+  }
+
+  /*
+   * Each principle runs to two or three lines at this width instead of one, so
+   * the desktop cap clipped the tail of the longer ones.
+   */
+  .row[data-open="true"] .more {
+    max-height: 320px;
+  }
+
+  .more p {
+    font-size: 12.5px;
+  }
+
+  .glow {
+    width: 520px;
+    height: 300px;
+  }
+}
+
+@media (hover: none) {
+  /* A latched hover would leave a row stuck open after it was tapped shut. */
+  .row:hover {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .row:hover .more {
+    max-height: 0;
+    opacity: 0;
+  }
+
+  .row[data-open="true"] {
+    background: rgba(255, 255, 255, 0.028);
+    box-shadow: inset 0 0 40px rgba(150, 136, 255, 0.12);
+  }
+
+  .row[data-open="true"] .more {
+    max-height: 320px;
+    opacity: 1;
+  }
+
+  .row:hover .num,
+  .row:hover .arrow {
+    color: #5c5c68;
+  }
+
+  .row[data-open="true"] .num,
+  .row[data-open="true"] .arrow {
+    color: var(--hx-accent-200);
+  }
+}

@@ -39,9 +39,21 @@
   color: var(--hx-muted);
 }
 
+/*
+ * `min(320px, 100%)` rather than a bare `320px`, here and in every other
+ * auto-fit grid on the page.
+ *
+ * `minmax(320px, 1fr)` is a hard floor: the column cannot be narrower than
+ * 320px even when its container is. On a 320px phone this section's container
+ * is 288px wide after the gutters, so the column overflowed it by 32px — and
+ * because the full-bleed strip below hangs its negative margins off that
+ * column, it rendered 352px wide inside a 320px screen. `min(…, 100%)` keeps
+ * the intent (don't drop below 320px while there is room for it) and lets the
+ * column collapse to the container when there isn't.
+ */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: clamp(24px, 4vw, 56px);
   align-items: start;
 }
@@ -218,4 +230,127 @@
   font-size: 11.5px;
   color: var(--hx-accent-200);
   margin-top: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   Small screens.
+
+   The desktop right column is a vertical marquee: the five projects rendered
+   twice, the track creeping upward forever, `-50%` landing exactly on the second
+   copy so the loop has no seam. Stacked vertically that needs more height than a
+   phone has, so below 760px the same track and the same trick simply turn
+   ninety degrees — `hx-marquee` is the horizontal sibling of `hx-vmarquee`.
+
+   Two details make the seam invisible at this size:
+
+   - The gap is carried by `margin-right` on each card rather than by the flex
+     `gap`. With `gap`, ten cards produce nine gaps, so half the track width is
+     one *half-gap* short of one full loop and the marquee jolts sideways every
+     cycle. A trailing margin gives ten cards ten gaps, and half is exact.
+   - `width: max-content` is what makes `-50%` mean half the *content*. Without
+     it the track inherits the viewport's width and translates by half a screen.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  .marqueeViewport {
+    height: auto;
+    /* Not a scroll container any more — the track moves, not the scroll offset. */
+    overflow: hidden;
+    /* Run to both screen edges; the mask does the rest. */
+    margin-inline: calc(-1 * var(--hx-gutter));
+    mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  }
+
+  .track {
+    flex-direction: row;
+    /* Superseded by each card's margin-right; see the note above. */
+    gap: 0;
+    width: max-content;
+    animation: var(--hx-kf-marquee) 44s linear infinite;
+    will-change: transform;
+  }
+
+  /*
+   * Touch has no hover, so the desktop hover-pause has no equivalent. `:active`
+   * fires while a finger rests on the strip, which is exactly when someone is
+   * trying to read or aim at a card.
+   */
+  .marqueeViewport:active .track,
+  .marqueeViewport:focus-within .track {
+    animation-play-state: paused;
+  }
+
+  .card {
+    /*
+     * `vw`, not `%`: a percentage basis inside a `max-content` track would
+     * resolve against a width that depends on the cards themselves.
+     */
+    flex: 0 0 min(78vw, 320px);
+    margin-right: 12px;
+  }
+
+  .row {
+    /* Comfortable thumb target on a list of five. */
+    padding: 18px 4px;
+    gap: 12px;
+  }
+}
+
+/*
+ * With motion off there is nothing to carry the second half of the track past
+ * the viewport, so the marquee becomes what it would otherwise have been: a
+ * snap-scrolling shelf the finger drives, with the duplicate copy hidden.
+ */
+@media (max-width: 760px) and (prefers-reduced-motion: reduce) {
+  .marqueeViewport {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    padding-inline: var(--hx-gutter);
+    scroll-padding-inline-start: var(--hx-gutter);
+    scrollbar-width: none;
+  }
+
+  .marqueeViewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  .track {
+    width: auto;
+  }
+
+  .card {
+    scroll-snap-align: start;
+  }
+
+  .card[aria-hidden="true"] {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .rowName {
+    font-size: 14.5px;
+  }
+
+  .eyebrow {
+    /* Two lines of tracked-out 10px mono beats one line clipped. */
+    font-size: 9.5px;
+    letter-spacing: 0.13em;
+  }
+}
+
+/* A tap must not leave a card latched into its hover glow. */
+@media (hover: none) {
+  .card:hover {
+    border-color: rgba(255, 255, 255, 0.09);
+    box-shadow: none;
+  }
+
+  .row:hover {
+    background: transparent;
+    box-shadow: none;
+  }
 }

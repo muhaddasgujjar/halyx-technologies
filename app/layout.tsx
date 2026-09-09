@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Instrument_Sans, JetBrains_Mono } from "next/font/google";
+import { HYDRATION_GUARD } from "@/lib/extension-attrs";
 import { IS_INDEXABLE, SITE } from "@/lib/site";
 import "./globals.css";
 
@@ -59,12 +60,37 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: "#060608",
   colorScheme: "dark",
+  width: "device-width",
+  initialScale: 1,
+  // Pinch-zoom stays available: capping the scale would fail WCAG 1.4.4.
+  maximumScale: 5,
+  // Let the page paint under a notch; fixed chrome pads itself back out with
+  // `env(safe-area-inset-*)`.
+  viewportFit: "cover",
+  // The on-screen keyboard shrinks the viewport instead of sliding fixed
+  // elements out of reach, which keeps the chat dock and the contact form
+  // usable while typing on a phone.
+  interactiveWidget: "resizes-content",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${instrumentSans.variable} ${jetbrainsMono.variable}`}>
-      <body>{children}</body>
+    <html
+      lang="en"
+      className={`${instrumentSans.variable} ${jetbrainsMono.variable}`}
+      // Extensions decorate <html> and <body> with generated attribute names
+      // the guard below cannot enumerate. See lib/extension-attrs.ts.
+      suppressHydrationWarning
+    >
+      <head>
+        {/*
+         * Must run before React hydrates, so it is inline in <head> rather than
+         * in a component: it undoes the DOM edits browser extensions make to the
+         * server HTML, which would otherwise be reported as hydration mismatches.
+         */}
+        <script dangerouslySetInnerHTML={{ __html: HYDRATION_GUARD }} />
+      </head>
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }

@@ -67,32 +67,54 @@ export interface TeamMember {
   name: string;
   title: string;
   tag: string;
+  /**
+   * Shown on the card's hover/tap panel.
+   *
+   * These describe the remit of the role at Halyx. They deliberately make no
+   * claims about years of experience, previous employers or numbers delivered:
+   * these are real, named people, and copy like that has to come from them
+   * rather than from whoever is writing the component.
+   */
   bio: string;
-  /** Portrait photography is not yet supplied — null renders the placeholder treatment. */
+  /** Falls back to the striped placeholder treatment when null. */
   img: string | null;
+  /**
+   * `object-position` for the portrait crop. The cards are 3:4 on desktop and
+   * squarer on a phone, so one shared default cuts some of these photographs
+   * across the chin; each is framed on its own subject instead.
+   */
+  focus?: string;
+  /** Opens in a new tab from the card's `in` badge. */
+  linkedin?: string;
 }
 
 export const TEAM: TeamMember[] = [
   {
-    name: "Team Member",
-    title: "Co\u2013Founder & Partner",
-    tag: "PARTNER",
-    bio: "Leads client strategy and delivery. Fifteen years building data products for regulated industries.",
-    img: null,
+    name: "Muhammad Muhaddas",
+    title: "Chief Executive Officer",
+    tag: "CEO",
+    bio: "Sets the studio’s direction and stays close to every engagement, from the first brief through to what ships.",
+    img: "/media/team-muhaddas.png",
+    focus: "56% 16%",
+    linkedin: "https://www.linkedin.com/in/muhaddas-basit-90614b320/",
   },
   {
-    name: "Team Member",
-    title: "Co\u2013Founder & CTO",
+    name: "Muhammad Aleem Azam",
+    title: "Chief Technology Officer",
     tag: "CTO",
-    bio: "Owns architecture and the AI platform. Previously scaled ML infrastructure to 40M daily inferences.",
-    img: null,
+    bio: "Owns the architecture behind the AI platform, and the engineering standards every build is handed over against.",
+    img: "/media/team-aleem.png",
+    focus: "45% 14%",
+    linkedin: "https://www.linkedin.com/in/aleem-azam-937724345/",
   },
   {
-    name: "Team Member",
-    title: "Head of Product",
-    tag: "PRODUCT",
-    bio: "Runs discovery and design. Turns messy operational problems into shippable product scope.",
-    img: null,
+    name: "Muhammad Numan Ali",
+    title: "Manager",
+    tag: "MANAGER",
+    bio: "Runs delivery day to day — scope, schedule, and the reporting clients see against the metric agreed up front.",
+    img: "/media/team-numan.jpg",
+    focus: "52% 18%",
+    linkedin: "https://www.linkedin.com/in/muhammad-numan-ali-60102b3a9/",
   },
 ];
 

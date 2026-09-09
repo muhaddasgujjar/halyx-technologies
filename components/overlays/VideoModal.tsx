@@ -13,11 +13,13 @@ import styles from "./VideoModal.module.css";
 export function VideoModal() {
   const { videoOpen, closeVideo } = useSite();
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const closeRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
     if (videoOpen) {
+      closeRef.current?.focus({ preventScroll: true });
       v.currentTime = 0;
       void v.play().catch(() => {
         /* Autoplay can be blocked; the controls are right there. */
@@ -34,7 +36,9 @@ export function VideoModal() {
       role="dialog"
       aria-modal="true"
       aria-label="Inside Halyx — showcase film"
-      aria-hidden={!videoOpen}
+      // See the note in CaseModal.tsx: `aria-hidden` on a subtree that still
+      // holds focus is blocked by the browser. `inert` hides and unfocuses.
+      inert={!videoOpen}
     >
       <button
         type="button"
@@ -59,6 +63,7 @@ export function VideoModal() {
             </div>
 
             <button
+              ref={closeRef}
               type="button"
               className={`${shell.close} ${styles.close}`}
               onClick={closeVideo}

@@ -51,12 +51,34 @@ export function DottedMap() {
     let hov = 0;
     let hovT = 0;
 
-    const onMove = (e: PointerEvent) => {
+    /*
+     * A touchscreen has no pointer to follow, so on a coarse pointer the map is
+     * driven by taps instead of by movement: a tap picks the nearest marker, and
+     * a tap on empty ocean clears the card again. Tracking `pointermove` there as
+     * well would light the map up every time a finger dragged across it mid-scroll.
+     */
+    const coarse =
+      typeof window !== "undefined" &&
+      window.matchMedia("(hover: none), (pointer: coarse)").matches;
+
+    /* Fingers are less precise than a cursor, so the markers get a bigger target. */
+    const HIT = coarse ? 34 : 26;
+
+    const aim = (e: PointerEvent) => {
       const r = canvas.getBoundingClientRect();
       mx = e.clientX - r.left;
       my = e.clientY - r.top;
       hovT = mx >= 0 && my >= 0 && mx <= r.width && my <= r.height ? 1 : 0;
     };
+
+    const onMove = (e: PointerEvent) => aim(e);
+
+    const onTap = (e: PointerEvent) => {
+      aim(e);
+      // With motion off there is no loop running to pick the change up.
+      if (!motion) frame(Date.now() - t0);
+    };
+
     const onLeave = () => {
       hovT = 0;
       mx = -9999;
@@ -208,7 +230,7 @@ export function DottedMap() {
         if (mx > -999) {
           const ddx = hp[0] - mx;
           const ddy = hp[1] - my;
-          near = ddx * ddx + ddy * ddy < 26 * 26;
+          near = ddx * ddx + ddy * ddy < HIT * HIT;
         }
         if (near) active = hh;
 
@@ -327,7 +349,11 @@ export function DottedMap() {
       });
 
     window.addEventListener("resize", onResize);
-    window.addEventListener("pointermove", onMove);
+    // `orientationchange` on iOS reports the new size a beat after the event, and
+    // the resize handler is already debounced, so this just re-triggers it.
+    window.addEventListener("orientationchange", onResize);
+    if (!coarse) window.addEventListener("pointermove", onMove);
+    canvas.addEventListener("pointerdown", onTap);
     canvas.addEventListener("pointerleave", onLeave);
 
     return () => {
@@ -336,7 +362,9 @@ export function DottedMap() {
       if (resizeTimer) clearTimeout(resizeTimer);
       io.disconnect();
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("orientationchange", onResize);
       window.removeEventListener("pointermove", onMove);
+      canvas.removeEventListener("pointerdown", onTap);
       canvas.removeEventListener("pointerleave", onLeave);
     };
   }, [motion]);

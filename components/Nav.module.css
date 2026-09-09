@@ -8,7 +8,15 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 16px var(--hx-gutter);
+  /*
+   * `min-height` is what makes --hx-nav-h authoritative: the hero's top padding
+   * and the page's `scroll-padding-top` both budget for this number, so the bar
+   * must not be free to grow past it.
+   */
+  min-height: calc(var(--hx-nav-h) + var(--hx-safe-t));
+  padding: 8px calc(var(--hx-gutter) + var(--hx-safe-r)) 8px
+    calc(var(--hx-gutter) + var(--hx-safe-l));
+  padding-top: calc(8px + var(--hx-safe-t));
   background: rgba(6, 6, 8, 0.72);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -16,11 +24,20 @@
 }
 
 .wordmark {
+  display: flex;
+  align-items: center;
+  /* Padded to a real tap target: the glyphs alone are only 16px tall. */
+  min-height: 40px;
+  padding-right: 6px;
   font-size: 15px;
   font-weight: 600;
   letter-spacing: 0.24em;
   color: var(--hx-ink-strong);
   white-space: nowrap;
+}
+
+.wordmark:hover {
+  color: var(--hx-ink-strong);
 }
 
 .links {
@@ -70,10 +87,216 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: none;
   width: 28px;
   height: 28px;
   border-radius: 999px;
   background: #fff;
   color: #0a0a0f;
   font-size: 13px;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile menu. Hidden and inert above the breakpoint, so desktop pays nothing
+   for it beyond the markup.
+   -------------------------------------------------------------------------- */
+
+.burger,
+.sheet,
+.scrim {
+  display: none;
+}
+
+.burgerBars {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 12px;
+}
+
+.burgerBars i {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  border-radius: 2px;
+  background: var(--hx-ink-2);
+  transition: transform 0.36s var(--hx-ease), opacity 0.2s ease;
+}
+
+.burgerBars i:nth-child(1) { top: 0; }
+.burgerBars i:nth-child(2) { top: 5.25px; }
+.burgerBars i:nth-child(3) { top: 10.5px; }
+
+/* Bars fold into a cross. */
+.nav[data-open="true"] .burgerBars i:nth-child(1) {
+  transform: translateY(5.25px) rotate(45deg);
+}
+
+.nav[data-open="true"] .burgerBars i:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0.4);
+}
+
+.nav[data-open="true"] .burgerBars i:nth-child(3) {
+  transform: translateY(-5.25px) rotate(-45deg);
+}
+
+@media (max-width: 860px) {
+  .nav {
+    gap: 10px;
+  }
+
+  /* The full link row is what does not fit; it moves into the sheet. */
+  .links {
+    display: none;
+  }
+
+  /*
+   * The CTA keeps its place in the bar but drops to the badge alone. Losing the
+   * label costs nothing — the sheet spells it out — and keeps the page's primary
+   * action one thumb-reach away without a menu.
+   */
+  .cta {
+    margin-left: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .ctaText {
+    /* Visually gone, still the button's accessible name. */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .ctaBadge {
+    width: 34px;
+    height: 34px;
+    font-size: 15px;
+  }
+
+  .burger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    /* `hx-tap-target` supplies the 44px floor on coarse pointers. */
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .sheet {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 18px calc(var(--hx-gutter) + var(--hx-safe-r)) calc(24px + var(--hx-safe-b))
+      calc(var(--hx-gutter) + var(--hx-safe-l));
+    /* Landscape phones are short; the sheet scrolls rather than overflowing. */
+    max-height: calc(100dvh - var(--hx-nav-h) - var(--hx-safe-t));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: rgba(8, 8, 12, 0.96);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 30px 70px -34px rgba(0, 0, 0, 0.98);
+    transform-origin: 50% 0;
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    transition: opacity 0.28s ease, transform 0.36s var(--hx-ease);
+  }
+
+  .sheet[data-open="true"] {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .sheetLinks {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sheetLink {
+    padding: 14px 2px;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--hx-ink-2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    transition: color 0.3s ease, padding-left 0.3s var(--hx-ease);
+  }
+
+  .sheetLink:active {
+    color: var(--hx-ink-strong);
+    padding-left: 8px;
+  }
+
+  .sheetCta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 13px 10px 13px 22px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: linear-gradient(180deg, rgba(160, 146, 255, 0.34), rgba(107, 92, 240, 0.18));
+    color: var(--hx-ink-strong);
+    font-size: 15px;
+    font-weight: 500;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.28),
+      0 14px 40px -18px rgba(120, 104, 255, 0.85);
+  }
+
+  .scrim {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: calc(var(--hx-nav-h) + var(--hx-safe-t));
+    bottom: 0;
+    z-index: -1;
+    border: 0;
+    padding: 0;
+    cursor: default;
+    background: rgba(4, 4, 7, 0.6);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .scrim[data-open="true"] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* Very narrow phones: the wordmark's tracking is what runs out of room first. */
+@media (max-width: 380px) {
+  .wordmark {
+    font-size: 13.5px;
+    letter-spacing: 0.18em;
+  }
 }

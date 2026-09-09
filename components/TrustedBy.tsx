@@ -24,7 +24,15 @@ const CONNECTORS = [
 
 export function TrustedBy() {
   const { openVideo } = useSite();
-  // Click keeps a tooltip open on touch, where there is no hover.
+  /*
+   * Which testimonial is pinned open by a tap. Hover is handled entirely in CSS
+   * (`.person:hover .tip`), deliberately: mirroring it here with
+   * `onMouseEnter`/`onMouseLeave` broke touch. Tapping a portrait on a phone
+   * synthesises `mouseenter` *before* `click`, so the enter handler opened the
+   * tooltip and the click handler — seeing it already open — immediately toggled
+   * it shut again. Leaving hover to CSS means the tap is the only thing that
+   * writes this state.
+   */
   const [openTip, setOpenTip] = useState(-1);
 
   const railItems = [...REVIEWS, ...REVIEWS];
@@ -74,8 +82,6 @@ export function TrustedBy() {
                     className={styles.person}
                     style={{ left: p.left, top: p.top }}
                     data-open={openTip === i}
-                    onMouseEnter={() => setOpenTip(i)}
-                    onMouseLeave={() => setOpenTip(-1)}
                   >
                     <div className={styles.personFloat} style={{ animation: p.float }}>
                       <button
@@ -145,7 +151,12 @@ export function TrustedBy() {
             <Reveal delay={140} className={styles.rail}>
               <div className={styles.railHead}>
                 <div className={`${styles.railLabel} hx-mono`}>CLIENT TESTIMONIALS</div>
-                <div className={`${styles.railHint} hx-mono`}>HOVER TO PAUSE</div>
+                {/* The rail auto-scrolls in both cases; only the way you stop it
+                    differs — hovering with a pointer, resting a finger on touch. */}
+                <div className={`${styles.railHint} hx-mono`}>
+                  <span className="hx-pointer-only">HOVER TO PAUSE</span>
+                  <span className="hx-touch-only">TOUCH TO PAUSE</span>
+                </div>
               </div>
               <div className={styles.railViewport}>
                 <div className={styles.railTrack}>
@@ -154,7 +165,10 @@ export function TrustedBy() {
                       key={`${r.name}-${i}`}
                       className={styles.review}
                       aria-hidden={i >= REVIEWS.length}
-                      style={{ margin: 0 }}
+                      // The UA's default figure margin is reset in the
+                      // stylesheet, not inline: the small-screen marquee needs a
+                      // trailing margin on each card, and an inline `margin: 0`
+                      // outranks any rule that tries to set one.
                     >
                       <blockquote className={styles.reviewQuote} style={{ margin: 0 }}>
                         {r.q}

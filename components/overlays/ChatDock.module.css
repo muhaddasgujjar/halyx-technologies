@@ -1,7 +1,8 @@
 .dock {
   position: fixed;
-  right: clamp(14px, 2vw, 26px);
-  bottom: clamp(14px, 2vw, 26px);
+  /* Clear the home indicator / rounded corners on notched hardware. */
+  right: calc(clamp(14px, 2vw, 26px) + var(--hx-safe-r));
+  bottom: calc(clamp(14px, 2vw, 26px) + var(--hx-safe-b));
   z-index: 120;
   opacity: 0;
   pointer-events: none;
@@ -320,4 +321,71 @@
   background: var(--hx-mint);
   border: 2px solid #0b0b12;
   box-shadow: 0 0 12px rgba(143, 240, 192, 0.8);
+}
+
+/* --------------------------------------------------------------------------
+   Small screens.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 520px) {
+  /*
+   * The panel already caps at `100vw - 28px`; on a phone it should simply take
+   * that width in both states rather than sitting at 336px with a margin.
+   */
+  .panel,
+  .panel[data-max="true"] {
+    width: calc(100vw - 28px - var(--hx-safe-l) - var(--hx-safe-r));
+  }
+
+  /*
+   * Fixed pixel heights overflow a landscape phone, where the whole viewport is
+   * shorter than the transcript. `dvh` is right here rather than in the hero: the
+   * panel is fixed to the viewport, so it *should* follow the toolbar, and it is
+   * not in the page's layout flow so resizing it reflows nothing.
+   */
+  .log {
+    height: min(260px, 40dvh);
+  }
+
+  .panel[data-max="true"] .log {
+    height: min(400px, 58dvh);
+  }
+
+  .bodyWrap {
+    max-height: min(520px, 74dvh);
+  }
+
+  /* Under 16px, focusing this field zooms the page on iOS and never unzooms. */
+  .input {
+    font-size: 16px;
+  }
+
+  /* Header controls sit shoulder to shoulder; give thumbs something to hit. */
+  .iconBtn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .send {
+    width: var(--hx-tap);
+    height: var(--hx-tap);
+  }
+}
+
+@media (hover: none) {
+  .launcher:hover {
+    transform: none;
+  }
+}
+
+/*
+ * `touch-action: none` exists so a mouse drag isn't interpreted as a scroll.
+ * Dragging is disabled on coarse pointers (see ChatDock.tsx), so the launcher
+ * must hand touch gestures back to the page — otherwise a swipe that begins on
+ * the button silently fails to scroll.
+ */
+@media (pointer: coarse) {
+  .launcher {
+    touch-action: manipulation;
+  }
 }

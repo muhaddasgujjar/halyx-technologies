@@ -65,3 +65,35 @@
   color: var(--hx-ink-strong);
   border-color: rgba(188, 178, 255, 0.6);
 }
+
+/* --------------------------------------------------------------------------
+   Small screens.
+
+   `inset: 0` on a fixed element resolves against the *large* viewport, so on
+   mobile the bottom of the overlay — and with it the bottom of a scrolled modal —
+   sits behind the browser toolbar. `height: 100dvh` tracks the visible viewport
+   instead. (`top` + `height` over-constrains the box, which drops `bottom`; that
+   is the intent, so the fallback still works where `dvh` is unsupported.)
+   -------------------------------------------------------------------------- */
+
+.overlay {
+  height: 100dvh;
+  padding-top: calc(var(--hx-safe-t) + clamp(16px, 3vw, 40px));
+  padding-bottom: calc(var(--hx-safe-b) + clamp(16px, 3vw, 40px));
+}
+
+@media (max-width: 640px) {
+  .panelBorder {
+    border-radius: 18px;
+  }
+
+  .panel {
+    border-radius: 17px;
+  }
+
+  /* 32px is a mouse target, not a thumb target. */
+  .close {
+    min-width: 38px;
+    min-height: 38px;
+  }
+}

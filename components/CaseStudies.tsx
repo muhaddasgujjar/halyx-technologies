@@ -70,6 +70,17 @@ export function CaseStudies() {
                     // The duplicate half is decoration; keep it out of the tab order.
                     tabIndex={i >= PROJECTS.length ? -1 : undefined}
                     aria-hidden={i >= PROJECTS.length}
+                    /*
+                     * `tabIndex={-1}` keeps the duplicates off the tab route but a
+                     * mouse click focuses a button anyway — which would park focus
+                     * inside an `aria-hidden` subtree and get the same rebuke from
+                     * the browser that the modals used to. Suppressing the default
+                     * on mousedown keeps them clickable without focusing them; the
+                     * real copy of every card is still reachable by keyboard.
+                     */
+                    onMouseDown={
+                      i >= PROJECTS.length ? (e) => e.preventDefault() : undefined
+                    }
                   >
                     <span className={styles.shot}>
                       <Image

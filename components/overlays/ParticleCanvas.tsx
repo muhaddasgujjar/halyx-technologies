@@ -31,11 +31,31 @@ export function ParticleCanvas() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // 1500 points is the design default; small viewports get proportionally
-    // fewer so the fill cost stays flat.
+    /*
+     * 1500 points is the design default; small viewports get proportionally
+     * fewer so the fill cost stays flat.
+     *
+     * Width alone understates the cost on a phone. The canvas backing store is
+     * scaled by devicePixelRatio (capped at 2 in `lib/particles.ts`), so a 3x
+     * phone screen pays for four times the fill of a 1x one at the same CSS size,
+     * on a GPU with a fraction of the budget. The DPR discount below is what keeps
+     * a mid-range handset at 60fps; the 300-point floor still reads as a cloud.
+     */
     const base = Math.max(300, Math.min(3500, particleDensity));
     const viewportScale = Math.min(1, (window.innerWidth || 1280) / 1280);
-    const n = Math.max(300, Math.round(base * Math.max(0.45, viewportScale)));
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dprScale = dpr > 1.5 ? 0.62 : 1;
+    const n = Math.max(
+      300,
+      Math.round(base * Math.max(0.3, viewportScale) * dprScale),
+    );
+
+    /*
+     * The cursor tilts and spins the cloud. There is no cursor on a touchscreen,
+     * where this listener would instead fire for every frame of every scroll
+     * gesture — capturing on `document`, ahead of the page's own scroll handling.
+     */
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
     const cloud: Cloud | null = initCloud(canvas, n, "sphere");
     let assembler: Assembler | null = null;
@@ -55,7 +75,8 @@ export function ParticleCanvas() {
     };
 
     window.addEventListener("resize", onResize);
-    document.addEventListener("pointermove", onMove, true);
+    window.addEventListener("orientationchange", onResize);
+    if (finePointer) document.addEventListener("pointermove", onMove, true);
 
     let raf = 0;
     let last = 0;
@@ -128,6 +149,7 @@ export function ParticleCanvas() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("orientationchange", onResize);
       document.removeEventListener("pointermove", onMove, true);
     };
   }, [motion, particleDensity, rootRef, heroDockRef, svcDockRef, ctaCanvasRef]);
@@ -136,6 +158,9 @@ export function ParticleCanvas() {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
+      // The class is the handle small screens use to dial the cloud back; see
+      // `.hx-particles` in app/globals.css.
+      className="hx-particles"
       style={{
         position: "absolute",
         left: 0,
@@ -143,6 +168,9 @@ export function ParticleCanvas() {
         width: "100%",
         height: "100vh",
         pointerEvents: "none",
+        // Explicit, so the hero's own layers are ordered against a known value
+        // rather than against source order alone.
+        zIndex: 0,
       }}
     />
   );

@@ -1,10 +1,19 @@
 .hero {
   position: relative;
+  /*
+   * `svh` is the viewport with the mobile browser's toolbars showing, which is
+   * the state the page loads in. `vh` (the toolbar-hidden height) would push the
+   * bottom row below the fold on first paint, and `dvh` would resize the hero
+   * mid-scroll as the toolbar retracts — reflowing the whole page and forcing the
+   * particle canvas to re-measure. `vh` stays as the fallback for older engines.
+   */
   min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: clamp(110px, 14vw, 150px) var(--hx-gutter) 48px;
+  /* Clear the fixed nav, then add the design's own breathing room. */
+  padding: calc(var(--hx-nav-h) + var(--hx-safe-t) + clamp(28px, 6vw, 88px)) var(--hx-gutter) 48px;
   overflow: hidden;
 }
 
@@ -235,4 +244,144 @@
   font-size: 12px;
   line-height: 1.35;
   color: var(--hx-muted-3);
+}
+
+/* --------------------------------------------------------------------------
+   Small screens.
+
+   The four pills are positioned into the hero's corners, which only works while
+   there are corners to spare. Below 720px they leave absolute positioning and
+   become a centred, wrapped row under the headline: the same four elements, the
+   same glass treatment, still drifting — just laid out instead of scattered.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 720px) {
+  .stage {
+    /* Row + wrap, with the headline claiming a full row of its own first. */
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 10px;
+    row-gap: 22px;
+    min-height: 0;
+    padding: clamp(24px, 6vw, 44px) 0 4px;
+  }
+
+  .headline {
+    flex: 1 0 100%;
+    order: -1;
+    max-width: 100%;
+    margin-bottom: clamp(22px, 6vw, 34px);
+  }
+
+  .pillSlot {
+    /* Neutralises the inline `left/top/right/bottom` the component sets. */
+    position: static;
+  }
+
+  /*
+   * `.pillSlot` carries `z-index: 3` to sit above the particle canvas, and a
+   * z-index on a `position: static` element does nothing — so the pills fell
+   * behind the cloud and their labels were rendered through a haze of dots. The
+   * stacking has to move to the child, which has no inline offsets to disturb.
+   */
+  .pill {
+    position: relative;
+    z-index: 3;
+  }
+
+  /*
+   * The scattered drift keyframes travel far enough to collide once the pills sit
+   * in a row, so they swap to the shared small-screen variant and destagger with
+   * delays instead. `!important` is load-bearing: the amplitude being replaced is
+   * an inline `style={{ animation }}`, which nothing else can outrank.
+   */
+  .pill {
+    animation: var(--hx-kf-float-sm) 7s ease-in-out infinite !important;
+    padding: 9px 15px;
+    gap: 8px;
+  }
+
+
+  /* The dock is the first sibling div, so the four pills are types 2 through 5. */
+  .pillSlot:nth-of-type(3) .pill { animation-delay: -1.75s !important; }
+  .pillSlot:nth-of-type(4) .pill { animation-delay: -3.5s !important; }
+  .pillSlot:nth-of-type(5) .pill { animation-delay: -5.25s !important; }
+
+  /* Full-width primary action: the whole row is the tap target. */
+  .bottomRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 26px;
+  }
+
+  .ctaWrap {
+    max-width: none;
+  }
+
+  .cta {
+    justify-content: center;
+    width: 100%;
+    padding: 15px 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  /*
+   * "HALYX TECHNOLOGIES" is `white-space: nowrap`, so at the desktop size the
+   * word simply runs off both edges and reads as noise. Shrinking it keeps the
+   * watermark legible as a watermark.
+   */
+  .watermark {
+    top: 11%;
+    font-size: clamp(24px, 7.4vw, 48px);
+    letter-spacing: 0.06em;
+  }
+
+  /* The ambient glows are sized for a desktop stage; keep them off the edges. */
+  .glowA {
+    top: -190px;
+    left: -180px;
+    width: 520px;
+    height: 460px;
+  }
+
+  .glowB {
+    top: -140px;
+    right: -160px;
+    width: 420px;
+    height: 380px;
+  }
+
+  /*
+   * Three counters, side by side, on 360px. Baseline-aligned value + label needs
+   * more width than there is, so each stacks and the row becomes an even grid
+   * rather than three flex items fighting over the remainder.
+   */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .stat {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+  }
+
+  .statValue {
+    font-size: clamp(20px, 6vw, 26px);
+  }
+
+  .statLabel {
+    font-size: 10.5px;
+  }
+}
+
+/* Sticky :hover after a tap would leave a pill lifted out of line. */
+@media (hover: none) {
+  .pill:hover,
+  .cta:hover {
+    transform: none;
+  }
 }

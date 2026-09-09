@@ -19,7 +19,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
   gap: 22px;
 }
 
@@ -37,11 +37,29 @@
 }
 
 .card:hover,
-.card:focus-within {
+.card:focus-within,
+.card[data-open="true"] {
   border-color: rgba(188, 178, 255, 0.55);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.24),
     0 0 46px rgba(150, 136, 255, 0.4);
+}
+
+/*
+ * Transparent tap target covering the whole portrait. It sits under `.base` and
+ * `.detail` so their text stays selectable and the contact link stays clickable;
+ * the closed `.detail` is translated fully off the card, so it intercepts nothing
+ * until it is open.
+ */
+.toggle {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Portrait photography is not supplied yet — this is the stand-in treatment. */
@@ -79,6 +97,8 @@
 
 .base {
   position: absolute;
+  z-index: 2;
+  pointer-events: none;
   left: 0;
   right: 0;
   bottom: 0;
@@ -100,6 +120,7 @@
 /* Slides up over the base label on hover. */
 .detail {
   position: absolute;
+  z-index: 3;
   left: 0;
   right: 0;
   bottom: 0;
@@ -112,7 +133,8 @@
 }
 
 .card:hover .detail,
-.card:focus-within .detail {
+.card:focus-within .detail,
+.card[data-open="true"] .detail {
   transform: translateY(0%);
 }
 
@@ -154,4 +176,66 @@
   font-size: 10px;
   letter-spacing: 0.1em;
   color: var(--hx-mono-dimmer);
+}
+
+/* --------------------------------------------------------------------------
+   Small screens.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 700px) {
+  /*
+   * A 3:4 card at full width is over 450px tall on a phone — three of them is a
+   * screen and a half of portraits. A wider ratio keeps the section scannable.
+   */
+  .card {
+    aspect-ratio: 4 / 3;
+    border-radius: 18px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .base {
+    padding: 18px;
+  }
+
+  .detail {
+    padding: 20px 18px;
+  }
+
+  .bio {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 420px) {
+  /* Squarer still, so the open bio does not need to cover the whole card. */
+  .card {
+    aspect-ratio: 1 / 1;
+  }
+}
+
+@media (hover: none) {
+  /* Only a tap should open a bio; a latched hover would leave one stuck open. */
+  .card:hover .detail {
+    transform: translateY(101%);
+  }
+
+  .card[data-open="true"] .detail {
+    transform: translateY(0%);
+  }
+
+  .card:hover {
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  }
+
+  .card[data-open="true"] {
+    border-color: rgba(188, 178, 255, 0.55);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.24),
+      0 0 46px rgba(150, 136, 255, 0.4);
+  }
 }

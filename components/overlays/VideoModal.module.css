@@ -103,3 +103,30 @@
   aspect-ratio: 16 / 9;
   background: #000;
 }
+
+/* --------------------------------------------------------------------------
+   Small screens.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .header {
+    padding: 12px 12px 12px 14px;
+  }
+
+  .close {
+    width: 38px;
+    height: 38px;
+  }
+
+  .title {
+    font-size: 12.5px;
+  }
+
+  /*
+   * `vh` here would let the player run under the browser toolbar on a phone; the
+   * overlay is fixed to the visible viewport, so the video should be too.
+   */
+  .video {
+    max-height: min(74vh, 68dvh);
+  }
+}

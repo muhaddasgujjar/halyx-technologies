@@ -11,7 +11,7 @@
 
 .columns {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
   gap: clamp(28px, 4vw, 60px);
 }
 
@@ -144,4 +144,57 @@
 
 .top:hover .topBadge {
   box-shadow: 0 0 26px rgba(150, 136, 255, 0.7);
+}
+
+/* --------------------------------------------------------------------------
+   Small screens.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  .columns {
+    grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
+    gap: 28px 20px;
+  }
+
+  .link {
+    /* Stacked text links need vertical room to be separable by thumb. */
+    font-size: 15.5px;
+    padding: 3px 0;
+  }
+
+  .colLabel {
+    margin-bottom: 14px;
+  }
+
+  .touchHead {
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  /*
+   * Five letters at `space-between` across the full width leaves gaps wider than
+   * the letters on a phone. Centred with a real gap keeps it a wordmark.
+   */
+  .wordmark {
+    justify-content: center;
+    gap: clamp(2px, 1.5vw, 10px);
+    padding: 18px 0 8px;
+  }
+
+  .letter {
+    font-size: clamp(44px, 16vw, 78px);
+  }
+
+  .bottom {
+    /* Stacked, so the three groups don't interleave as they wrap. */
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px 0 calc(24px + var(--hx-safe-b));
+  }
+
+  .legal {
+    gap: 20px;
+  }
 }
