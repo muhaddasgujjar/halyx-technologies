@@ -1,0 +1,7 @@
+# Keep the deployment upload to what actually runs.
+# The design bundle is 7 MB of reference material with no runtime role.
+docs/
+README.md
+AGENTS.md
+CLAUDE.md
+.env.example

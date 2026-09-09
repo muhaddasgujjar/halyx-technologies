@@ -1,0 +1,155 @@
+.section {
+  position: relative;
+  padding: clamp(40px, 6vw, 90px) var(--hx-gutter) clamp(72px, 9vw, 140px);
+}
+
+.inner {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: clamp(26px, 4vw, 48px);
+}
+
+.h2 {
+  margin: 0;
+  font-size: clamp(20px, 2.2vw, 28px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.hint {
+  margin: 0;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--hx-mono-dim);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  position: relative;
+  padding: clamp(26px, 3vw, 40px);
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  overflow: hidden;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 14px 40px -26px rgba(0, 0, 0, 0.9);
+  transition: box-shadow 0.5s ease, transform 0.5s ease, border-color 0.5s ease;
+}
+
+.card:hover,
+.card:focus-visible {
+  transform: translateY(-6px);
+  border-color: rgba(188, 178, 255, 0.5);
+}
+
+.card[data-open="true"] {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    0 0 48px rgba(150, 136, 255, 0.42);
+}
+
+.shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.1) 48%, transparent 62%);
+  background-size: 280% 100%;
+  animation: var(--hx-kf-shine) 7s linear infinite;
+  pointer-events: none;
+}
+
+.cardTop {
+  position: absolute;
+  top: clamp(22px, 2.6vw, 34px);
+  left: clamp(26px, 3vw, 40px);
+  right: clamp(26px, 3vw, 40px);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.metric {
+  font-size: clamp(26px, 3vw, 40px);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  color: var(--hx-accent-200);
+}
+
+.metricLabel {
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  color: var(--hx-mono-dim);
+  text-align: right;
+}
+
+.cardBody {
+  position: relative;
+}
+
+.cardTitle {
+  font-size: clamp(21px, 2.3vw, 29px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  margin-bottom: 12px;
+}
+
+.cardBlurb {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--hx-muted);
+}
+
+.cardMore {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.55s var(--hx-ease), opacity 0.4s ease;
+}
+
+.card[data-open="true"] .cardMore {
+  max-height: 220px;
+  opacity: 1;
+}
+
+.cardMoreText {
+  display: block;
+  margin: 14px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--hx-ink-3);
+}
+
+.cardCta {
+  margin-top: 16px;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  color: var(--hx-mono-dim);
+}

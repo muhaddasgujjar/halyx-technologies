@@ -1,0 +1,12 @@
+node_modules
+.next
+out
+next-env.d.ts
+*.tsbuildinfo
+# Secrets. `.env*.local` alone does NOT cover a plain `.env`.
+.env
+.env.*
+!.env.example
+.DS_Store
+tsconfig.tsbuildinfo
+scratch/

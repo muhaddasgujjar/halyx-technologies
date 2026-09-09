@@ -1,0 +1,147 @@
+.footer {
+  position: relative;
+  padding: clamp(48px, 6vw, 90px) var(--hx-gutter) 0;
+  overflow: hidden;
+}
+
+.inner {
+  max-width: 1760px;
+  margin: 0 auto;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: clamp(28px, 4vw, 60px);
+}
+
+.colLabel {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--hx-mono-dim);
+  margin-bottom: 22px;
+}
+
+.colLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.link {
+  font-size: clamp(16px, 1.55vw, 21px);
+  color: var(--hx-ink-2);
+  letter-spacing: -0.01em;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.link:hover {
+  color: var(--hx-ink-strong);
+  text-shadow: 0 0 22px rgba(160, 146, 255, 0.9);
+}
+
+.touchHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.bookCall {
+  font-size: 13px;
+  color: var(--hx-ink-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+  transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.bookCall:hover {
+  color: var(--hx-ink-strong);
+  text-shadow: 0 0 22px rgba(160, 146, 255, 0.9);
+}
+
+.divider {
+  margin-top: clamp(34px, 5vw, 64px);
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.05));
+}
+
+.wordmark {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1vw;
+  padding: clamp(20px, 3vw, 42px) 0 clamp(10px, 1.5vw, 20px);
+  overflow: hidden;
+}
+
+.letter {
+  display: inline-block;
+  font-size: clamp(58px, 15.4vw, 250px);
+  font-weight: 500;
+  line-height: 0.86;
+  letter-spacing: -0.01em;
+  color: #f0eefc;
+}
+
+.bottom {
+  padding: 22px 0 26px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--hx-muted-3);
+}
+
+.legal {
+  display: flex;
+  gap: 26px;
+}
+
+.legalLink {
+  color: var(--hx-muted-2);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.legalLink:hover {
+  color: var(--hx-ink-strong);
+  text-shadow: 0 0 22px rgba(160, 146, 255, 0.9);
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  color: var(--hx-ink-3);
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.topBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-size: 12px;
+  color: var(--hx-ink-strong);
+  transition: box-shadow 0.4s ease;
+}
+
+.top:hover .topBadge {
+  box-shadow: 0 0 26px rgba(150, 136, 255, 0.7);
+}

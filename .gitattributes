@@ -1,0 +1,23 @@
+# Normalise to LF in the repository. The site is built and deployed on Linux;
+# without this, files committed from Windows land with CRLF and every future
+# checkout on another OS shows spurious whole-file diffs.
+* text=auto eol=lf
+
+# Binary assets — never touched by line-ending or diff machinery.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.avif  binary
+*.ico   binary
+*.mp4   binary
+*.woff  binary
+*.woff2 binary
+*.pdf   binary
+
+# Generated; keep it out of review diffs.
+package-lock.json -diff linguist-generated
+
+# Reference material, not app code — excluded from language stats.
+docs/** linguist-documentation

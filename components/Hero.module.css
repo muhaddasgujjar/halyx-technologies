@@ -1,0 +1,238 @@
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(110px, 14vw, 150px) var(--hx-gutter) 48px;
+  overflow: hidden;
+}
+
+/* Ambient glows bleed outside the container on purpose. */
+.glowA,
+.glowB {
+  position: absolute;
+  filter: blur(30px);
+  pointer-events: none;
+}
+
+.glowA {
+  top: -320px;
+  left: -260px;
+  width: 900px;
+  height: 760px;
+  background: radial-gradient(ellipse at center, rgba(107, 92, 240, 0.34), rgba(107, 92, 240, 0) 68%);
+}
+
+.glowB {
+  top: -180px;
+  right: -220px;
+  width: 720px;
+  height: 640px;
+  background: radial-gradient(ellipse at center, rgba(150, 130, 255, 0.16), rgba(107, 92, 240, 0) 70%);
+}
+
+/* The floating pills deliberately overlap this watermark. */
+.watermark {
+  position: absolute;
+  top: 15%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: clamp(48px, 11vw, 190px);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.045);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+.inner {
+  position: relative;
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.stage {
+  position: relative;
+  min-height: clamp(320px, 46vw, 560px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(56px, 7vw, 90px) 0;
+}
+
+/* Anchor the particle cloud starts from. */
+.dock {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.pillSlot {
+  position: absolute;
+  z-index: 3;
+}
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 14px 40px -22px rgba(0, 0, 0, 0.95);
+  white-space: nowrap;
+  transition: box-shadow 0.45s ease, border-color 0.45s ease, transform 0.45s ease;
+}
+
+.pill:hover {
+  border-color: rgba(188, 178, 255, 0.6);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 0 34px rgba(150, 136, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.pillLabel {
+  font-size: clamp(12.5px, 1.3vw, 15px);
+  color: var(--hx-ink-2);
+}
+
+/* Each pill carries its own hand-built geometric mark — no icon library. */
+.markSquare {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: linear-gradient(140deg, #c9c4ff, #5647d6);
+}
+
+.markRing {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 2px solid #a99cff;
+}
+
+.markDiamond {
+  width: 12px;
+  height: 12px;
+  background: var(--hx-accent-100);
+  transform: rotate(45deg);
+}
+
+.markBars {
+  display: flex;
+  gap: 2px;
+  align-items: flex-end;
+}
+
+.markBars span:nth-child(1) { width: 3px; height: 8px; background: var(--hx-accent-300); }
+.markBars span:nth-child(2) { width: 3px; height: 13px; background: var(--hx-accent-100); }
+.markBars span:nth-child(3) { width: 3px; height: 10px; background: var(--hx-accent); }
+
+.headline {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: min(1000px, 92%);
+}
+
+.h1 {
+  margin: 0;
+  font-size: clamp(34px, 6.6vw, 96px);
+  font-weight: 300;
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+  text-shadow: 0 4px 50px rgba(6, 6, 8, 0.92);
+}
+
+.h1 strong {
+  font-weight: 600;
+}
+
+.sub {
+  margin: clamp(16px, 2.2vw, 28px) auto 0;
+  max-width: 620px;
+  font-size: clamp(13px, 1.4vw, 16px);
+  line-height: 1.6;
+  color: var(--hx-ink-3);
+  text-shadow: 0 2px 24px rgba(6, 6, 8, 0.9);
+}
+
+.subDim {
+  color: var(--hx-muted);
+}
+
+.bottomRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 36px;
+  margin-top: clamp(24px, 5vw, 60px);
+}
+
+.ctaWrap {
+  max-width: 430px;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(180deg, rgba(160, 146, 255, 0.34), rgba(107, 92, 240, 0.18));
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  color: var(--hx-ink-strong);
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 14px 40px -16px rgba(120, 104, 255, 0.85);
+  transition: box-shadow 0.45s ease, transform 0.45s ease;
+}
+
+.cta:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 0 42px rgba(150, 136, 255, 0.6);
+  transform: translateY(-1px);
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(24px, 4vw, 60px);
+}
+
+.stat {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.statValue {
+  font-size: clamp(26px, 3vw, 40px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  /* Tabular figures so the count-up doesn't jitter. */
+  font-variant-numeric: tabular-nums;
+}
+
+.statLabel {
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--hx-muted-3);
+}

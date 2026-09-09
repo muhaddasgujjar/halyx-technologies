@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  :root { color-scheme: dark; }
+  html { background: #08080d; }
+  body { margin: 0; padding: 0; background: #08080d; overflow: hidden; }
+  canvas { display: block; width: 100%; height: 100%; }
+</style>
+<script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js" integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js" integrity="sha384-Ukv1p/xTma6P4/2bY5KzWBw+ydSpXmhCMtyciIQVDJ1RmOxtCYNMF1uXT9T63H67" crossorigin="anonymous"></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+(function () {
+  var canvas = document.getElementById('c');
+  var ctx = canvas.getContext('2d');
+  var land = null;
+  var STEP = 7;
+  var proj = null, dots = null, W = 0, H = 0, DPR = 1;
+
+  var HUBS = [
+    { name: 'atlanta', c: [-84.39, 33.75], year: '2019', t: 'Founded. Two engineers, one product, a rented desk.' },
+    { name: 'london', c: [-0.13, 51.51], year: '2021', t: 'First platform shipped. 10k users in nine months.' },
+    { name: 'berlin', c: [13.4, 52.52], year: '2022', t: 'Enterprise clients arrive. AI automation becomes the core practice.' },
+    { name: 'dubai', c: [55.27, 25.2], year: '2023', t: 'Regional delivery hub opens. Round-the-clock support begins.' },
+    { name: 'bengaluru', c: [77.59, 12.97], year: '2024', t: 'Engineering scales past 200 people. ML platform goes multi-tenant.' },
+    { name: 'singapore', c: [103.82, 1.35], year: '2025', t: 'Voice and vision products launch with regional partners.' },
+    { name: 'sao paulo', c: [-46.63, -23.55], year: '2026', t: 'Four regions, 200-500 employees, 60+ products in production.' },
+    { name: 'sydney', c: [151.21, -33.87], year: 'now', t: 'Follow-the-sun delivery across every client time zone.' }
+  ];
+  var ROUTES = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [0, 6], [5, 7], [0, 2]];
+  var mx = -9999, my = -9999, hov = 0, hovT = 0;
+
+  window.addEventListener('pointermove', function (e) { mx = e.clientX; my = e.clientY; hovT = 1; });
+  window.addEventListener('pointerleave', function () { hovT = 0; mx = -9999; my = -9999; });
+
+  function render() {
+    if (!land) return;
+    var w = Math.max(1, canvas.clientWidth);
+    var h = Math.max(1, canvas.clientHeight);
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+
+    var off = document.createElement('canvas');
+    off.width = w; off.height = h;
+    var octx = off.getContext('2d');
+    var projection = d3.geoNaturalEarth1().fitSize([w, h], land);
+    proj = projection; W = w; H = h; DPR = dpr;
+    var path = d3.geoPath(projection, octx);
+    octx.fillStyle = '#fff';
+    octx.beginPath();
+    path(land);
+    octx.fill();
+    var data = octx.getImageData(0, 0, w, h).data;
+
+    dots = [];
+    for (var y = STEP / 2; y < h; y += STEP) {
+      for (var x = STEP / 2; x < w; x += STEP) {
+        var i = ((y | 0) * w + (x | 0)) * 4 + 3;
+        if (data[i] > 120) dots.push(x, y);
+      }
+    }
+  }
+
+  function frame(now) {
+    if (!dots || !proj) return;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+
+    var t = now * 0.001;
+    var active = -1;
+    hov += (hovT - hov) * 0.08;
+    var RAD = Math.min(W, H) * 0.34, RAD2 = RAD * RAD;
+
+    if (hov > 0.01) {
+      var gl = ctx.createRadialGradient(mx, my, 0, mx, my, RAD);
+      gl.addColorStop(0, 'rgba(150,136,255,' + (0.22 * hov).toFixed(3) + ')');
+      gl.addColorStop(1, 'rgba(107,92,240,0)');
+      ctx.fillStyle = gl;
+      ctx.beginPath(); ctx.arc(mx, my, RAD, 0, 6.2832); ctx.fill();
+    }
+
+    ctx.globalCompositeOperation = 'lighter';
+    for (var k = 0; k < dots.length; k += 2) {
+      var x = dots[k], y = dots[k + 1];
+      var wave = 0.5 + 0.5 * Math.sin(t * 0.8 - (x + y) * 0.012);
+      var a = 0.3 + wave * 0.45;
+      var rr = 1.1 + wave * 0.35;
+      if (hov > 0.01) {
+        var dx = x - mx, dy = y - my, d2 = dx * dx + dy * dy;
+        if (d2 < RAD2) {
+          var d = Math.sqrt(d2) || 1, fq = (1 - d / RAD) * hov;
+          x += (dx / d) * fq * fq * RAD * 0.3;
+          y += (dy / d) * fq * fq * RAD * 0.3;
+          a = Math.min(1, a + fq * 0.75);
+          rr += fq * 1.5;
+        }
+      }
+      ctx.fillStyle = 'rgba(' + Math.round(132 + wave * 54) + ',' + Math.round(120 + wave * 48) + ',255,' + a.toFixed(3) + ')';
+      ctx.beginPath();
+      ctx.arc(x, y, rr, 0, 6.2832);
+      ctx.fill();
+    }
+
+    for (var r = 0; r < ROUTES.length; r++) {
+      var a0 = HUBS[ROUTES[r][0]].c, b0 = HUBS[ROUTES[r][1]].c;
+      var interp = d3.geoInterpolate(a0, b0);
+      var phase = ((t * 0.22 + r * 0.17) % 1);
+      var trail = 0.32;
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(150,136,255,0.16)';
+      ctx.beginPath();
+      for (var s = 0; s <= 40; s++) {
+        var pt = proj(interp(s / 40));
+        if (!pt) continue;
+        if (s === 0) ctx.moveTo(pt[0], pt[1]); else ctx.lineTo(pt[0], pt[1]);
+      }
+      ctx.stroke();
+
+      ctx.beginPath();
+      var started = false;
+      for (var s2 = 0; s2 <= 24; s2++) {
+        var f2 = phase - trail + (trail * s2) / 24;
+        if (f2 < 0 || f2 > 1) continue;
+        var p2 = proj(interp(f2));
+        if (!p2) continue;
+        if (!started) { ctx.moveTo(p2[0], p2[1]); started = true; } else ctx.lineTo(p2[0], p2[1]);
+      }
+      ctx.lineWidth = 1.6;
+      ctx.strokeStyle = 'rgba(196,186,255,0.75)';
+      ctx.stroke();
+
+      if (phase <= 1) {
+        var head = proj(interp(Math.min(1, phase)));
+        if (head) {
+          ctx.fillStyle = 'rgba(232,228,255,0.95)';
+          ctx.beginPath(); ctx.arc(head[0], head[1], 2.2, 0, 6.2832); ctx.fill();
+        }
+      }
+    }
+
+    for (var hh = 0; hh < HUBS.length; hh++) {
+      var hp = proj(HUBS[hh].c);
+      if (!hp) continue;
+      var near = false;
+      if (mx > -999) {
+        var ddx = hp[0] - mx, ddy = hp[1] - my;
+        near = (ddx * ddx + ddy * ddy) < 26 * 26;
+      }
+      if (near) active = hh;
+      var pl = (t * 0.7 + hh * 0.31) % 1;
+      ctx.strokeStyle = 'rgba(170,158,255,' + ((near ? 0.85 : 0.5) * (1 - pl)).toFixed(3) + ')';
+      ctx.lineWidth = near ? 1.8 : 1;
+      ctx.beginPath(); ctx.arc(hp[0], hp[1], 2 + pl * (near ? 26 : 13), 0, 6.2832); ctx.stroke();
+      if (near) {
+        var gh = ctx.createRadialGradient(hp[0], hp[1], 0, hp[0], hp[1], 46);
+        gh.addColorStop(0, 'rgba(170,158,255,0.5)');
+        gh.addColorStop(1, 'rgba(107,92,240,0)');
+        ctx.fillStyle = gh;
+        ctx.beginPath(); ctx.arc(hp[0], hp[1], 46, 0, 6.2832); ctx.fill();
+      }
+      ctx.fillStyle = near ? '#ffffff' : 'rgba(238,235,255,0.95)';
+      ctx.beginPath(); ctx.arc(hp[0], hp[1], near ? 3.4 : 2.1, 0, 6.2832); ctx.fill();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+
+    if (active >= 0) {
+      var hb = HUBS[active], hpp = proj(hb.c);
+      var bw = Math.min(250, W - 24), pad = 13;
+      ctx.font = '500 11px "Instrument Sans", Helvetica, sans-serif';
+      var words = hb.t.split(' '), lines = [], cur = '';
+      for (var wi = 0; wi < words.length; wi++) {
+        var test = cur ? cur + ' ' + words[wi] : words[wi];
+        if (ctx.measureText(test).width > bw - pad * 2) { lines.push(cur); cur = words[wi]; } else cur = test;
+      }
+      if (cur) lines.push(cur);
+      var bh = pad * 2 + 18 + lines.length * 15;
+      var bx = Math.max(8, Math.min(W - bw - 8, hpp[0] - bw / 2));
+      var by = hpp[1] > H / 2 ? hpp[1] - bh - 18 : hpp[1] + 18;
+      by = Math.max(8, Math.min(H - bh - 8, by));
+      ctx.fillStyle = 'rgba(14,13,24,0.94)';
+      ctx.strokeStyle = 'rgba(188,178,255,0.45)';
+      ctx.lineWidth = 1;
+      if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(bx, by, bw, bh, 12); ctx.fill(); ctx.stroke(); }
+      else { ctx.fillRect(bx, by, bw, bh); ctx.strokeRect(bx, by, bw, bh); }
+      ctx.fillStyle = '#bcb2ff';
+      ctx.font = '500 10px "JetBrains Mono", monospace';
+      ctx.fillText(hb.year.toUpperCase(), bx + pad, by + pad + 9);
+      ctx.fillStyle = '#e2e2ea';
+      ctx.font = '500 11px "Instrument Sans", Helvetica, sans-serif';
+      for (var li = 0; li < lines.length; li++) ctx.fillText(lines[li], bx + pad, by + pad + 28 + li * 15);
+    }
+  }
+
+  var _t0 = Date.now();
+  var _timer = null;
+  function tick() { frame(Date.now() - _t0); }
+  function startLoop() { if (!_timer) _timer = setInterval(tick, 33); }
+
+  var t;
+  window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(function () { render(); tick(); }, 120); });
+
+  fetch('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json')
+    .then(function (r) { return r.json(); })
+    .then(function (topo) {
+      land = topojson.feature(topo, topo.objects.countries);
+      render();
+      tick();
+      startLoop();
+    });
+})();
+</script>
+</body>
+</html>

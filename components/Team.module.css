@@ -1,0 +1,157 @@
+.section {
+  position: relative;
+  padding: clamp(60px, 8vw, 120px) var(--hx-gutter);
+}
+
+.inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.h2 {
+  margin: 0 0 clamp(30px, 4vw, 58px);
+  text-align: center;
+  font-size: clamp(22px, 2.6vw, 34px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 22px;
+}
+
+.card {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 22px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  transition: box-shadow 0.5s ease, border-color 0.5s ease;
+}
+
+.card:hover,
+.card:focus-within {
+  border-color: rgba(188, 178, 255, 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    0 0 46px rgba(150, 136, 255, 0.4);
+}
+
+/* Portrait photography is not supplied yet — this is the stand-in treatment. */
+.placeholder {
+  position: absolute;
+  inset: 0;
+  background-color: var(--hx-surface-1);
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.035) 0 10px,
+    transparent 10px 20px
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #5c5c68;
+}
+
+.photo {
+  position: absolute;
+  inset: 0;
+}
+
+.photo img {
+  object-fit: cover;
+  object-position: 50% 20%;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(6, 6, 8, 0) 45%, rgba(6, 6, 8, 0.92) 100%);
+}
+
+.base {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 22px;
+  text-align: center;
+}
+
+.name {
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.title {
+  font-size: 12px;
+  color: var(--hx-muted-2);
+  margin-top: 4px;
+}
+
+/* Slides up over the base label on hover. */
+.detail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 26px 24px;
+  background: linear-gradient(180deg, rgba(10, 9, 18, 0.2), rgba(10, 9, 18, 0.96));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transform: translateY(101%);
+  transition: transform 0.55s var(--hx-ease);
+}
+
+.card:hover .detail,
+.card:focus-within .detail {
+  transform: translateY(0%);
+}
+
+.tag {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--hx-accent-200);
+  margin-bottom: 10px;
+}
+
+.bio {
+  margin: 10px 0 16px;
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: #a5a5b0;
+}
+
+.social {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 9px;
+  font-size: 12px;
+  color: var(--hx-ink-strong);
+  background: rgba(255, 255, 255, 0.06);
+  transition: box-shadow 0.4s ease;
+}
+
+.social:hover {
+  box-shadow: 0 0 24px rgba(150, 136, 255, 0.7);
+}
+
+.footnote {
+  margin: 22px 0 0;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--hx-mono-dimmer);
+}
