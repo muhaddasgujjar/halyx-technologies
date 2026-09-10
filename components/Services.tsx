@@ -1,6 +1,7 @@
 "use client";
 
 import { SERVICES } from "@/lib/services";
+import { useLocale } from "./LocaleProvider";
 import { Reveal, RevealScope } from "./Reveal";
 import { useSite } from "./SiteProvider";
 import styles from "./Services.module.css";
@@ -12,6 +13,7 @@ import styles from "./Services.module.css";
  */
 export function Services() {
   const { svc, setSvc, pauseCarousel, resumeCarousel, svcDockRef } = useSite();
+  const { t } = useLocale();
 
   return (
     <RevealScope variant="slideL">
@@ -25,10 +27,11 @@ export function Services() {
 
           <div className={styles.body}>
             <Reveal className={styles.header}>
-              <h2 className={styles.h2}>Our Services</h2>
+              <h2 className={styles.h2}>{t("Our Services")}</h2>
               <p className={styles.intro}>
-                End-to-end digital solutions that turn technology into measurable results across
-                every part of your business.
+                {t(
+                  "End-to-end digital solutions that turn technology into measurable results across every part of your business.",
+                )}
               </p>
             </Reveal>
 
@@ -63,26 +66,26 @@ export function Services() {
 
                     <span>
                       <span className={styles.cardTitle} style={{ display: "block" }}>
-                        {s.title}
+                        {t(s.title)}
                       </span>
                       <span className={styles.cardDetail} style={{ display: "block" }}>
                         <span className={styles.cardBlurb} style={{ display: "block" }}>
-                          {s.blurb}
+                          {t(s.blurb)}
                         </span>
                         <span className={styles.cardLists} style={{ display: "grid" }}>
                           <span>
                             <span className={`${styles.listLabel} hx-mono`} style={{ display: "block" }}>
-                              SERVICES
+                              {t("SERVICES")}
                             </span>
                             {s.services.map((item) => (
                               <span key={item} style={{ display: "block" }}>
-                                {item}
+                                {t(item)}
                               </span>
                             ))}
                           </span>
                           <span>
                             <span className={`${styles.listLabel} hx-mono`} style={{ display: "block" }}>
-                              STACK
+                              {t("STACK")}
                             </span>
                             {s.stack.map((item) => (
                               <span key={item} style={{ display: "block" }}>

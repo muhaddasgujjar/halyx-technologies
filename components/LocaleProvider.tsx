@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import { DEFAULT_LOCALE, isLanguageCode, language, type Language } from "@/lib/i18n/languages";
+import { IDENTITY, loadMessages, makeTranslate, type Translate } from "@/lib/i18n/translate";
 
 /**
  * The visitor's chosen language.
@@ -34,6 +35,13 @@ interface LocaleContextValue {
   locale: string;
   /** The resolved registry entry. Never null — falls back to English. */
   lang: Language;
+  /**
+   * Translates one English string into the active language.
+   *
+   * Identity until that language's catalogue has loaded, so the page renders
+   * English for a frame rather than empty. See `lib/i18n/translate.ts`.
+   */
+  t: Translate;
   setLocale: (code: string) => void;
   /**
    * True once the stored choice has been read.
@@ -86,23 +94,51 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   const lang = useMemo(() => language(locale), [locale]);
 
   /*
+   * The active catalogue.
+   *
+   * Loaded per language and kept as the translator rather than the raw map, so
+   * a component never has to think about whether it has arrived. Between the
+   * switch and the chunk landing, `t` is the identity function and the page is
+   * English — one frame, and never blank.
+   *
+   * `stale` guards the race: switching quickly between two languages can settle
+   * the requests out of order, and without it the page would end up in
+   * whichever one happened to load last rather than the one that was picked.
+   */
+  const [t, setT] = useState<Translate>(() => IDENTITY);
+
+  useEffect(() => {
+    let stale = false;
+    setT(() => IDENTITY);
+
+    void loadMessages(locale).then((messages) => {
+      if (!stale) setT(() => makeTranslate(messages));
+    });
+
+    return () => {
+      stale = true;
+    };
+  }, [locale]);
+
+  /*
    * `<html lang>` follows the choice so screen readers switch voice and the
    * browser offers the right translation prompt.
    *
-   * `dir` deliberately does NOT. The page is a fixed left-to-right layout —
-   * flipping the document for Arabic or Urdu would mirror the hero, the
-   * services rail and the world map, none of which were designed for it, and
-   * the result is broken rather than localised. Right-to-left text is instead
-   * given `dir` on the elements that actually hold it: the transcript lines and
-   * the composer in the console. That is honest about what is translated.
+   * `dir` follows it too, now that the page itself translates rather than only
+   * the agent. A full page of Arabic or Urdu set left-to-right is not a styling
+   * preference — punctuation lands on the wrong end of every sentence and the
+   * text is genuinely hard to read. Flipping the document is the correct answer
+   * and CSS logical properties carry most of the layout across; `globals.css`
+   * holds the handful of corrections for the places that pin a physical side.
    */
   useEffect(() => {
     document.documentElement.lang = lang.tag;
+    document.documentElement.dir = lang.dir;
   }, [lang]);
 
   const value = useMemo<LocaleContextValue>(
-    () => ({ locale, lang, setLocale, hydrated }),
-    [locale, lang, setLocale, hydrated],
+    () => ({ locale, lang, t, setLocale, hydrated }),
+    [locale, lang, t, setLocale, hydrated],
   );
 
   return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>;

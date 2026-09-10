@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { geoInterpolate, geoNaturalEarth1, geoPath } from "d3-geo";
 import { feature } from "topojson-client";
 import type { GeoPermissibleObjects } from "d3-geo";
+import { useLocale } from "./LocaleProvider";
 import { HUBS, ROUTES } from "@/lib/hubs";
 import { useSite } from "./SiteProvider";
 
@@ -26,6 +27,8 @@ interface TopoLike {
 }
 
 export function DottedMap() {
+  /* Aliased: the draw loop already binds `t` to elapsed time. */
+  const { t: translate } = useLocale();
   const { motion } = useSite();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -267,7 +270,7 @@ export function DottedMap() {
         const pad = 13;
 
         ctx.font = '500 11px "Instrument Sans", Helvetica, sans-serif';
-        const words = hb.t.split(" ");
+        const words = translate(hb.t).split(" ");
         const lines: string[] = [];
         let cur = "";
         for (const word of words) {
@@ -297,7 +300,7 @@ export function DottedMap() {
 
         ctx.fillStyle = "#bcb2ff";
         ctx.font = '500 10px "JetBrains Mono", monospace';
-        ctx.fillText(hb.label.toUpperCase(), bx + pad, by + pad + 9);
+        ctx.fillText(translate(hb.label).toUpperCase(), bx + pad, by + pad + 9);
 
         ctx.fillStyle = "#e2e2ea";
         ctx.font = '500 11px "Instrument Sans", Helvetica, sans-serif';
@@ -367,12 +370,12 @@ export function DottedMap() {
       canvas.removeEventListener("pointerdown", onTap);
       canvas.removeEventListener("pointerleave", onLeave);
     };
-  }, [motion]);
+  }, [motion, translate]);
 
   return (
     <canvas
       ref={canvasRef}
-      aria-label="Map of Halyx delivery hubs. Hover a marker to read that year's story."
+      aria-label={translate("Map of Halyx delivery hubs. Hover a marker to read that year's story.")}
       role="img"
       style={{ display: "block", width: "100%", height: "100%", background: "#08080d" }}
     />

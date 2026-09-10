@@ -5,6 +5,7 @@ import { HUBS } from "@/lib/hubs";
 import { ORBIT_CARDS } from "@/lib/people";
 import { SERVICES } from "@/lib/services";
 import { PROOF_POINTS } from "@/lib/reviews";
+import { useLocale } from "./LocaleProvider";
 import { Reveal, RevealScope } from "./Reveal";
 import { useSite } from "./SiteProvider";
 import styles from "./TrustedBy.module.css";
@@ -42,6 +43,7 @@ export function TrustedBy() {
    * writes this state.
    */
   const [openTip, setOpenTip] = useState(-1);
+  const { t } = useLocale();
 
   const railItems = [...PROOF_POINTS, ...PROOF_POINTS];
 
@@ -53,8 +55,8 @@ export function TrustedBy() {
         <div className={styles.inner}>
           <Reveal className={styles.header}>
             <div className={styles.headerText}>
-              <div className={`${styles.eyebrow} hx-mono`}>WORK IN PRODUCTION</div>
-              <h2 className={styles.h2}>Systems we put into production. Open any of them.</h2>
+              <div className={`${styles.eyebrow} hx-mono`}>{t("WORK IN PRODUCTION")}</div>
+              <h2 className={styles.h2}>{t("Systems we put into production. Open any of them.")}</h2>
             </div>
             <div className={styles.metrics}>
               {/*
@@ -67,7 +69,7 @@ export function TrustedBy() {
               {METRICS.map((m) => (
                 <div key={m.label}>
                   <div className={styles.metricValue}>{m.value}</div>
-                  <div className={styles.metricLabel}>{m.label}</div>
+                  <div className={styles.metricLabel}>{t(m.label)}</div>
                 </div>
               ))}
             </div>
@@ -103,7 +105,7 @@ export function TrustedBy() {
                         type="button"
                         className={styles.ring}
                         style={{ width: p.size, height: p.size }}
-                        aria-label={`Testimonial from ${p.name}, ${p.role}`}
+                        aria-label={`${t("Testimonial from")} ${t(p.name)}, ${p.role}`}
                         onClick={() => setOpenTip((v) => (v === i ? -1 : i))}
                       >
                         {/* Placeholder stand-ins — swap for real client photography. */}
@@ -112,7 +114,7 @@ export function TrustedBy() {
                       </button>
 
                       <div className={styles.personLabel}>
-                        <div className={styles.personName}>{p.name}</div>
+                        <div className={styles.personName}>{t(p.name)}</div>
                         <div className={`${styles.personRole} hx-mono`}>{p.role}</div>
                       </div>
 
@@ -124,8 +126,8 @@ export function TrustedBy() {
                       >
                         <div className={styles.tipBorder}>
                           <div className={styles.tipBody}>
-                            <div className={`${styles.tipEyebrow} hx-mono`}>SHIPPED CAPABILITY</div>
-                            <p className={styles.tipQuote}>{p.quote}</p>
+                            <div className={`${styles.tipEyebrow} hx-mono`}>{t("SHIPPED CAPABILITY")}</div>
+                            <p className={styles.tipQuote}>{t(p.quote)}</p>
                           </div>
                         </div>
                       </div>
@@ -146,16 +148,16 @@ export function TrustedBy() {
                       <span className={styles.videoFoot}>
                         <span style={{ minWidth: 0 }}>
                           <span className={styles.videoTitle} style={{ display: "block" }}>
-                            Inside Halyx &mdash; showcase film
+                            {t("Inside Halyx — showcase film")}
                           </span>
                           <span
                             className={`${styles.videoMeta} hx-mono`}
                             style={{ display: "block" }}
                           >
-                            00:10 &middot; APPLIED AI STUDIO
+                            00:10 &middot; {t("APPLIED AI STUDIO")}
                           </span>
                         </span>
-                        <span className={`${styles.videoBadge} hx-mono`}>PLAY</span>
+                        <span className={`${styles.videoBadge} hx-mono`}>{t("PLAY")}</span>
                       </span>
                     </span>
                   </span>
@@ -165,12 +167,12 @@ export function TrustedBy() {
 
             <Reveal delay={140} className={styles.rail}>
               <div className={styles.railHead}>
-                <div className={`${styles.railLabel} hx-mono`}>SHIPPED WORK</div>
+                <div className={`${styles.railLabel} hx-mono`}>{t("SHIPPED WORK")}</div>
                 {/* The rail auto-scrolls in both cases; only the way you stop it
                     differs — hovering with a pointer, resting a finger on touch. */}
                 <div className={`${styles.railHint} hx-mono`}>
-                  <span className="hx-pointer-only">HOVER TO PAUSE</span>
-                  <span className="hx-touch-only">TOUCH TO PAUSE</span>
+                  <span className="hx-pointer-only">{t("HOVER TO PAUSE")}</span>
+                  <span className="hx-touch-only">{t("TOUCH TO PAUSE")}</span>
                 </div>
               </div>
               <div className={styles.railViewport}>
@@ -185,14 +187,14 @@ export function TrustedBy() {
                       // trailing margin on each card, and an inline `margin: 0`
                       // outranks any rule that tries to set one.
                     >
-                      <div className={styles.reviewQuote}>{r.q}</div>
+                      <div className={styles.reviewQuote}>{t(r.q)}</div>
                       <figcaption className={styles.reviewMeta}>
                         <div className={styles.avatar} aria-hidden="true">
                           {r.ini}
                         </div>
                         <div style={{ minWidth: 0 }}>
                           <div className={styles.reviewName}>{r.name}</div>
-                          <div className={styles.reviewRole}>{r.role}</div>
+                          <div className={styles.reviewRole}>{`${t(r.cat).toUpperCase()} · ${r.host}`}</div>
                         </div>
                       </figcaption>
                     </figure>

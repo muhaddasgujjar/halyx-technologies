@@ -4,7 +4,17 @@ export interface ProofPoint {
   /** Avatar monogram. */
   ini: string;
   name: string;
-  role: string;
+  /**
+   * The category and the host, kept apart rather than pre-joined.
+   *
+   * The rail renders them as "REAL-TIME INTERVIEW COPILOT · maiku.app", but the
+   * category is prose that translates and the host is an address that must not.
+   * Composing the line here would bake an English string the catalogue has no
+   * way to reach; composing it at render lets the category go through `t` and
+   * leaves the domain alone.
+   */
+  cat: string;
+  host: string;
   /** The claim itself. */
   q: string;
 }
@@ -37,6 +47,7 @@ export const PROOF_POINTS: ProofPoint[] = PROJECTS.map((project) => ({
     .map((word) => word[0]?.toUpperCase() ?? "")
     .join(""),
   name: project.name,
-  role: `${project.cat.toUpperCase()} · ${project.host}`,
+  cat: project.cat,
+  host: project.host,
   q: project.solution,
 }));

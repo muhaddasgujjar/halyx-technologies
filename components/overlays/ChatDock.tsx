@@ -44,17 +44,42 @@ function clampOffset(x: number, y: number) {
   };
 }
 
-const GREETING: Msg = {
-  id: 0,
-  who: "bot",
-  text: "Hi, I'm the Halyx assistant. Ask me about our services, work, team or how to start a project.",
-};
-
 /** Header line while a turn is in flight, keyed by the tool the model is running. */
 const TOOL_STATUS: Record<string, string> = {
   search_halyx: "Searching our work…",
   capture_lead: "Sending your details…",
 };
+
+/*
+ * The dock's own chrome, gathered so the extractor can see it.
+ *
+ * These are passed through `t` at render like every other string; listing them
+ * here rather than inline keeps the ones that are built conditionally — the
+ * header status, the aria labels on the two toggle states — in one place
+ * instead of scattered through a 200-line return.
+ */
+const DOCK_COPY = {
+  thinkingStatus: "Thinking…",
+  working: "Working…",
+  greeting:
+    "Hi, I'm the Halyx assistant. Ask me about our services, work, team or how to start a project.",
+  name: "Halyx Assistant",
+  idle: "Answers about our work and process",
+  minimised: "Minimised",
+  thinking: "Thinking",
+  sources: "Sources",
+  placeholder: "Ask about services, work, timelines…",
+  ask: "Ask the Halyx assistant",
+  minimise: "Minimise",
+  expand: "Expand",
+  close: "Close",
+  stop: "Stop generating",
+  send: "Send",
+  openDock: "Open the Halyx assistant",
+  closeDock: "Close the Halyx assistant",
+} as const;
+
+const GREETING: Msg = { id: 0, who: "bot", text: DOCK_COPY.greeting };
 
 /**
  * The homepage assistant.
@@ -73,7 +98,7 @@ export function ChatDock() {
 
   /* Read inside an async turn, so a switch mid-answer is picked up rather than
      captured at the moment the send handler was created. */
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const localeRef = useRef(locale);
   localeRef.current = locale;
   const [msgs, setMsgs] = useState<Msg[]>([GREETING]);
@@ -160,7 +185,7 @@ export function ChatDock() {
       { id: replyId, who: "bot", text: "", pending: true },
     ]);
     setBusy(true);
-    setStatus("Thinking…");
+    setStatus(DOCK_COPY.thinkingStatus);
 
     buffer.current = "";
     const controller = new AbortController();
@@ -181,7 +206,7 @@ export function ChatDock() {
           break;
 
         case "tool":
-          setStatus(event.status === "running" ? (TOOL_STATUS[event.name] ?? "Working…") : null);
+          setStatus(event.status === "running" ? (TOOL_STATUS[event.name] ?? DOCK_COPY.working) : null);
           break;
 
         case "lead":
@@ -327,8 +352,8 @@ export function ChatDock() {
     : `translate3d(${offset.x}px, ${offset.y + 18}px, 0) scale(0.9)`;
 
   const headerStatus = bot.min
-    ? "Minimised"
-    : (status ?? "Answers about our work and process");
+    ? t(DOCK_COPY.minimised)
+    : (status ? t(status) : t(DOCK_COPY.idle));
 
   return (
     <div
@@ -349,7 +374,7 @@ export function ChatDock() {
         data-min={bot.min}
         data-max={bot.max}
         role="dialog"
-        aria-label="Halyx assistant"
+        aria-label={t(DOCK_COPY.name)}
         /*
          * Closed, the panel keeps its three header buttons in the DOM so it can
          * animate out. Marking it `aria-hidden` while the Close button it was
@@ -366,7 +391,7 @@ export function ChatDock() {
           </span>
 
           <div className={styles.headText}>
-            <div className={styles.name}>Halyx Assistant</div>
+            <div className={styles.name}>{t(DOCK_COPY.name)}</div>
             <div className={styles.status}>{headerStatus}</div>
           </div>
 
@@ -375,7 +400,7 @@ export function ChatDock() {
             className={styles.iconBtn}
             onClick={toggleBotMin}
             title="Minimise"
-            aria-label="Minimise"
+            aria-label={t(DOCK_COPY.minimise)}
           >
             <span className={styles.minGlyph} />
           </button>
@@ -384,7 +409,7 @@ export function ChatDock() {
             className={styles.iconBtn}
             onClick={toggleBotMax}
             title="Expand"
-            aria-label="Expand"
+            aria-label={t(DOCK_COPY.expand)}
           >
             <span className={styles.maxGlyph} />
           </button>
@@ -393,7 +418,7 @@ export function ChatDock() {
             className={styles.iconBtn}
             onClick={closeBot}
             title="Close"
-            aria-label="Close"
+            aria-label={t(DOCK_COPY.close)}
           >
             &times;
           </button>
@@ -414,7 +439,13 @@ export function ChatDock() {
                       m.failed ? styles.bubbleError : ""
                     } ${m.system ? styles.bubbleSystem : ""}`}
                   >
-                    {m.text}
+                    {/*
+                      Only the canned greeting is looked up. Everything else in
+                      the transcript is either what the visitor typed or what the
+                      model just wrote — both already in the right language, and
+                      neither is a catalogue key.
+                    */}
+                    {m.id === GREETING.id ? t(m.text) : m.text}
                     {m.pending && (
                       <>
                         <span className={styles.caret} aria-hidden="true">
@@ -422,7 +453,7 @@ export function ChatDock() {
                         </span>
                         {/* The bubble is empty until the first token lands, so
                             a screen reader gets a word rather than silence. */}
-                        {!m.text && <span className={styles.srOnly}>Thinking</span>}
+                        {!m.text && <span className={styles.srOnly}>{t(DOCK_COPY.thinking)}</span>}
                       </>
                     )}
                   </div>
@@ -433,7 +464,7 @@ export function ChatDock() {
                     that appears before the sentence it supports reads as noise.
                   */}
                   {!m.pending && m.sources && m.sources.length > 0 && (
-                    <ul className={styles.sources} aria-label="Sources">
+                    <ul className={styles.sources} aria-label={t(DOCK_COPY.sources)}>
                       {m.sources.slice(0, 4).map((s) => {
                         const href = s.url ?? s.href;
                         return (
@@ -466,8 +497,8 @@ export function ChatDock() {
               ref={inputRef}
               type="text"
               className={styles.input}
-              placeholder="Ask about services, work, timelines&hellip;"
-              aria-label="Ask the Halyx assistant"
+              placeholder={t(DOCK_COPY.placeholder)}
+              aria-label={t(DOCK_COPY.ask)}
               disabled={busy}
               maxLength={1200}
               onKeyDown={(e) => {
@@ -482,7 +513,7 @@ export function ChatDock() {
                 type="button"
                 className={styles.send}
                 onClick={stop}
-                aria-label="Stop generating"
+                aria-label={t(DOCK_COPY.stop)}
                 title="Stop"
               >
                 <span className={styles.stopGlyph} />
@@ -492,7 +523,7 @@ export function ChatDock() {
                 type="button"
                 className={styles.send}
                 onClick={() => void send()}
-                aria-label="Send"
+                aria-label={t(DOCK_COPY.send)}
               >
                 &#8594;
               </button>
@@ -507,7 +538,7 @@ export function ChatDock() {
         className={styles.launcher}
         onPointerDown={onPointerDown}
         onClick={onClick}
-        aria-label={bot.open ? "Close the Halyx assistant" : "Open the Halyx assistant"}
+        aria-label={bot.open ? t(DOCK_COPY.closeDock) : t(DOCK_COPY.openDock)}
         aria-expanded={bot.open}
       >
         <span className={styles.launcherMark} aria-hidden="true">

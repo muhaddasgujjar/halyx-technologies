@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LANGUAGES } from "@/lib/i18n/languages";
+import { useLocale } from "../LocaleProvider";
 import { AndroidPortrait } from "./AndroidPortrait";
 import { useVoiceAgent } from "./useVoiceAgent";
 import styles from "./Console.module.css";
@@ -85,6 +86,7 @@ export function Console() {
   const { state, lines, error, active, level, browserVoice, blocked, lang, greet, activate, ask, dismissError } =
     useVoiceAgent();
 
+  const { t } = useLocale();
   const [health, setHealth] = useState<Health | null>(null);
   const [draft, setDraft] = useState("");
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
@@ -310,7 +312,7 @@ export function Console() {
             className={styles.agent}
             onClick={() => void activate()}
             aria-pressed={active}
-            aria-label={active ? "End the voice conversation" : "Start talking to Halyx AI"}
+            aria-label={active ? t("End the voice conversation") : t("Start talking to Halyx AI")}
           >
             <span
               className={styles.orb}
@@ -332,13 +334,13 @@ export function Console() {
           </button>
 
           <div className={styles.headline}>
-            <div className={`${styles.headlineLabel} hx-mono`}>ASK IT ANYTHING</div>
+            <div className={`${styles.headlineLabel} hx-mono`}>{t("ASK IT ANYTHING")}</div>
             <div className={styles.headlineValue}>
-              It knows the studio, the work, and the people who run it.
+              {t("It knows the studio, the work, and the people who run it.")}
             </div>
           </div>
 
-          <Link href="/#contact" className={styles.cta} aria-label="Go to the contact form">
+          <Link href="/#contact" className={styles.cta} aria-label={t("Go to the contact form")}>
             <span aria-hidden="true">&#8594;</span>
           </Link>
         </div>
@@ -346,7 +348,7 @@ export function Console() {
         {/* ── Overview ─────────────────────────────────────────── */}
         <div className={styles.section}>
           <div className={styles.sectionHead}>
-            <h2 className={styles.sectionTitle}>System Overview</h2>
+            <h2 className={styles.sectionTitle}>{t("System Overview")}</h2>
             <span className={`${styles.sectionMeta} hx-mono`}>
               {health?.providers?.primary?.id?.toUpperCase() ?? "—"}
             </span>
@@ -355,7 +357,7 @@ export function Console() {
           <div className={styles.tiles}>
             {tiles.map((tile, i) => (
               <div key={tile.label} className={styles.tile}>
-                <div className={`${styles.tileLabel} hx-mono`}>{tile.label.toUpperCase()}</div>
+                <div className={`${styles.tileLabel} hx-mono`}>{t(tile.label).toUpperCase()}</div>
                 <div className={styles.tileValue}>{tile.value}</div>
                 <div className={styles.tileUnit}>{tile.unit}</div>
                 <svg className={styles.spark} viewBox="0 0 84 20" aria-hidden="true">
@@ -369,9 +371,9 @@ export function Console() {
         {/* ── Processes ────────────────────────────────────────── */}
         <div className={styles.section}>
           <div className={styles.sectionHead}>
-            <h2 className={styles.sectionTitle}>Active Processes</h2>
+            <h2 className={styles.sectionTitle}>{t("Active Processes")}</h2>
             <span className={`${styles.sectionMeta} hx-mono`} data-ok={allOk}>
-              {allOk ? "ALL SYSTEMS OPERATIONAL" : "DEGRADED"}
+              {allOk ? t("ALL SYSTEMS OPERATIONAL") : t("DEGRADED")}
               <i aria-hidden="true" />
             </span>
           </div>
@@ -379,7 +381,7 @@ export function Console() {
           <ul className={styles.processes}>
             {processes.map((process) => (
               <li key={process.name} className={styles.process}>
-                <span className={styles.processName}>{process.name}</span>
+                <span className={styles.processName}>{t(process.name)}</span>
                 <span className={styles.processDetail}>{process.detail}</span>
                 <span className={styles.processBar} data-ok={process.ok} aria-hidden="true">
                   <i />
@@ -395,7 +397,7 @@ export function Console() {
         {/* ── Conversation ─────────────────────────────────────── */}
         <div className={styles.section}>
           <div className={styles.sectionHead}>
-            <h2 className={styles.sectionTitle}>Conversation</h2>
+            <h2 className={styles.sectionTitle}>{t("Conversation")}</h2>
             {browserVoice && (
               <span className={`${styles.sectionMeta} hx-mono`}>BROWSER VOICE</span>
             )}
@@ -447,7 +449,7 @@ export function Console() {
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               placeholder={lang.ui.placeholder}
-              aria-label="Ask Halyx AI a question"
+              aria-label={t("Ask Halyx AI a question")}
               lang={lang.tag}
               dir={lang.dir}
               maxLength={1200}

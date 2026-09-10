@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocale } from "@/components/LocaleProvider";
 import { useSite } from "@/components/SiteProvider";
 import styles from "./ScrollToast.module.css";
 
@@ -10,6 +11,7 @@ import styles from "./ScrollToast.module.css";
  */
 export function ScrollToast() {
   const { toast, closeToast, openBotFromToast } = useSite();
+  const { t } = useLocale();
 
   return (
     <div
@@ -47,30 +49,30 @@ export function ScrollToast() {
             </span>
 
             <div className={styles.headText}>
-              <div className={`${styles.eyebrow} hx-mono`}>HALYX &middot; CAPACITY UPDATE</div>
-              <div className={styles.title}>Two engineers free this month</div>
+              <div className={`${styles.eyebrow} hx-mono`}>HALYX &middot; {t("CAPACITY UPDATE")}</div>
+              <div className={styles.title}>{t("Two engineers free this month")}</div>
             </div>
 
             <button
               type="button"
               className={styles.close}
               onClick={closeToast}
-              aria-label="Dismiss"
+              aria-label={t("Dismiss")}
             >
               &times;
             </button>
           </div>
 
           <p className={styles.copy}>
-            Send a brief today and we scope it inside one business day.
+            {t("Send a brief today and we scope it inside one business day.")}
           </p>
 
           <div className={styles.actions}>
             <a href="#contact" className={styles.primary} onClick={closeToast}>
-              Start a project
+              {t("Start a project")}
             </a>
             <button type="button" className={styles.secondary} onClick={openBotFromToast}>
-              Ask the assistant
+              {t("Ask the assistant")}
             </button>
           </div>
         </div>

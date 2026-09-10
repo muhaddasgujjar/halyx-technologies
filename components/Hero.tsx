@@ -1,6 +1,8 @@
 "use client";
 
 import { SITE_CONFIG } from "@/lib/config";
+import { rich } from "@/lib/i18n/rich";
+import { useLocale } from "./LocaleProvider";
 import { Reveal, RevealScope } from "./Reveal";
 import { useSite } from "./SiteProvider";
 import { Counters } from "./Counters";
@@ -33,6 +35,7 @@ function Mark({ kind }: { kind: (typeof PILLS)[number]["mark"] }) {
 
 export function Hero() {
   const { heroDockRef } = useSite();
+  const { t } = useLocale();
 
   return (
     <RevealScope variant="mask">
@@ -51,21 +54,24 @@ export function Hero() {
               <Reveal key={p.label} delay={p.delay} className={styles.pillSlot} style={p.pos}>
                 <div className={styles.pill} style={{ animation: p.float }}>
                   <Mark kind={p.mark} />
-                  <span className={styles.pillLabel}>{p.label}</span>
+                  <span className={styles.pillLabel}>{t(p.label)}</span>
                 </div>
               </Reveal>
             ))}
 
             <Reveal className={styles.headline}>
-              <h1 className={styles.h1}>
-                We Build <strong>Intelligent Systems</strong>
-                <br />
-                That Matter
-              </h1>
+              {/*
+                One translatable sentence, not three. The emphasis rides inside
+                it as [[…]] because German, Arabic and Japanese all move the
+                words around it — see lib/i18n/rich.tsx.
+              */}
+              <h1 className={styles.h1}>{rich(t("We Build [[Intelligent Systems]] That Matter"))}</h1>
               <p className={styles.sub}>
-                Because lasting systems aren&rsquo;t built by chance &mdash;
+                {t("Because lasting systems aren’t built by chance —")}
                 <br />
-                <span className={styles.subDim}>they&rsquo;re engineered with purpose.</span>
+                <span className={styles.subDim}>
+                  {t("they’re engineered with purpose.")}
+                </span>
               </p>
             </Reveal>
           </div>
@@ -73,7 +79,7 @@ export function Hero() {
           <div className={styles.bottomRow}>
             <Reveal delay={120} className={styles.ctaWrap}>
               <a href="#contact" className={styles.cta}>
-                Start Your Project
+                {t("Start Your Project")}
               </a>
             </Reveal>
 

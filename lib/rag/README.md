@@ -266,6 +266,10 @@ off still gets greeted — they read it instead of hearing it.
 
 ## Languages
 
+> Site copy, as opposed to the agent's own words, is translated by the pipeline
+> in `lib/i18n/` — see **Translating the site** below. This section covers what
+> the *agent* does with a language.
+
 The agent speaks fifteen languages; `lib/i18n/languages.ts` is the single
 registry, imported by the navbar switcher and by the server. **English is always
 the default** — `navigator.language` is deliberately never consulted, because it
@@ -289,11 +293,46 @@ empty result means *the search could not read it*, not that Halyx has no answer,
 and to call `search_halyx` with an English translation before concluding
 anything. Search in English, answer in theirs.
 
-The site copy around the console stays English, as do the dashboard's own
-readouts — they sit next to `BM25` and a model id, and a panel where half the
-labels are translated reads as a bug rather than as localisation. What follows
-the visitor is everything the agent *says*: greeting, hint, placeholder, empty
-state, and every answer.
+The dashboard's own readouts stay English — they sit next to `BM25` and a
+model id, and translating half a panel of instrument labels reads as a bug
+rather than as localisation. Everything else follows the visitor: the greeting,
+the hint, the placeholder, the empty state, every answer, and the site copy
+around the console.
+
+## Translating the site
+
+The page itself is translated by a build-time pipeline, kept deliberately
+separate from anything the model says at runtime.
+
+| Piece | Job |
+|---|---|
+| `lib/i18n/translate.ts` | The lookup. Catalogues are keyed by the **English string itself**, gettext-style, so a missing entry falls back to English instead of rendering a key. |
+| `lib/i18n/rich.tsx` | Renders `[[emphasis]]` inside a translated sentence. A headline is one translatable unit because German, Arabic and Japanese all reorder the words inside it. |
+| `scripts/i18n-extract.mjs` | Collects the source strings — allowlisted prose fields in the data modules, plus every `t("…")` in a component — into `lib/i18n/source-strings.json`. |
+| `scripts/translate-copy.mjs` | Fills `lib/i18n/messages/<code>.json` through Groq, in batches, keeping what is already there. |
+| `scripts/check-i18n.mjs` | Reports coverage at build time. Fails only on a catalogue that will not parse. |
+
+```
+npm run i18n:build      # extract, then translate whatever is missing
+npm run i18n:translate -- de fr          # just these two
+npm run i18n:translate -- --force de     # retranslate from scratch
+```
+
+Catalogues are committed. They are reviewable in a diff, hand-editable when
+somebody who speaks the language disagrees with a phrase, and free at runtime;
+a language is one dynamic import, so a visitor downloads only their own.
+
+**The allowlist is the safety rail.** `i18n-extract.mjs` names the fields that
+carry prose, so a new field defaults to *not* translated. That direction matters:
+a URL, an image path or a stack name that reaches the model comes back rewritten,
+and a rewritten URL is a broken link. Product names (Maiku AI, Axiom), technology
+names (Next.js, PyTorch, AWS) and identifiers are excluded for the same reason,
+and the prompt is told again to leave them alone.
+
+**Right-to-left.** Arabic and Urdu set `dir` on `<html>`, so flex and grid mirror
+themselves and the text reads correctly. Canvas and SVG are pinned back to `ltr`
+in `globals.css` — their contents are drawn from coordinates that know nothing
+about writing direction, and a mirrored world map puts Atlanta in the Pacific.
 
 Appending the directive rather than interpolating it keeps every byte before it
 identical across languages, so the cached prefix stays as long as it can be:

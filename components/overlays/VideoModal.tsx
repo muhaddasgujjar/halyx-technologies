@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useLocale } from "@/components/LocaleProvider";
 import { useSite } from "@/components/SiteProvider";
 import shell from "./Modal.module.css";
 import styles from "./VideoModal.module.css";
@@ -12,6 +13,7 @@ import styles from "./VideoModal.module.css";
  */
 export function VideoModal() {
   const { videoOpen, closeVideo } = useSite();
+  const { t } = useLocale();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const closeRef = useRef<HTMLButtonElement | null>(null);
 
@@ -35,7 +37,7 @@ export function VideoModal() {
       data-open={videoOpen}
       role="dialog"
       aria-modal="true"
-      aria-label="Inside Halyx — showcase film"
+      aria-label={t("Inside Halyx — showcase film")}
       // See the note in CaseModal.tsx: `aria-hidden` on a subtree that still
       // holds focus is blocked by the browser. `inert` hides and unfocuses.
       inert={!videoOpen}
@@ -58,8 +60,8 @@ export function VideoModal() {
             </span>
 
             <div className={styles.headText}>
-              <div className={styles.title}>Inside Halyx &mdash; showcase film</div>
-              <div className={`${styles.meta} hx-mono`}>APPLIED AI STUDIO</div>
+              <div className={styles.title}>{t("Inside Halyx — showcase film")}</div>
+              <div className={`${styles.meta} hx-mono`}>{t("APPLIED AI STUDIO")}</div>
             </div>
 
             <button

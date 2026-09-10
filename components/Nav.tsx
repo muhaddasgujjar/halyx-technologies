@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { NAV_LINKS } from "@/lib/content";
 import { applyScrollLock } from "@/lib/scroll-lock";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useLocale } from "./LocaleProvider";
 import styles from "./Nav.module.css";
 
 /**
@@ -20,6 +21,7 @@ const MOBILE_QUERY = "(max-width: 860px)";
 
 export function Nav() {
   const [open, setOpen] = useState(false);
+  const { t } = useLocale();
 
   const close = useCallback(() => setOpen(false), []);
 
@@ -56,7 +58,7 @@ export function Nav() {
       <div className={styles.links}>
         {NAV_LINKS.map((l) => (
           <a key={l.text} href={l.href} className={styles.link}>
-            {l.text}
+            {t(l.text)}
           </a>
         ))}
       </div>
@@ -69,7 +71,7 @@ export function Nav() {
       <LanguageSwitcher />
 
       <a href="#contact" className={styles.cta}>
-        <span className={styles.ctaText}>Start Your Project</span>
+        <span className={styles.ctaText}>{t("Start Your Project")}</span>
         <span className={styles.ctaBadge} aria-hidden="true">
           &#8599;
         </span>
@@ -81,7 +83,7 @@ export function Nav() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls="nav-menu"
-        aria-label={open ? "Close menu" : "Open menu"}
+        aria-label={open ? t("Close menu") : t("Open menu")}
       >
         {/* Three bars that fold into a cross; `data-open` on the nav drives it. */}
         <span className={styles.burgerBars} aria-hidden="true">
@@ -107,7 +109,7 @@ export function Nav() {
         <div className={styles.sheetLinks}>
           {NAV_LINKS.map((l) => (
             <a key={l.text} href={l.href} className={styles.sheetLink} onClick={close}>
-              {l.text}
+              {t(l.text)}
             </a>
           ))}
         </div>
@@ -117,7 +119,7 @@ export function Nav() {
         <LanguageSwitcher variant="sheet" onPick={close} />
 
         <a href="#contact" className={styles.sheetCta} onClick={close}>
-          Start Your Project
+          {t("Start Your Project")}
           <span className={styles.ctaBadge} aria-hidden="true">
             &#8599;
           </span>

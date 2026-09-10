@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { COUNTER_TARGETS } from "@/lib/config";
+import { useLocale } from "./LocaleProvider";
 import { useSite } from "./SiteProvider";
 import styles from "./Hero.module.css";
 
@@ -21,6 +22,7 @@ function format(value: number, i: number) {
 const DURATION = 1700;
 
 export function Counters() {
+  const { t } = useLocale();
   const { motion } = useSite();
   const ref = useRef<HTMLDivElement | null>(null);
   const [counts, setCounts] = useState<number[]>(motion ? [0, 0, 0] : [...COUNTER_TARGETS]);
@@ -85,9 +87,9 @@ export function Counters() {
         <div key={a} className={styles.stat}>
           <div className={styles.statValue}>{format(counts[i] ?? 0, i)}</div>
           <div className={styles.statLabel}>
-            {a}
+            {t(a)}
             <br />
-            {b}
+            {t(b)}
           </div>
         </div>
       ))}

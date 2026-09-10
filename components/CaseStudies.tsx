@@ -2,12 +2,14 @@
 
 import Image from "next/image";
 import { PROJECTS } from "@/lib/projects";
+import { useLocale } from "./LocaleProvider";
 import { Reveal, RevealScope } from "./Reveal";
 import { useSite } from "./SiteProvider";
 import styles from "./CaseStudies.module.css";
 
 export function CaseStudies() {
   const { openCase } = useSite();
+  const { t } = useLocale();
 
   // Rendered twice so the -50% marquee loop is seamless.
   const marqueeItems = [...PROJECTS, ...PROJECTS];
@@ -18,7 +20,7 @@ export function CaseStudies() {
         <div className={styles.inner}>
           <Reveal className={styles.header}>
             <div>
-              <h2 className={styles.h2}>Case Studies</h2>
+              <h2 className={styles.h2}>{t("Case Studies")}</h2>
               <p className={`${styles.eyebrow} hx-mono`}>
                 SHIPPED FOR TEAMS IN SOUTH ASIA, AFRICA AND EUROPE
               </p>
@@ -37,7 +39,7 @@ export function CaseStudies() {
                   type="button"
                   className={styles.row}
                   onClick={() => openCase(i)}
-                  aria-label={`Open case study: ${p.name}`}
+                  aria-label={`${t("Open case study")}: ${p.name}`}
                 >
                   <span className={`${styles.rowNum} hx-mono`}>
                     {String(i + 1).padStart(2, "0")}
@@ -47,7 +49,7 @@ export function CaseStudies() {
                       <span className={styles.dot} aria-hidden="true" />
                       <span className={styles.rowName}>{p.name}</span>
                     </span>
-                    <span className={styles.rowCat}>{p.cat}</span>
+                    <span className={styles.rowCat}>{t(p.cat)}</span>
                   </span>
                   <span className={styles.rowArrow} aria-hidden="true">
                     &#8599;
@@ -98,13 +100,13 @@ export function CaseStudies() {
                         {p.name}
                       </span>
                       <span className={styles.cardCat} style={{ display: "block" }}>
-                        {p.cat}
+                        {t(p.cat)}
                       </span>
                       <span
                         className={`${styles.cardNote} hx-mono`}
                         style={{ display: "block" }}
                       >
-                        {p.note}
+                        {t(p.note)}
                       </span>
                     </span>
                   </button>

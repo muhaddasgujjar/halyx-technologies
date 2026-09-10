@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { BELIEFS } from "@/lib/content";
+import { useLocale } from "./LocaleProvider";
 import { Reveal, RevealScope } from "./Reveal";
 import styles from "./Beliefs.module.css";
 
@@ -17,6 +18,7 @@ const DELAYS = [120, 190, 260, 330];
  */
 export function Beliefs() {
   const [open, setOpen] = useState(-1);
+  const { t } = useLocale();
 
   return (
     <RevealScope variant="rise">
@@ -33,10 +35,11 @@ export function Beliefs() {
               <span className={styles.badgeDot} aria-hidden="true" />
               CORE BELIEFS
             </div>
-            <h2 className={styles.h2}>How We Think</h2>
+            <h2 className={styles.h2}>{t("How We Think")}</h2>
             <p className={styles.intro}>
-              We don&rsquo;t just build products &mdash; we build momentum. Four principles decide
-              what we take on and how we run it.
+              {t(
+                "We don’t just build products — we build momentum. Four principles decide what we take on and how we run it.",
+              )}
             </p>
           </Reveal>
 
@@ -53,17 +56,17 @@ export function Beliefs() {
                   className={styles.toggle}
                   onClick={() => setOpen((v) => (v === i ? -1 : i))}
                   aria-expanded={open === i}
-                  aria-label={`${open === i ? "Hide" : "Show"} more about: ${b.lead}`}
+                  aria-label={`${open === i ? t("Hide") : t("Show")} more about: ${t(b.lead)}`}
                 />
 
                 <span className={`${styles.num} hx-mono`}>{b.num}</span>
                 <div className={styles.rowBody}>
                   <p className={styles.lead}>
-                    {b.lead}
-                    {b.trail ? <span className={styles.trail}> {b.trail}</span> : null}
+                    {t(b.lead)}
+                    {b.trail ? <span className={styles.trail}> {t(b.trail)}</span> : null}
                   </p>
                   <div className={styles.more}>
-                    <p>{b.more}</p>
+                    <p>{t(b.more)}</p>
                   </div>
                 </div>
                 <span className={styles.arrow} aria-hidden="true">

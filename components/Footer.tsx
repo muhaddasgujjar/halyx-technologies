@@ -1,5 +1,8 @@
+"use client";
+
 import { SITE_CONFIG } from "@/lib/config";
 import { FOOTER_COLUMNS } from "@/lib/content";
+import { useLocale } from "./LocaleProvider";
 import { Reveal } from "./Reveal";
 import { ScrollTopButton } from "./ScrollTopButton";
 import styles from "./Footer.module.css";
@@ -7,17 +10,19 @@ import styles from "./Footer.module.css";
 const WORDMARK = ["H", "A", "L", "Y", "X"];
 
 export function Footer() {
+  const { t } = useLocale();
+
   return (
     <footer className={styles.footer}>
       <div className={styles.inner}>
         <div className={styles.columns}>
           {FOOTER_COLUMNS.map((col) => (
             <div key={col.label}>
-              <div className={`${styles.colLabel} hx-mono`}>{col.label}</div>
+              <div className={`${styles.colLabel} hx-mono`}>{t(col.label)}</div>
               <div className={styles.colLinks}>
                 {col.links.map((l) => (
                   <a key={l.text} href={l.href} className={styles.link}>
-                    {l.text}
+                    {t(l.text)}
                   </a>
                 ))}
               </div>
@@ -27,14 +32,14 @@ export function Footer() {
           <div>
             <div className={styles.touchHead}>
               <div className={`${styles.colLabel} hx-mono`} style={{ marginBottom: 0 }}>
-                GET IN TOUCH
+                {t("GET IN TOUCH")}
               </div>
               <a href="#contact" className={styles.bookCall}>
-                Book a call &#8599;
+                {t("Book a call")} &#8599;
               </a>
             </div>
             <a href="#contact" className={styles.link}>
-              Start a conversation
+              {t("Start a conversation")}
             </a>
           </div>
         </div>
@@ -64,13 +69,13 @@ export function Footer() {
         )}
 
         <div className={styles.bottom}>
-          <div>2026 Halyx Technologies. All rights reserved.</div>
+          <div>2026 Halyx Technologies. {t("All rights reserved.")}</div>
           <div className={styles.legal}>
             <a href="#contact" className={styles.legalLink}>
-              Privacy Policy
+              {t("Privacy Policy")}
             </a>
             <a href="#contact" className={styles.legalLink}>
-              Terms &amp; Conditions
+              {t("Terms & Conditions")}
             </a>
           </div>
           <ScrollTopButton />

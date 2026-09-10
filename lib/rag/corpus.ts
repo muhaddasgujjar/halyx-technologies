@@ -136,7 +136,9 @@ const proof: Chunk[] = PROOF_POINTS.map((p) => ({
   section: "testimonial" as const,
   title: `Proof of work — ${p.name}`,
   href: "#company",
-  text: `${p.name} (${p.role}) is live and a prospect can open it right now. What it does: ${p.q}`,
+  // The corpus is English by definition, so it composes the label itself rather
+  // than reading a pre-joined one off the record.
+  text: `${p.name} (${p.cat.toUpperCase()} · ${p.host}) is live and a prospect can open it right now. What it does: ${p.q}`,
   keywords: ["proof", "shipped", "live", "portfolio", "reference", p.name],
 }));
 

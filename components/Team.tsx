@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { TEAM } from "@/lib/content";
+import { useLocale } from "./LocaleProvider";
 import { Reveal, RevealScope } from "./Reveal";
 import styles from "./Team.module.css";
 
@@ -20,15 +21,16 @@ const DELAYS = [60, 140, 220];
  */
 export function Team() {
   const [open, setOpen] = useState(-1);
+  const { t } = useLocale();
 
   return (
     <RevealScope variant="rise">
       <section className={styles.section}>
         <div className={styles.inner}>
           <Reveal as="h2" className={styles.h2}>
-            Meet the Team
+            {t("Meet the Team")}
             <br />
-            Behind Halyx
+            {t("Behind Halyx")}
           </Reveal>
 
           <div className={styles.grid}>
@@ -63,18 +65,18 @@ export function Team() {
                   className={styles.toggle}
                   onClick={() => setOpen((v) => (v === i ? -1 : i))}
                   aria-expanded={open === i}
-                  aria-label={`${open === i ? "Hide" : "Show"} bio for ${m.name}, ${m.title}`}
+                  aria-label={`${open === i ? t("Hide") : t("Show")} bio for ${m.name}, ${t(m.title)}`}
                 />
 
                 <div className={styles.base}>
                   <div className={styles.name}>{m.name}</div>
-                  <div className={styles.title}>{m.title}</div>
+                  <div className={styles.title}>{t(m.title)}</div>
                 </div>
 
                 <div className={styles.detail}>
                   <div className={`${styles.tag} hx-mono`}>{m.tag}</div>
                   <div className={styles.name}>{m.name}</div>
-                  <p className={styles.bio}>{m.bio}</p>
+                  <p className={styles.bio}>{t(m.bio)}</p>
                   {m.linkedin ? (
                     <a
                       href={m.linkedin}

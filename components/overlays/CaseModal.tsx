@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { PROJECTS } from "@/lib/projects";
+import { useLocale } from "@/components/LocaleProvider";
 import { useSite } from "@/components/SiteProvider";
 import shell from "./Modal.module.css";
 import styles from "./CaseModal.module.css";
@@ -25,6 +26,7 @@ import styles from "./CaseModal.module.css";
  */
 export function CaseModal() {
   const { caseIdx, closeCase } = useSite();
+  const { t } = useLocale();
   const open = caseIdx >= 0;
   const p = PROJECTS[Math.max(0, caseIdx)];
   const closeRef = useRef<HTMLButtonElement | null>(null);
@@ -60,11 +62,11 @@ export function CaseModal() {
             <div className={styles.headMain}>
               <div className={`${styles.live} hx-mono`}>LIVE &middot; {p.host}</div>
               <h3 className={styles.name}>{p.name}</h3>
-              <div className={styles.cat}>{p.cat}</div>
+              <div className={styles.cat}>{t(p.cat)}</div>
               <div className={styles.tags}>
-                {p.tags.map((t) => (
-                  <span key={t} className={styles.tag}>
-                    {t}
+                {p.tags.map((tag) => (
+                  <span key={tag} className={styles.tag}>
+                    {t(tag)}
                   </span>
                 ))}
               </div>
@@ -90,19 +92,19 @@ export function CaseModal() {
             </div>
 
             <div className={styles.block}>
-              <div className={`${styles.blockLabel} hx-mono`}>PROBLEM</div>
-              <p className={styles.blockText}>{p.problem}</p>
+              <div className={`${styles.blockLabel} hx-mono`}>{t("PROBLEM")}</div>
+              <p className={styles.blockText}>{t(p.problem)}</p>
             </div>
 
             <div className={styles.block}>
-              <div className={`${styles.blockLabel} hx-mono`}>SOLUTION</div>
-              <p className={styles.blockText}>{p.solution}</p>
+              <div className={`${styles.blockLabel} hx-mono`}>{t("SOLUTION")}</div>
+              <p className={styles.blockText}>{t(p.solution)}</p>
 
               <div className={styles.facts}>
                 {p.facts.map(([k, v]) => (
                   <div key={k} className={styles.fact}>
-                    <div className={styles.factKey}>{k}</div>
-                    <div className={styles.factValue}>{v}</div>
+                    <div className={styles.factKey}>{t(k)}</div>
+                    <div className={styles.factValue}>{t(v)}</div>
                   </div>
                 ))}
               </div>
@@ -110,7 +112,7 @@ export function CaseModal() {
 
             <div className={styles.linkRow}>
               <a href={p.url} target="_blank" rel="noopener noreferrer" className={styles.liveLink}>
-                Open the live product
+                {t("Open the live product")}
                 <span aria-hidden="true" style={{ fontSize: 13 }}>
                   &#8599;
                 </span>

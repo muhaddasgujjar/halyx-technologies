@@ -567,3 +567,51 @@ a:hover {
   white-space: nowrap;
   border: 0;
 }
+
+/* --------------------------------------------------------------------------
+   Right-to-left
+   --------------------------------------------------------------------------
+   `<html dir>` follows the language picker, so Arabic and Urdu get real RTL
+   text: correct word order, and punctuation on the end of a sentence rather
+   than the start. Flex and grid mirror themselves on the inline axis, which is
+   what makes the nav, the cards and the form come out the right way round for
+   free.
+
+   Two kinds of thing must NOT mirror, and that is what these rules pin down.
+   -------------------------------------------------------------------------- */
+
+/*
+ * Canvas and map layers.
+ *
+ * Their contents are drawn from coordinates computed in JavaScript — the world
+ * projection, the particle field, the connector paths — and none of that maths
+ * knows about writing direction. Letting the box flip would mirror a world map
+ * and put Atlanta in the Pacific.
+ */
+[dir="rtl"] canvas,
+[dir="rtl"] svg {
+  direction: ltr;
+}
+
+/*
+ * Latin-script runs inside RTL prose.
+ *
+ * A domain, a version string or a model id set RTL has its punctuation dragged
+ * to the wrong end: `maiku.app` renders as `app.maiku`. These are identifiers,
+ * not sentences, so they stay LTR wherever they appear.
+ */
+[dir="rtl"] .hx-mono,
+[dir="rtl"] code,
+[dir="rtl"] [lang="en"] {
+  direction: ltr;
+  /* `isolate` keeps the run from reordering the RTL text on either side of it. */
+  unicode-bidi: isolate;
+}
+
+/*
+ * The RTL scripts on the switcher need more line height than Latin — Arabic and
+ * Urdu carry marks above and below the baseline that otherwise clip.
+ */
+[dir="rtl"] body {
+  line-height: 1.75;
+}

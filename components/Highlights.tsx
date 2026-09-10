@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { HIGHLIGHTS } from "@/lib/content";
+import { useLocale } from "./LocaleProvider";
 import { Reveal, RevealScope } from "./Reveal";
 import styles from "./Highlights.module.css";
 
@@ -10,14 +11,15 @@ const DELAYS = [60, 150, 240];
 export function Highlights() {
   // One card open at a time; -1 means all closed.
   const [open, setOpen] = useState(-1);
+  const { t } = useLocale();
 
   return (
     <RevealScope variant="tilt">
       <section className={styles.section}>
         <div className={styles.inner}>
           <Reveal className={styles.header}>
-            <h2 className={styles.h2}>Key highlights</h2>
-            <p className={`${styles.hint} hx-mono`}>TAP A CARD TO EXPAND</p>
+            <h2 className={styles.h2}>{t("Key highlights")}</h2>
+            <p className={`${styles.hint} hx-mono`}>{t("TAP A CARD TO EXPAND")}</p>
           </Reveal>
 
           <div className={styles.grid}>
@@ -34,15 +36,15 @@ export function Highlights() {
 
                   <span className={styles.cardTop}>
                     <span className={styles.metric}>{h.metric}</span>
-                    <span className={`${styles.metricLabel} hx-mono`}>{h.metricLabel}</span>
+                    <span className={`${styles.metricLabel} hx-mono`}>{t(h.metricLabel)}</span>
                   </span>
 
                   <span className={styles.cardBody}>
                     <span className={styles.cardTitle} style={{ display: "block" }}>
-                      {h.title}
+                      {t(h.title)}
                     </span>
                     <span className={styles.cardBlurb} style={{ display: "block" }}>
-                      {h.blurb}
+                      {t(h.blurb)}
                     </span>
                     <span className={styles.cardMore} style={{ display: "block" }}>
                       <span className={styles.cardMoreText}>{h.more}</span>

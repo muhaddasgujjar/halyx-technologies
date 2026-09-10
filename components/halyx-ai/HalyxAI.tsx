@@ -1,3 +1,6 @@
+"use client";
+
+import { useLocale } from "../LocaleProvider";
 import { Reveal, RevealScope } from "../Reveal";
 import { Console } from "./Console";
 import styles from "./HalyxAI.module.css";
@@ -16,6 +19,8 @@ import styles from "./HalyxAI.module.css";
  * points at that form.
  */
 export function HalyxAI() {
+  const { t } = useLocale();
+
   return (
     <RevealScope variant="scale">
       <section id="halyx-ai" className={styles.section}>
@@ -27,12 +32,11 @@ export function HalyxAI() {
               <span className={styles.badgeDot} aria-hidden="true" />
               HALYX AI
             </div>
-            <h2 className={styles.h2}>Talk to the thing we build</h2>
+            <h2 className={styles.h2}>{t("Talk to the thing we build")}</h2>
             <p className={styles.intro}>
-              A voice agent grounded in Halyx&rsquo;s own material &mdash; speech recognition,
-              retrieval and synthesis, running live on this page. It speaks first. Ask it what
-              we charge, what we&rsquo;ve shipped, or who works here &mdash; out loud, in any of
-              fifteen languages. Switch language in the top bar.
+              {t(
+                "A voice agent grounded in Halyx’s own material — speech recognition, retrieval and synthesis, running live on this page. It speaks first. Ask it what we charge, what we’ve shipped, or who works here — out loud, in any of fifteen languages. Switch language in the top bar.",
+              )}
             </p>
           </Reveal>
 
