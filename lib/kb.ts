@@ -26,19 +26,19 @@ export const KB: KbEntry[] = [
   },
   {
     k: ["team", "employee", "people", "size", "staff"],
-    a: "We are between 200 and 500 people across four regions, organised into product, engineering, AI and delivery groups.",
+    a: "Halyx is a small, senior studio. The people you deal with are named on the site: Muhammad Muhaddas (CEO), Muhammad Aleem Azam (CTO) and Muhammad Numan Ali (Manager). The CEO stays on every engagement from first brief to what ships.",
   },
   {
     k: ["found", "history", "story", "start", "began", "year"],
-    a: "Founded in 2019 by two engineers with one product. First platform shipped in 2021, enterprise AI work followed in 2022, and we now run delivery across four regions with 60+ products in production.",
+    a: "Halyx is an applied-AI and product-engineering studio. Rather than a founding legend, the useful answer is the work: five products live and linkable, built across real-time AI, generative design, research agents and voice.",
   },
   {
     k: ["client", "customer", "industr", "sector", "who work"],
-    a: "We work with startups and growing companies across healthcare, retail, logistics, financial services and enterprise operations. Recent work includes clinical triage, demand forecasting, document automation and voice agents.",
+    a: "We work with startups, growing companies and established operators. Shipped work spans real-time AI copilots, generative design with CAD export, research agents, low-latency voice assistants and lead-capture storefronts.",
   },
   {
     k: ["case", "project", "portfolio", "work", "example"],
-    a: "Recent case studies include Clinix AI (clinical triage copilot, intake time down 46%), Synergise4 (demand forecasting, 31% less stock waste) and Bluepeak Vision (defect detection at 99.2% catch rate).",
+    a: "Five shipped products you can open right now: Maiku AI (real-time interview copilot, maiku.app), ArchitectXpert (AI floor plan generator with DXF export, architectxpert.tech), Axiom (research agent that keeps every claim linked to its source), Cartesia Assistant (low-latency voice assistant) and H&B Event Solution (event production storefront, hbevents.me).",
   },
   {
     k: ["contact", "email", "reach", "talk", "call", "hire", "start"],

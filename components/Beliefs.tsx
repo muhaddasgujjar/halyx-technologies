@@ -20,7 +20,11 @@ export function Beliefs() {
 
   return (
     <RevealScope variant="rise">
-      <section id="halyx-ai" className={styles.section}>
+      {/*
+        `#halyx-ai` used to land here, because there was nowhere else for the
+        nav link to go. It now belongs to the console section further down.
+      */}
+      <section className={styles.section}>
         <div className={styles.glow} aria-hidden="true" />
 
         <div className={styles.inner}>

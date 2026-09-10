@@ -297,7 +297,7 @@ export function DottedMap() {
 
         ctx.fillStyle = "#bcb2ff";
         ctx.font = '500 10px "JetBrains Mono", monospace';
-        ctx.fillText(hb.year.toUpperCase(), bx + pad, by + pad + 9);
+        ctx.fillText(hb.label.toUpperCase(), bx + pad, by + pad + 9);
 
         ctx.fillStyle = "#e2e2ea";
         ctx.font = '500 11px "Instrument Sans", Helvetica, sans-serif';

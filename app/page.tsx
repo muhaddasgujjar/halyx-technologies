@@ -13,6 +13,7 @@ import { Story } from "@/components/Story";
 import { Highlights } from "@/components/Highlights";
 import { Team } from "@/components/Team";
 import { Beliefs } from "@/components/Beliefs";
+import { HalyxAI } from "@/components/halyx-ai/HalyxAI";
 import { ContactForm } from "@/components/ContactForm";
 import { ClosingCTA } from "@/components/ClosingCTA";
 import { Footer } from "@/components/Footer";
@@ -45,6 +46,7 @@ export default function HomePage() {
         <Highlights />
         <Team />
         <Beliefs />
+        <HalyxAI />
         <ContactForm />
         <ClosingCTA />
       </main>

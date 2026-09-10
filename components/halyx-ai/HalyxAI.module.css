@@ -1,0 +1,107 @@
+/* Section chrome for the Halyx AI console. The console brings its own styles. */
+
+.section {
+  position: relative;
+  padding: clamp(60px, 8vw, 120px) var(--hx-gutter);
+  overflow: hidden;
+}
+
+.glow {
+  position: absolute;
+  top: 4%;
+  left: 50%;
+  width: 900px;
+  max-width: 130%;
+  height: 460px;
+  background: radial-gradient(ellipse at center, rgba(107, 92, 240, 0.18), rgba(107, 92, 240, 0) 70%);
+  filter: blur(28px);
+  pointer-events: none;
+  /*
+   * The centring translate has to live in the same transform the animation
+   * writes, or `hx-breathe`'s `scale()` replaces it and the glow jumps to the
+   * right half of the section.
+   */
+  transform: translateX(-50%);
+  transform-origin: center;
+  animation: var(--hx-kf-glowline) 7s ease-in-out infinite;
+}
+
+.inner {
+  position: relative;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: clamp(28px, 4vw, 52px);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 14px;
+  margin-bottom: 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  color: var(--hx-accent-200);
+}
+
+.badgeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--hx-accent-200);
+  box-shadow: 0 0 12px rgba(188, 178, 255, 0.9);
+  animation: var(--hx-kf-pulse) 2.4s ease-in-out infinite;
+}
+
+/*
+ * The heading catches the accent as it sweeps through.
+ *
+ * `color` stays a real value and is only made transparent inside the @supports
+ * block, so a browser without `background-clip: text` renders plain ink rather
+ * than an invisible headline. Under `.hx-no-motion` the animation stops at the
+ * gradient's start, which is solid ink — the reduced-motion path degrades to
+ * exactly the original heading.
+ */
+.h2 {
+  margin: 0 0 12px;
+  font-size: clamp(24px, 3vw, 40px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--hx-ink);
+  background: linear-gradient(
+    100deg,
+    var(--hx-ink) 0%,
+    var(--hx-ink) 36%,
+    var(--hx-accent-100) 48%,
+    var(--hx-accent-400) 54%,
+    var(--hx-ink) 66%,
+    var(--hx-ink) 100%
+  );
+  background-size: 260% 100%;
+  animation: var(--hx-kf-shine) 9s linear infinite;
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .h2 {
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+}
+
+.intro {
+  margin: 0 auto;
+  max-width: 520px;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--hx-muted);
+}

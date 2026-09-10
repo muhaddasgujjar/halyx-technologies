@@ -1,7 +1,10 @@
-export interface OrbitPerson {
+export interface OrbitCard {
+  /** Card title — a capability, not a person. */
   name: string;
+  /** Which shipped product anchors it. */
   role: string;
   img: string;
+  /** What the product actually does. No attributed speaker. */
   quote: string;
   /** Percentage position inside the orbit stage. */
   left: string;
@@ -16,16 +19,27 @@ export interface OrbitPerson {
 }
 
 /**
- * Placeholder stand-ins from the design process.
- * Replace with real client photography, or drop the faces, before launch.
+ * The orbiting cards around the video panel.
+ *
+ * These were placeholder stand-ins from the design process: stock portraits
+ * captioned with invented names — two of which were German UI strings nobody had
+ * replaced ("Eindruck zählt", "Karriere") — attached to invented client quotes
+ * carrying outcome numbers the studio could not stand behind.
+ *
+ * A portrait with a name and a quote reads as an endorsement from a real person,
+ * so softening the wording would not have fixed it. The portraits stay as
+ * decoration; each card now states a capability anchored on a product that
+ * actually shipped, with no speaker attached and nothing to disprove.
+ *
+ * `lib/reviews.ts` documents the same fix applied to the rail below this one.
  */
-export const ORBIT_PEOPLE: OrbitPerson[] = [
+export const ORBIT_CARDS: OrbitCard[] = [
   {
-    name: "Eindruck z\u00e4hlt",
-    role: "CTO \u00B7 CURALINK",
+    name: "Real-time AI",
+    role: "MAIKU AI · LIVE",
     img: "/media/portrait-1.png",
     quote:
-      "\u201CThey shipped the model into production behind an SLA we could actually sign. Nothing we had seen from an agency came close to that.\u201D",
+      "Live interview transcription and answer drafting, fast enough to keep up with the call — and absent from the frame when the call is being screen-shared.",
     left: "16%",
     top: "26%",
     size: "clamp(58px,9.8vw,88px)",
@@ -34,11 +48,11 @@ export const ORBIT_PEOPLE: OrbitPerson[] = [
     tipWidth: "clamp(210px,22vw,262px)",
   },
   {
-    name: "Loius Walker",
-    role: "VP ENG \u00B7 NORTEX",
+    name: "Generative design",
+    role: "ARCHITECTXPERT · LIVE",
     img: "/media/portrait-2.png",
     quote:
-      "\u201CLate deliveries fell 28% in the first quarter. The handover was the part that surprised me \u2014 our engineers owned it in two weeks.\u201D",
+      "Plot size and room counts in, a dimensioned architectural plan out — with DXF export an architect or contractor can keep working in.",
     left: "84%",
     top: "22%",
     size: "clamp(58px,9.1vw,82px)",
@@ -47,11 +61,11 @@ export const ORBIT_PEOPLE: OrbitPerson[] = [
     tipWidth: "clamp(210px,22vw,262px)",
   },
   {
-    name: "Lovie Hardin",
-    role: "HEAD OF DATA \u00B7 VANTIQ",
+    name: "Grounded research",
+    role: "AXIOM · LIVE",
     img: "/media/portrait-3.png",
     quote:
-      "\u201COur forecasting pipeline used to be one notebook and one person. It is now a tested service the whole data team can change.\u201D",
+      "A research agent that separates claims from reasoning and keeps every claim linked to the source it came from, so a conclusion can be defended.",
     left: "84%",
     top: "68%",
     size: "clamp(58px,9.3vw,84px)",
@@ -60,11 +74,11 @@ export const ORBIT_PEOPLE: OrbitPerson[] = [
     tipWidth: "clamp(210px,22vw,262px)",
   },
   {
-    name: "Karriere",
-    role: "COO \u00B7 BLUEPEAK",
+    name: "Voice interfaces",
+    role: "CARTESIA ASSISTANT · LIVE",
     img: "/media/portrait-4.png",
     quote:
-      "\u201CThey asked what number we were trying to move before they wrote any code, then reported against it every sprint.\u201D",
+      "Streaming turn-taking on synthesised speech, so the reply starts speaking while the rest of it is still being generated.",
     left: "16%",
     top: "72%",
     size: "clamp(58px,8.9vw,80px)",
@@ -73,11 +87,11 @@ export const ORBIT_PEOPLE: OrbitPerson[] = [
     tipWidth: "clamp(210px,22vw,262px)",
   },
   {
-    name: "Thais Miranda",
-    role: "PRODUCT \u00B7 SYNERGISE4",
+    name: "Lead capture",
+    role: "H&B EVENTS · LIVE",
     img: "/media/portrait-5.png",
     quote:
-      "\u201CThe design system meant the second product took a third of the time. That compounding was worth more than the first build.\u201D",
+      "A thirty-year event production business moved off WhatsApp referrals and onto structured quote requests it can forward internally.",
     left: "50%",
     top: "88%",
     size: "clamp(58px,8.4vw,76px)",

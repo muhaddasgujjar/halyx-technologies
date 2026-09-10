@@ -1,0 +1,1005 @@
+/* ==========================================================================
+   The Halyx AI console.
+
+   Two stacked halves inside one card: the android stage on top, the
+   glassmorphic dashboard under it. The stage is the only part with parallax —
+   `--tilt-x` / `--tilt-y` are written by `Console.tsx` on pointer move and
+   consumed here, so the portrait and the slat overlay slide against each other
+   rather than as one flat layer.
+
+   Keyframes are referenced through the global `--hx-kf-*` tokens. A bare name
+   inside a `*.module.css` is scoped by CSS Modules and then matches nothing —
+   `scripts/check-css-keyframes.mjs` fails the build over it.
+   ========================================================================== */
+
+.console {
+  position: relative;
+  max-width: 1080px;
+  margin: 0 auto;
+  border-radius: clamp(18px, 2.2vw, 28px);
+  border: 1px solid var(--hx-glass-border);
+  background: linear-gradient(180deg, rgba(13, 13, 19, 0.94), rgba(8, 8, 12, 0.97));
+  box-shadow: var(--hx-shadow-panel);
+  /* Clips the stage glow, the slat overlay and the border sweep to the corners. */
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/*
+ * The lit edge.
+ *
+ * A conic gradient rotating behind the card, masked to a one-pixel ring, so the
+ * accent travels around the border instead of the whole border pulsing at once.
+ * `mask-composite: exclude` punches the interior out of the ring; without it
+ * this is a rotating gradient covering the entire card.
+ *
+ * It sits at `z-index: -1` under the card's own children — which is why the
+ * `.console` establishes a stacking context above.
+ */
+.console::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from 0deg,
+    rgba(107, 92, 240, 0) 0deg,
+    rgba(139, 124, 255, 0.75) 40deg,
+    rgba(188, 178, 255, 0.95) 70deg,
+    rgba(107, 92, 240, 0) 130deg,
+    rgba(107, 92, 240, 0) 360deg
+  );
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  opacity: 0.5;
+  animation: var(--hx-kf-spin) 9s linear infinite;
+  transition: opacity 0.6s ease;
+}
+
+/* The edge brightens and speeds up while the agent is actually doing something. */
+.console[data-state="listening"]::before,
+.console[data-state="speaking"]::before {
+  opacity: 1;
+  animation-duration: 4s;
+}
+
+.console[data-state="thinking"]::before {
+  opacity: 0.85;
+  animation-duration: 2.2s;
+}
+
+/* --------------------------------------------------------------------------
+   Stage — the android behind the slats.
+   -------------------------------------------------------------------------- */
+
+.stage {
+  position: relative;
+  height: clamp(230px, 30vw, 360px);
+  overflow: hidden;
+  background:
+    radial-gradient(120% 110% at 50% 108%, rgba(107, 92, 240, 0.3), rgba(6, 6, 8, 0) 62%),
+    #08080d;
+  /* A drag across the stage must still scroll the page on a touchscreen. */
+  touch-action: pan-y;
+}
+
+.stageGlow {
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  width: min(520px, 90%);
+  height: 300px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(139, 124, 255, 0.34), rgba(107, 92, 240, 0) 70%);
+  filter: blur(26px);
+  animation: var(--hx-kf-glowline) 6s ease-in-out infinite;
+}
+
+.portrait {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  /*
+   * The portrait leads the pointer and the slats trail it, which is the whole
+   * illusion: two layers moving at different rates read as depth, while one
+   * layer moving reads as a loose image.
+   */
+  transform: translate3d(calc(var(--tilt-x, 0) * -12px), calc(var(--tilt-y, 0) * -7px), 0);
+  transition: transform 0.6s var(--hx-ease-soft);
+}
+
+.android {
+  height: 100%;
+  width: auto;
+  /* Overrides the global `svg { max-width: 100% }`, which would letterbox it. */
+  max-width: none;
+  filter: drop-shadow(0 24px 50px rgba(0, 0, 0, 0.7));
+}
+
+.androidEyes {
+  opacity: 0.75;
+  transition: opacity 0.4s ease;
+}
+
+.android[data-state="listening"] .androidEyes,
+.android[data-state="thinking"] .androidEyes {
+  opacity: 1;
+  animation: var(--hx-kf-glowline) 1.8s ease-in-out infinite;
+}
+
+.android[data-state="speaking"] .androidEyes {
+  opacity: 1;
+}
+
+.androidThroat,
+.androidVent {
+  opacity: 0.4;
+  transition: opacity 0.4s ease;
+}
+
+.android[data-state="listening"] .androidThroat {
+  opacity: 0.7;
+}
+
+.android[data-state="speaking"] .androidThroat,
+.android[data-state="speaking"] .androidVent {
+  opacity: 1;
+  animation: var(--hx-kf-pulse) 0.9s ease-in-out infinite;
+}
+
+/*
+ * The vertical slats. One repeating gradient rather than eighty elements: it is
+ * a single paint, it scales to any width, and it can be translated as one layer
+ * for the parallax.
+ */
+.slats {
+  position: absolute;
+  inset: -3% -8%;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(6, 6, 10, 0.9) 0 7px,
+    rgba(6, 6, 10, 0) 7px 26px,
+    rgba(255, 255, 255, 0.045) 26px 27px,
+    rgba(6, 6, 10, 0) 27px 28px
+  );
+  transform: translate3d(calc(var(--tilt-x, 0) * 16px), 0, 0);
+  transition: transform 0.6s var(--hx-ease-soft);
+}
+
+/* --------------------------------------------------------------------------
+   Voice bars.
+
+   Listening scales them by `--level`, the real microphone RMS. Speaking has no
+   readable signal — `speechSynthesis` exposes no audio graph — so they run on a
+   cycle, staggered by `--i` so the row moves like a voice rather than a queue.
+   -------------------------------------------------------------------------- */
+
+.wave {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(14px, 2.4vw, 26px);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 34px;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+.wave[data-state="listening"],
+.wave[data-state="speaking"],
+.wave[data-state="thinking"] {
+  opacity: 1;
+}
+
+.wave i {
+  display: block;
+  width: 3px;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--hx-accent-100), var(--hx-accent-deep));
+  box-shadow: 0 0 10px rgba(139, 124, 255, 0.55);
+  transform: scaleY(0.18);
+  transform-origin: center;
+}
+
+/*
+ * The meter. `--i` staggers the bars so the row does not pump as one block, and
+ * the floor keeps a quiet room looking alive rather than flat-lined.
+ */
+.wave[data-state="listening"] i {
+  transform: scaleY(calc(0.18 + var(--level, 0) * (0.55 + var(--i) * 0.14)));
+  transition: transform 90ms linear;
+}
+
+.wave[data-state="speaking"] i {
+  animation: var(--hx-kf-wave) 0.85s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.14s);
+}
+
+/* Thinking is a slower, shallower version of the same idea. */
+.wave[data-state="thinking"] i {
+  animation: var(--hx-kf-wave) 1.6s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.2s);
+  opacity: 0.55;
+}
+
+/* --------------------------------------------------------------------------
+   The autoplay affordance.
+
+   Shown only when the browser refused to play the greeting. It is a button
+   rather than a notice because the tap is what unblocks it — reading a message
+   that says "audio is blocked" does not.
+   -------------------------------------------------------------------------- */
+
+.unmute {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(14px, 2.4vw, 26px);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--hx-tap);
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(188, 178, 255, 0.45);
+  background: rgba(12, 12, 20, 0.86);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: var(--hx-ink-2);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transform: translateX(-50%);
+  box-shadow: 0 18px 44px -26px rgba(107, 92, 240, 0.95);
+  animation: var(--hx-kf-breathe) 3s ease-in-out infinite;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.unmute:hover {
+  border-color: var(--hx-hover-border);
+  background: rgba(107, 92, 240, 0.24);
+}
+
+.stageVignette {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(6, 6, 10, 0.85) 0%, rgba(6, 6, 10, 0) 26%),
+    linear-gradient(0deg, rgba(8, 8, 12, 0.96) 0%, rgba(8, 8, 12, 0) 34%),
+    radial-gradient(130% 90% at 50% 50%, rgba(6, 6, 10, 0) 42%, rgba(6, 6, 10, 0.75) 100%);
+}
+
+.stageBadge {
+  position: absolute;
+  left: clamp(12px, 1.8vw, 20px);
+  top: clamp(12px, 1.8vw, 20px);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(10, 10, 16, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  color: var(--hx-accent-200);
+}
+
+.badgeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--hx-muted-3);
+  box-shadow: 0 0 10px currentColor;
+}
+
+.badgeDot[data-state="listening"] {
+  background: var(--hx-mint);
+  animation: var(--hx-kf-pulse) 1.4s ease-in-out infinite;
+}
+
+.badgeDot[data-state="thinking"] {
+  background: var(--hx-accent-200);
+  animation: var(--hx-kf-pulse) 0.8s ease-in-out infinite;
+}
+
+.badgeDot[data-state="speaking"] {
+  background: var(--hx-accent-100);
+  animation: var(--hx-kf-pulse) 1.1s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------------------
+   Dashboard.
+   -------------------------------------------------------------------------- */
+
+.glass {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 2vw, 24px);
+  padding: clamp(16px, 2.2vw, 26px);
+  border-top: 1px solid var(--hx-glass-border);
+  background: var(--hx-glass-bg);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  overflow: hidden;
+}
+
+/*
+ * The sheen that crosses the glass.
+ *
+ * Real glass catches a moving light; a flat translucent panel is just a grey
+ * box with blur behind it. Kept very low contrast and slow — at 14 seconds it
+ * registers as the surface being lit rather than as an animation playing, which
+ * is the difference between glassmorphism and a shimmer effect.
+ *
+ * `pointer-events: none` matters: this covers the whole panel, including the
+ * input and both buttons.
+ */
+.glass::after {
+  content: "";
+  position: absolute;
+  /* Not `inset: 0` — that pins left AND right, and the width below is ignored. */
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 42%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(188, 178, 255, 0.07) 45%,
+    rgba(255, 255, 255, 0.1) 55%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: var(--hx-kf-sheen) 14s var(--hx-ease-soft) infinite;
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.8vw, 20px);
+}
+
+/* ── The agent button ─────────────────────────────────────────────────── */
+
+.agent {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px 10px 10px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.35s ease, background 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* The one control on the panel that has to look tappable, so it catches the
+   light more often than the tiles do. */
+.agent::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 45%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(188, 178, 255, 0.14) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: var(--hx-kf-sheen) 5s var(--hx-ease-soft) infinite;
+}
+
+.agent:hover {
+  border-color: var(--hx-hover-border);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 1px rgba(188, 178, 255, 0.12), 0 18px 40px -28px rgba(107, 92, 240, 0.9);
+}
+
+.agent[aria-pressed="true"] {
+  border-color: rgba(188, 178, 255, 0.4);
+  background: rgba(107, 92, 240, 0.12);
+}
+
+.orb {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+}
+
+.orbRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(188, 178, 255, 0.55);
+  opacity: 0;
+}
+
+.orb[data-state="listening"] .orbRing,
+.orb[data-state="speaking"] .orbRing {
+  animation: var(--hx-kf-ring) 1.9s var(--hx-ease) infinite;
+}
+
+.orb[data-state="speaking"] .orbRing {
+  animation-duration: 1.2s;
+}
+
+/* The second ring is the same sweep, half a cycle behind. */
+.orb[data-state="listening"] .orbRing:nth-child(2),
+.orb[data-state="speaking"] .orbRing:nth-child(2) {
+  animation-delay: 0.6s;
+}
+
+/* Thinking has no live level to visualise, so the ring becomes a spinner. */
+.orb[data-state="thinking"] .orbRing:first-child {
+  opacity: 1;
+  border-color: rgba(188, 178, 255, 0.16);
+  border-top-color: var(--hx-accent-200);
+  animation: var(--hx-kf-spin) 0.9s linear infinite;
+}
+
+.orbCore {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 34% 30%, #ffffff, var(--hx-accent-200) 42%, var(--hx-accent-deep));
+  box-shadow: 0 0 18px rgba(139, 124, 255, 0.75);
+  /*
+   * `--level` is the live microphone RMS, rewritten every animation frame. A
+   * transform is the only property cheap enough to change at that rate, and the
+   * short transition smooths frame-to-frame jitter without adding visible lag.
+   */
+  transform: scale(calc(1 + var(--level, 0) * 0.55));
+  transition: transform 90ms linear;
+}
+
+.agentText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.agentLabel {
+  font-size: 8.5px;
+  letter-spacing: 0.2em;
+  color: var(--hx-mono-dim);
+}
+
+.agentState {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--hx-ink-2);
+}
+
+.agentHint {
+  font-size: 10.5px;
+  color: var(--hx-muted);
+}
+
+.headline {
+  flex: 1;
+  min-width: 0;
+}
+
+.headlineLabel {
+  font-size: 8.5px;
+  letter-spacing: 0.2em;
+  color: var(--hx-mono-dim);
+  margin-bottom: 6px;
+}
+
+.headlineValue {
+  font-size: clamp(12.5px, 1.3vw, 14px);
+  line-height: 1.55;
+  color: var(--hx-ink-3);
+}
+
+.cta {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--hx-tap);
+  height: var(--hx-tap);
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--hx-ink-2);
+  font-size: 15px;
+  transition: transform 0.35s var(--hx-ease), border-color 0.35s ease, background 0.35s ease;
+}
+
+.cta:hover {
+  transform: translateX(3px);
+  border-color: var(--hx-hover-border);
+  background: rgba(107, 92, 240, 0.16);
+  color: var(--hx-ink-strong);
+}
+
+/* ── Sections inside the dashboard ────────────────────────────────────── */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--hx-ink-2);
+}
+
+.sectionMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 8.5px;
+  letter-spacing: 0.18em;
+  color: var(--hx-mono-dim);
+  white-space: nowrap;
+}
+
+.sectionMeta[data-ok="true"] {
+  color: var(--hx-mint);
+}
+
+.sectionMeta[data-ok="false"] {
+  color: #f0b48f;
+}
+
+/* The status lamp trailing "ALL SYSTEMS OPERATIONAL". */
+.sectionMeta i {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow: 0 0 8px currentColor;
+  animation: var(--hx-kf-pulse) 2.6s ease-in-out infinite;
+}
+
+/* ── Tiles ────────────────────────────────────────────────────────────── */
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.tile {
+  position: relative;
+  padding: 12px 14px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+  transition: border-color 0.45s ease, background 0.45s ease, transform 0.45s var(--hx-ease);
+}
+
+.tile:hover {
+  border-color: rgba(188, 178, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-2px);
+}
+
+/*
+ * Each tile catches the light in turn rather than all four together, which is
+ * what makes the row read as separate panes of glass. The stagger is a
+ * per-tile delay on one shared animation; `nth-child` is enough because the
+ * tile count is fixed by the component.
+ */
+.tile::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 55%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(188, 178, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: var(--hx-kf-sheen) 7s var(--hx-ease-soft) infinite;
+}
+
+.tile:nth-child(2)::after { animation-delay: 1.1s; }
+.tile:nth-child(3)::after { animation-delay: 2.2s; }
+.tile:nth-child(4)::after { animation-delay: 3.3s; }
+
+.tileLabel {
+  font-size: 8.5px;
+  letter-spacing: 0.18em;
+  color: var(--hx-mono-dim);
+}
+
+/*
+ * Shining text.
+ *
+ * A wide gradient clipped to the glyphs and swept across them, so the highlight
+ * travels through the number in the site's accent rather than the text simply
+ * changing colour. `background-clip: text` needs a transparent fill to show
+ * through, so `color` here is the *fallback* — if the clip is unsupported the
+ * text is still legible ink, never invisible.
+ */
+.tileValue {
+  margin-top: 8px;
+  font-size: clamp(20px, 2.4vw, 26px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--hx-ink-strong);
+  background: linear-gradient(
+    100deg,
+    var(--hx-ink-strong) 0%,
+    var(--hx-ink-strong) 38%,
+    var(--hx-accent-100) 50%,
+    var(--hx-ink-strong) 62%,
+    var(--hx-ink-strong) 100%
+  );
+  background-size: 260% 100%;
+  animation: var(--hx-kf-shine) 7s linear infinite;
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .tileValue {
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+}
+
+.tile:nth-child(2) .tileValue { animation-delay: 1.1s; }
+.tile:nth-child(3) .tileValue { animation-delay: 2.2s; }
+.tile:nth-child(4) .tileValue { animation-delay: 3.3s; }
+
+.tileUnit {
+  margin-top: 2px;
+  font-size: 10.5px;
+  color: var(--hx-muted);
+}
+
+.spark {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 84px;
+  height: 20px;
+  color: var(--hx-accent-300);
+  opacity: 0.45;
+}
+
+/* ── Processes ────────────────────────────────────────────────────────── */
+
+.processes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.process {
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) minmax(0, 1.5fr) 62px 26px;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.process:last-child {
+  border-bottom: 0;
+}
+
+.processName {
+  font-size: 12px;
+  color: var(--hx-ink-3);
+}
+
+.processDetail {
+  font-size: 11px;
+  color: var(--hx-muted);
+  /* Model ids run long and must not be allowed to widen the grid. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.processBar {
+  display: block;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+
+.processBar i {
+  display: block;
+  height: 100%;
+  width: 22%;
+  border-radius: 999px;
+  background: var(--hx-mono-dimmer);
+  transition: width 0.6s var(--hx-ease), background 0.4s ease;
+}
+
+.processBar[data-ok="true"] i {
+  width: 100%;
+  background: linear-gradient(90deg, var(--hx-accent-deep), var(--hx-accent-200));
+}
+
+.processState {
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  text-align: right;
+  color: var(--hx-mono-dimmer);
+}
+
+.processState[data-ok="true"] {
+  color: var(--hx-mint);
+}
+
+/* ── Conversation ─────────────────────────────────────────────────────── */
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px 9px 13px;
+  border-radius: 12px;
+  border: 1px solid rgba(240, 180, 143, 0.28);
+  background: rgba(240, 180, 143, 0.08);
+  font-size: 11.5px;
+  color: #f4cbb0;
+}
+
+.error span {
+  flex: 1;
+  min-width: 0;
+}
+
+.error button {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: inherit;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.error button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.log {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 96px;
+  max-height: clamp(180px, 24vw, 260px);
+  padding: 4px 4px 4px 0;
+  overflow-y: auto;
+  /* A flick inside the transcript must not chain into the page scroll. */
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}
+
+.log::-webkit-scrollbar {
+  width: 6px;
+}
+
+.log::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.empty {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--hx-muted);
+}
+
+.line {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 88%;
+}
+
+.line[data-who="visitor"] {
+  align-self: flex-end;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.lineWho {
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  color: var(--hx-mono-dimmer);
+}
+
+.line[data-who="agent"] .lineWho {
+  color: var(--hx-accent-300);
+}
+
+.lineText {
+  margin: 0;
+  padding: 9px 13px;
+  border-radius: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--hx-ink-3);
+}
+
+.line[data-who="visitor"] .lineText {
+  border-color: rgba(188, 178, 255, 0.22);
+  background: rgba(107, 92, 240, 0.13);
+  color: var(--hx-ink-2);
+}
+
+.caret {
+  margin-left: 1px;
+  color: var(--hx-accent-200);
+  animation: var(--hx-kf-pulse) 1s steps(2, end) infinite;
+}
+
+.composer {
+  display: flex;
+  gap: 8px;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  height: var(--hx-tap);
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--hx-ink);
+  /* 16px is the floor that stops iOS zooming the page on focus. */
+  font-size: 16px;
+  font-family: inherit;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.input::placeholder {
+  color: var(--hx-mono-dim);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--hx-hover-border);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.send {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--hx-tap);
+  height: var(--hx-tap);
+  border-radius: 12px;
+  border: 1px solid rgba(188, 178, 255, 0.3);
+  background: rgba(107, 92, 240, 0.18);
+  color: var(--hx-ink-strong);
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
+}
+
+.send:hover:not(:disabled) {
+  background: rgba(107, 92, 240, 0.34);
+  border-color: var(--hx-hover-border);
+}
+
+.send:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------
+   Narrow screens.
+
+   The top row is three items that only sit side by side on a wide card. Below
+   860px the headline drops to its own line and the button and the CTA share the
+   row above it, which keeps both tap targets on the row they act on.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 860px) {
+  .topRow {
+    flex-wrap: wrap;
+  }
+
+  .agent {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .headline {
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  .process {
+    grid-template-columns: minmax(0, 1fr) 52px 26px;
+    row-gap: 3px;
+  }
+
+  /* The detail moves under the name rather than being ellipsised to nothing. */
+  .processDetail {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    white-space: normal;
+    font-size: 10.5px;
+  }
+}
+
+@media (max-width: 560px) {
+  .stage {
+    height: clamp(200px, 52vw, 260px);
+  }
+
+  .line {
+    max-width: 96%;
+  }
+}
+
+/*
+ * There is nothing to disable for touch: the parallax is pointer-driven, so on
+ * a touchscreen the tilt vars never leave 0 and both layers simply sit still.
+ */

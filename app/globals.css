@@ -106,6 +106,9 @@
   --hx-kf-float-d: hx-float-d;
   --hx-kf-float-e: hx-float-e;
   --hx-kf-float-sm: hx-float-sm;
+  --hx-kf-wave: hx-wave;
+  --hx-kf-sheen: hx-sheen;
+  --hx-kf-breathe: hx-breathe;
 
   color-scheme: dark;
 }
@@ -288,6 +291,32 @@ a:hover {
 @keyframes hx-ring {
   0% { transform: scale(1); opacity: 0.55; }
   100% { transform: scale(1.5); opacity: 0; }
+}
+
+/*
+ * Voice bars. Scales about the centre so the bar grows both ways, which is what
+ * an audio meter does; growing only upwards reads as a bar chart.
+ */
+@keyframes hx-wave {
+  0%, 100% { transform: scaleY(0.28); }
+  50% { transform: scaleY(1); }
+}
+
+/*
+ * The travelling highlight on glass. Distinct from `hx-shine`, which sweeps a
+ * background-position across a wide gradient for the marquee shimmer: this one
+ * moves an element, so it can be used on a pseudo-element over any surface
+ * without disturbing that surface's own background.
+ */
+@keyframes hx-sheen {
+  0% { transform: translateX(-120%) skewX(-18deg); }
+  100% { transform: translateX(320%) skewX(-18deg); }
+}
+
+/* A slow swell for ambient glows — wider and softer than `hx-pulse`. */
+@keyframes hx-breathe {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.06); }
 }
 
 /* --------------------------------------------------------------------------

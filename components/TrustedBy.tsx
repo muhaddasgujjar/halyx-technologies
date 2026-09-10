@@ -1,16 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { ORBIT_PEOPLE } from "@/lib/people";
-import { REVIEWS } from "@/lib/reviews";
+import { HUBS } from "@/lib/hubs";
+import { ORBIT_CARDS } from "@/lib/people";
+import { SERVICES } from "@/lib/services";
+import { PROOF_POINTS } from "@/lib/reviews";
 import { Reveal, RevealScope } from "./Reveal";
 import { useSite } from "./SiteProvider";
 import styles from "./TrustedBy.module.css";
 
+/*
+ * These were invented during design ("99.98% uptime", "140ms median p95
+ * inference latency"). Nothing in the repo backs them and no monitoring exists
+ * to. Replaced with counts that are true by construction — they are read off
+ * the same data the rest of the page renders.
+ */
 const METRICS = [
-  { value: "99.98%", label: "Uptime across managed platforms" },
-  { value: "140ms", label: "Median p95 inference latency" },
-  { value: "4", label: "Delivery regions on call" },
+  { value: String(PROOF_POINTS.length), label: "Products live and linkable" },
+  { value: String(SERVICES.length), label: "Practices, discovery to production" },
+  { value: String(HUBS.length), label: "Regions covered, follow the sun" },
 ] as const;
 
 /** Dashed connectors from the panel centre out to each portrait. */
@@ -35,7 +43,7 @@ export function TrustedBy() {
    */
   const [openTip, setOpenTip] = useState(-1);
 
-  const railItems = [...REVIEWS, ...REVIEWS];
+  const railItems = [...PROOF_POINTS, ...PROOF_POINTS];
 
   return (
     <RevealScope variant="blur">
@@ -45,8 +53,8 @@ export function TrustedBy() {
         <div className={styles.inner}>
           <Reveal className={styles.header}>
             <div className={styles.headerText}>
-              <div className={`${styles.eyebrow} hx-mono`}>TRUSTED BY INDUSTRY LEADERS</div>
-              <h2 className={styles.h2}>The people who put our systems into production.</h2>
+              <div className={`${styles.eyebrow} hx-mono`}>WORK IN PRODUCTION</div>
+              <h2 className={styles.h2}>Systems we put into production. Open any of them.</h2>
             </div>
             <div className={styles.metrics}>
               {METRICS.map((m) => (
@@ -76,7 +84,7 @@ export function TrustedBy() {
                   ))}
                 </svg>
 
-                {ORBIT_PEOPLE.map((p, i) => (
+                {ORBIT_CARDS.map((p, i) => (
                   <div
                     key={p.name}
                     className={styles.person}
@@ -109,7 +117,7 @@ export function TrustedBy() {
                       >
                         <div className={styles.tipBorder}>
                           <div className={styles.tipBody}>
-                            <div className={`${styles.tipEyebrow} hx-mono`}>CLIENT TESTIMONIAL</div>
+                            <div className={`${styles.tipEyebrow} hx-mono`}>SHIPPED CAPABILITY</div>
                             <p className={styles.tipQuote}>{p.quote}</p>
                           </div>
                         </div>
@@ -150,7 +158,7 @@ export function TrustedBy() {
 
             <Reveal delay={140} className={styles.rail}>
               <div className={styles.railHead}>
-                <div className={`${styles.railLabel} hx-mono`}>CLIENT TESTIMONIALS</div>
+                <div className={`${styles.railLabel} hx-mono`}>SHIPPED WORK</div>
                 {/* The rail auto-scrolls in both cases; only the way you stop it
                     differs — hovering with a pointer, resting a finger on touch. */}
                 <div className={`${styles.railHint} hx-mono`}>
@@ -164,15 +172,13 @@ export function TrustedBy() {
                     <figure
                       key={`${r.name}-${i}`}
                       className={styles.review}
-                      aria-hidden={i >= REVIEWS.length}
+                      aria-hidden={i >= PROOF_POINTS.length}
                       // The UA's default figure margin is reset in the
                       // stylesheet, not inline: the small-screen marquee needs a
                       // trailing margin on each card, and an inline `margin: 0`
                       // outranks any rule that tries to set one.
                     >
-                      <blockquote className={styles.reviewQuote} style={{ margin: 0 }}>
-                        {r.q}
-                      </blockquote>
+                      <div className={styles.reviewQuote}>{r.q}</div>
                       <figcaption className={styles.reviewMeta}>
                         <div className={styles.avatar} aria-hidden="true">
                           {r.ini}

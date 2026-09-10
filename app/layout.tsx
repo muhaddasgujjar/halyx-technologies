@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Instrument_Sans, JetBrains_Mono } from "next/font/google";
+import { LocaleProvider } from "@/components/LocaleProvider";
 import { HYDRATION_GUARD } from "@/lib/extension-attrs";
 import { IS_INDEXABLE, SITE } from "@/lib/site";
 import "./globals.css";
@@ -90,7 +91,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
          */}
         <script dangerouslySetInnerHTML={{ __html: HYDRATION_GUARD }} />
       </head>
-      <body suppressHydrationWarning>{children}</body>
+      {/*
+       * The locale store wraps everything because the two components that care
+       * about it are as far apart as they can be: the switcher in the navbar
+       * and the voice console near the foot of the page. It renders English on
+       * the server, so `lang="en"` above is correct for the first paint and the
+       * provider updates it once a stored choice is read.
+       */}
+      <body suppressHydrationWarning>
+        <LocaleProvider>{children}</LocaleProvider>
+      </body>
     </html>
   );
 }

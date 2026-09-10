@@ -181,8 +181,25 @@
   justify-content: flex-end;
 }
 
-.bubble {
+/*
+ * A message is now a bubble plus an optional source strip, so the width cap
+ * moved out here — otherwise the chips would size themselves against the row
+ * rather than against the bubble they belong to.
+ */
+.msgCol {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   max-width: 86%;
+  min-width: 0;
+}
+
+.msgRowUser .msgCol {
+  align-items: flex-end;
+}
+
+.bubble {
+  max-width: 100%;
   padding: 10px 13px;
   border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.09);
@@ -197,11 +214,98 @@
   background: linear-gradient(180deg, rgba(160, 146, 255, 0.34), rgba(107, 92, 240, 0.2));
 }
 
+/* A delivery or transport failure, not something the assistant chose to say. */
+.bubbleError {
+  border-color: rgba(255, 138, 138, 0.42);
+  background: rgba(255, 92, 92, 0.09);
+  color: #f3d4d4;
+}
+
+/* Backend confirmations — "your details went to the team". */
+.bubbleSystem {
+  border-color: rgba(143, 240, 192, 0.4);
+  background: rgba(143, 240, 192, 0.09);
+  color: #d6f6e7;
+  font-size: 11.5px;
+}
+
+/*
+ * Placeholder while the first token is still in flight. Full opacity at rest so
+ * that reduced-motion — which kills every animation globally — leaves a visible
+ * caret rather than an invisible one.
+ */
+.caret {
+  display: inline-block;
+  width: 6px;
+  color: var(--hx-accent-100);
+  animation: var(--hx-kf-pulse) 1.1s ease-in-out infinite;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Sources ------------------------------------------------------------ */
+
+.sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 0;
+  padding: 0 2px;
+  list-style: none;
+}
+
+.source {
+  display: inline-block;
+  max-width: 190px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--hx-mono-dim);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+a.source:hover,
+a.source:focus-visible {
+  color: var(--hx-accent-100);
+  border-color: rgba(188, 178, 255, 0.5);
+}
+
 .inputRow {
   display: flex;
   gap: 8px;
   padding: 11px 13px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.stopGlyph {
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  background: currentColor;
 }
 
 .input {

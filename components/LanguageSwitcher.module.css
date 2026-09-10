@@ -1,0 +1,185 @@
+.root {
+  position: relative;
+  flex: none;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px 7px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--hx-muted-2);
+  cursor: pointer;
+  transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+
+.trigger:hover,
+.trigger[aria-expanded="true"] {
+  color: var(--hx-ink-strong);
+  border-color: rgba(178, 168, 255, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.globe {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+
+.code {
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+}
+
+.chevron {
+  width: 7px;
+  height: 7px;
+  margin-left: -1px;
+  border-right: 1.2px solid currentColor;
+  border-bottom: 1.2px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 0.3s var(--hx-ease);
+}
+
+.chevron[data-open="true"] {
+  transform: translateY(1px) rotate(-135deg);
+}
+
+/* --------------------------------------------------------------------------
+   Popover
+   -------------------------------------------------------------------------- */
+
+.panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 10;
+  display: grid;
+  /*
+   * Two columns. Fifteen languages in one column is a 600px drop that runs off
+   * a laptop screen; two keeps the whole list visible without scrolling, which
+   * is the point of a language picker.
+   */
+  grid-template-columns: repeat(2, minmax(122px, 1fr));
+  gap: 2px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  background: rgba(10, 10, 14, 0.97);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  box-shadow: 0 28px 64px -30px rgba(0, 0, 0, 0.98);
+  opacity: 0;
+  transform: translateY(-8px) scale(0.97);
+  transform-origin: 100% 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.3s var(--hx-ease);
+}
+
+.panel[data-open="true"] {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.panelHead {
+  grid-column: 1 / -1;
+  padding: 4px 8px 8px;
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  color: var(--hx-muted-3, rgba(255, 255, 255, 0.38));
+}
+
+/* --------------------------------------------------------------------------
+   Options, shared by both shapes
+   -------------------------------------------------------------------------- */
+
+.option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+/* RTL labels sit against their own edge; the English gloss under them does not. */
+.option[dir="rtl"] {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.option:hover,
+.option:focus-visible {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.option[aria-selected="true"] {
+  background: rgba(150, 136, 255, 0.16);
+  border-color: rgba(178, 168, 255, 0.42);
+}
+
+.optionLabel {
+  font-size: 14px;
+  line-height: 1.25;
+  color: var(--hx-ink-2);
+}
+
+.option[aria-selected="true"] .optionLabel {
+  color: var(--hx-ink-strong);
+}
+
+.optionEnglish {
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hx-muted-3, rgba(255, 255, 255, 0.4));
+}
+
+/* --------------------------------------------------------------------------
+   Inside the mobile sheet
+   -------------------------------------------------------------------------- */
+
+.sheetBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sheetHead {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--hx-muted-3, rgba(255, 255, 255, 0.4));
+}
+
+.sheetGrid {
+  display: grid;
+  /* Fits two columns on a 360px phone and three on a tablet, without a query. */
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 6px;
+}
+
+.sheetGrid .option {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  min-height: 46px;
+  justify-content: center;
+}
+
+@media (max-width: 860px) {
+  /* The bar has room for the wordmark, the CTA badge and the burger, and that
+     is all. The picker moves into the sheet, where it gets real tap targets. */
+  .root {
+    display: none;
+  }
+}

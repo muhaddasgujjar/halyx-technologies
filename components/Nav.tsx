@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { NAV_LINKS } from "@/lib/content";
 import { applyScrollLock } from "@/lib/scroll-lock";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import styles from "./Nav.module.css";
 
 /**
@@ -60,6 +61,13 @@ export function Nav() {
         ))}
       </div>
 
+      {/*
+       * Left of the CTA, not right of it: the CTA is the bar's last word and
+       * nothing should sit between it and the edge. Below 860px this hides
+       * itself and reappears inside the sheet.
+       */}
+      <LanguageSwitcher />
+
       <a href="#contact" className={styles.cta}>
         <span className={styles.ctaText}>Start Your Project</span>
         <span className={styles.ctaBadge} aria-hidden="true">
@@ -103,6 +111,10 @@ export function Nav() {
             </a>
           ))}
         </div>
+
+        {/* Picking a language closes the sheet: the choice is made, and leaving
+            the menu open over the page afterwards reads as a failed tap. */}
+        <LanguageSwitcher variant="sheet" onPick={close} />
 
         <a href="#contact" className={styles.sheetCta} onClick={close}>
           Start Your Project
