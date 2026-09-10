@@ -57,8 +57,15 @@ export function TrustedBy() {
               <h2 className={styles.h2}>Systems we put into production. Open any of them.</h2>
             </div>
             <div className={styles.metrics}>
+              {/*
+                Keyed on the label, not the value. The values are counts of
+                three unrelated collections and nothing stops two of them
+                coinciding — five products and five practices did exactly that,
+                and React saw two siblings keyed `5`. The label is what actually
+                identifies the row.
+              */}
               {METRICS.map((m) => (
-                <div key={m.value}>
+                <div key={m.label}>
                   <div className={styles.metricValue}>{m.value}</div>
                   <div className={styles.metricLabel}>{m.label}</div>
                 </div>

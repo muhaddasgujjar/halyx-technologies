@@ -43,9 +43,15 @@ export function Footer() {
 
         {SITE_CONFIG.showFooterWordmark && (
           <div className={styles.wordmark} role="img" aria-label="HALYX">
+            {/*
+              Keyed on position, not on the letter. A wordmark is a fixed
+              sequence, so the index *is* the identity — and keying on the
+              character breaks the day the wordmark contains the same letter
+              twice, which is one rename away.
+            */}
             {WORDMARK.map((ch, i) => (
               <Reveal
-                key={ch}
+                key={i}
                 as="span"
                 variant="letter"
                 delay={i * 130}

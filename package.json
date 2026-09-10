@@ -8,12 +8,13 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/check-css-keyframes.mjs && node scripts/check-synonym-keys.mjs && next build",
+    "build": "node scripts/check-css-keyframes.mjs && node scripts/check-synonym-keys.mjs && node scripts/check-react-keys.mjs && next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "check:css": "node scripts/check-css-keyframes.mjs",
-    "check:synonyms": "node scripts/check-synonym-keys.mjs"
+    "check:synonyms": "node scripts/check-synonym-keys.mjs",
+    "check:keys": "CHECK_KEYS_VERBOSE=1 node scripts/check-react-keys.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.124.0",
