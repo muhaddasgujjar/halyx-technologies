@@ -46,7 +46,7 @@ export function VideoModal() {
         type="button"
         className={`${shell.backdrop} ${styles.backdrop}`}
         onClick={closeVideo}
-        aria-label="Close"
+        aria-label={t("Close")}
         tabIndex={-1}
       />
 
@@ -69,7 +69,7 @@ export function VideoModal() {
               type="button"
               className={`${shell.close} ${styles.close}`}
               onClick={closeVideo}
-              aria-label="Close"
+              aria-label={t("Close")}
             >
               &times;
             </button>

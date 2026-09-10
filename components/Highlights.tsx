@@ -47,10 +47,10 @@ export function Highlights() {
                       {t(h.blurb)}
                     </span>
                     <span className={styles.cardMore} style={{ display: "block" }}>
-                      <span className={styles.cardMoreText}>{h.more}</span>
+                      <span className={styles.cardMoreText}>{t(h.more)}</span>
                     </span>
                     <span className={`${styles.cardCta} hx-mono`} style={{ display: "block" }}>
-                      {open === i ? "CLOSE \u2212" : "READ MORE +"}
+                      {open === i ? t("CLOSE \u2212") : t("READ MORE +")}
                     </span>
                   </span>
                 </button>

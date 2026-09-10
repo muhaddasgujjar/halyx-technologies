@@ -60,12 +60,32 @@ function add(value) {
   strings.add(text);
 }
 
+/**
+ * Makes a captured literal equal the string it renders as.
+ *
+ * A source file writes an em dash as `\u2014` inside a double-quoted string;
+ * the catalogue is keyed by what the component renders, so the key must carry
+ * the *character* — a key stored with the literal escape can never match the
+ * runtime string, and that lookup silently stays English forever (`We move fast
+ * — but never…` was exactly that until this was unescaped).
+ */
+function unescape(raw) {
+  return raw
+    .replace(/\\u([0-9a-fA-F]{4})/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+    .replace(/\\x([0-9a-fA-F]{2})/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+    .replace(/\\n/g, "\n")
+    .replace(/\\t/g, "\t")
+    .replace(/\\r/g, "\r")
+    .replace(/\\"/g, '"')
+    .replace(/\\'/g, "'");
+}
+
 /** Every double- or single-quoted literal inside a chunk of source. */
 function quotedIn(chunk) {
   const out = [];
   for (const match of chunk.matchAll(/"((?:[^"\\]|\\.)*)"|'((?:[^'\\]|\\.)*)'/g)) {
     const raw = match[1] ?? match[2] ?? "";
-    out.push(raw.replace(/\\"/g, '"').replace(/\\'/g, "'").replace(/\\n/g, "\n"));
+    out.push(unescape(raw));
   }
   return out;
 }
@@ -111,6 +131,63 @@ for (const [file, names] of Object.entries(DATA_ARRAYS)) {
     for (const value of quotedIn(match[1])) {
       add(value);
       sources.set(value, file);
+    }
+  }
+}
+
+/**
+ * Const objects and arrays inside components whose string values are passed
+ * through `t` at render but whose definition is a name, not a `t("…")`
+ * literal — so the payload scan above can never see them. Without this the
+ * chat dock's chrome and the hero pills stay English in every language.
+ *
+ * Kept an explicit allowlist for the same reason as `DATA_FIELDS`: a
+ * `float: "hx-float-a 7s …"` animation string inside the same block must not
+ * reach the translator, and a rewritten animation string is a dead animation.
+ *
+ * Three shapes:
+ *   `{ ALL: true }`            — every quoted value in the block (keys excluded),
+ *                                e.g. the dock chrome, where all values are prose.
+ *   `{ fields: ["label"] }`    — only the named fields, e.g. hero pill labels
+ *                                next to `float`/`pos`/`mark` that must not move.
+ *
+ * Keys are excluded from `ALL` by the `[,}]` lookahead: in an object literal
+ * only a *value* is followed by a comma or the closing brace; a key is followed
+ * by a colon.
+ */
+const COMPONENT_CONSTANTS = {
+  "components/overlays/ChatDock.tsx": { DOCK_COPY: { ALL: true }, TOOL_STATUS: { ALL: true } },
+  "components/Counters.tsx": { LABELS: { ALL: true } },
+  "components/Hero.tsx": { PILLS: { fields: ["label"] } },
+};
+
+function constantBlock(source, name) {
+  // `const NAME: T = …` or `const NAME = …`, up to the first `;` after `=`.
+  return new RegExp(`\\bconst\\s+${name}\\s*(?::[^=]+)?=\\s*([\\s\\S]*?);`).exec(source);
+}
+
+for (const [file, constants] of Object.entries(COMPONENT_CONSTANTS)) {
+  const source = readFileSync(join(ROOT, file), "utf8");
+  for (const [name, spec] of Object.entries(constants)) {
+    const block = constantBlock(source, name);
+    if (!block) continue;
+
+    for (const value of spec.fields
+      ? // `name: "…"` pairs only, so `float`/`pos`/`mark` neighbours stay out.
+        block[1]
+          .matchAll(
+            new RegExp(
+              `\\b(?:${spec.fields.map((f) => f.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})\\s*:\\s*("(?:[^"\\\\]|\\\\.)*"|'(?:[^'\\\\]|\\\\.)*')`,
+              "g",
+            ),
+          )
+          .flatMap((m) => quotedIn(m[1]))
+      : // Every value, but never a key (a key is followed by `:`).
+        [...block[1].matchAll(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')\s*(?=[,}\]])/g)].map((m) =>
+          unescape(m[1].slice(1, -1)),
+        ) ?? []) {
+      add(value);
+      sources.set(value, relative(ROOT, file));
     }
   }
 }

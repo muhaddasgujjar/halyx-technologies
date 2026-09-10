@@ -399,7 +399,7 @@ export function ChatDock() {
             type="button"
             className={styles.iconBtn}
             onClick={toggleBotMin}
-            title="Minimise"
+            title={t(DOCK_COPY.minimise)}
             aria-label={t(DOCK_COPY.minimise)}
           >
             <span className={styles.minGlyph} />
@@ -408,7 +408,7 @@ export function ChatDock() {
             type="button"
             className={styles.iconBtn}
             onClick={toggleBotMax}
-            title="Expand"
+            title={t(DOCK_COPY.expand)}
             aria-label={t(DOCK_COPY.expand)}
           >
             <span className={styles.maxGlyph} />
@@ -417,7 +417,7 @@ export function ChatDock() {
             type="button"
             className={styles.iconBtn}
             onClick={closeBot}
-            title="Close"
+            title={t(DOCK_COPY.close)}
             aria-label={t(DOCK_COPY.close)}
           >
             &times;
@@ -514,7 +514,7 @@ export function ChatDock() {
                 className={styles.send}
                 onClick={stop}
                 aria-label={t(DOCK_COPY.stop)}
-                title="Stop"
+                title={t(DOCK_COPY.stop)}
               >
                 <span className={styles.stopGlyph} />
               </button>

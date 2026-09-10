@@ -8,11 +8,11 @@ import styles from "./LanguageSwitcher.module.css";
 /**
  * The navbar language control.
  *
- * It changes what Halyx AI speaks, not what the page says — so it sits next to
- * the CTA rather than pretending to be a full site-translation toggle. A
- * visitor who picks German gets an agent that greets, listens and answers in
- * German; the marketing copy stays English, which is the honest version of what
- * is actually built.
+ * It switches the whole site to the chosen language — catalogues in
+ * `lib/i18n/messages/` cover the page copy, and the same choice drives what
+ * Halyx AI greets, listens and answers in. A visitor who picks German gets the
+ * page in German and an agent that speaks German; a language with no catalogue
+ * yet degrades to English rather than breaking.
  *
  * Two shapes from one component. `bar` is the popover on the desktop bar;
  * `sheet` is a flat grid inside the mobile menu, because a popover inside a
@@ -26,7 +26,7 @@ export function LanguageSwitcher({
   variant?: "bar" | "sheet";
   onPick?: () => void;
 }) {
-  const { locale, lang, setLocale } = useLocale();
+  const { locale, lang, setLocale, t } = useLocale();
   const [open, setOpen] = useState(false);
 
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -158,7 +158,7 @@ export function LanguageSwitcher({
            order and the a11y tree while closed. */
         inert={!open}
       >
-        <div className={`${styles.panelHead} hx-mono`}>SPOKEN BY HALYX AI</div>
+        <div className={`${styles.panelHead} hx-mono`}>{t("SITE LANGUAGE")}</div>
         {options}
       </div>
     </div>
