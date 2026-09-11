@@ -74,10 +74,15 @@ def _load_env() -> None:
     running the worker with a key exported for one session does what it looks
     like it does.
     """
-    root = Path(__file__).parent
+    # This file sits in `agent/`, the env files sit at the repo root beside the
+    # Next.js app that shares them — so look in both, nearest last. In a
+    # container neither exists and the loop finds nothing, which is correct:
+    # there the keys arrive as real environment variables.
+    here = Path(__file__).parent
+    candidates = [here.parent / ".env", here.parent / ".env.local", here / ".env", here / ".env.local"]
     merged: dict[str, str] = {}
-    for name in (".env", ".env.local"):  # later file wins
-        for key, value in dotenv_values(root / name).items():
+    for path in candidates:  # later file wins
+        for key, value in dotenv_values(path).items():
             if value:  # skip blanks and unset keys
                 merged[key] = value
 

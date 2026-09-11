@@ -31,7 +31,8 @@ credentials were exposed during development:
 Then update `.env.local` and confirm the new ones work before you deploy them:
 
 ```
-.venv\Scripts\python preflight.py
+cd agent
+..\.venv\Scripts\python preflight.py
 ```
 
 Four green lines is the gate. It calls each service rather than checking the
@@ -75,9 +76,23 @@ those belong to the agent, which runs elsewhere.
 
 ## 2. The agent, on LiveKit Cloud
 
-`Dockerfile` and `livekit.toml` in the repo root are the whole deployment.
+The worker lives in **`agent/`** — its own directory, and its own Docker build
+context. It is separated from the Next.js app at the root for a practical
+reason as well as a tidy one: `lk` detects the agent's language from the files
+it finds, and a `package.json` in the same folder makes it look for a Node
+agent that is not there.
 
 ```
+agent/
+  agent.py          the worker
+  preflight.py      key checker
+  requirements.txt
+  Dockerfile
+  livekit.toml
+```
+
+```
+cd agent
 lk agent create       # first time only — writes the id into livekit.toml
 lk agent deploy
 lk agent status
@@ -117,8 +132,8 @@ variables, run it. It needs no inbound port — it dials out to LiveKit.
 `npm run build` runs six checks before it compiles, and two of them exist
 specifically to stop silent production failures:
 
-- `check-agent-name` — the agent's name is identical in `agent.py`,
-  `app/api/livekit/token/route.ts` and `livekit.toml`. A mismatch is the
+- `check-agent-name` — the agent's name is identical in `agent/agent.py`,
+  `app/api/livekit/token/route.ts` and `agent/livekit.toml`. A mismatch is the
   silent-empty-room failure described at the top of this file.
 - `check-source-links` — every source the assistant cites resolves to a section
   that exists on the page.

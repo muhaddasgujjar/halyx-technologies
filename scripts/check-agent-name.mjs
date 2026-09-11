@@ -24,7 +24,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const sources = [
   {
-    file: "agent.py",
+    file: "agent/agent.py",
     // AGENT_NAME = "halyx-agent"
     pattern: /^AGENT_NAME\s*=\s*"([^"]+)"/m,
   },
@@ -34,7 +34,7 @@ const sources = [
     pattern: /const\s+AGENT_NAME\s*=\s*"([^"]+)"/,
   },
   {
-    file: "livekit.toml",
+    file: "agent/livekit.toml",
     // agent_name = "halyx-agent"
     pattern: /^\s*agent_name\s*=\s*"([^"]+)"/m,
   },

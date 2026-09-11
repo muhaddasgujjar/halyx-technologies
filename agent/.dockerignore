@@ -1,0 +1,14 @@
+# The build context is this directory, so there is very little to exclude —
+# which is the point of the agent living in its own folder rather than beside
+# the Next.js app. The image needs agent.py, preflight.py and requirements.txt.
+
+.venv/
+__pycache__/
+*.py[cod]
+
+# Secrets reach the worker as environment variables from the host, never baked
+# into a layer. An image carrying .env.local is a credential you cannot rotate
+# out of a registry.
+.env
+.env.*
+!.env.example
