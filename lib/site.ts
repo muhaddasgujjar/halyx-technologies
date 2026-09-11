@@ -28,7 +28,7 @@ function resolveSiteUrl(): string {
 export const SITE = {
   name: "Halyx Technologies",
   url: resolveSiteUrl(),
-  email: "hello@halyx.tech",
+  email: "halyxtechnologies@gmail.com",
   tagline: "We Build Intelligent Systems That Matter",
   description:
     "Halyx Technologies is an applied-AI and product-engineering studio. We build AI systems, custom software, and web and mobile products that ship, scale, and hold up in production.",

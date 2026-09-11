@@ -41,6 +41,17 @@ export interface Language {
    * sentence in the language, which is exactly what the decoder needs to settle
    * on the right one from a short clip. Two jobs, one string, no drift.
    */
+  /**
+   * The unprompted hello, spoken the moment the console comes into view.
+   *
+   * Two clauses and no more, and the second one is a question about *them*.
+   * "Welcome to Halyx AI, how can I help you today" — which is what these all
+   * used to be — is the single most recognisable sentence a machine says: it
+   * announces itself, offers nothing, and hands the visitor a blank page to
+   * fill. Naming yourself and then asking what they are building opens the
+   * conversation the studio actually wants and sounds like a person picking up
+   * the phone.
+   */
   greeting: string;
   ui: {
     /** Idle hint under the voice-agent button. */
@@ -70,7 +81,7 @@ export const LANGUAGES: Language[] = [
     tag: "en-GB",
     dir: "ltr",
     promptName: "English",
-    greeting: "Welcome to Halyx AI. How can I help you today?",
+    greeting: "Hi — Halyx AI here. What are you working on?",
     ui: {
       tapToTalk: "Tap to talk",
       placeholder: "Type a question…",
@@ -88,7 +99,7 @@ export const LANGUAGES: Language[] = [
     tag: "de-DE",
     dir: "ltr",
     promptName: "German",
-    greeting: "Willkommen bei Halyx AI. Wie kann ich Ihnen heute helfen?",
+    greeting: "Hallo, hier ist Halyx AI. Woran arbeiten Sie gerade?",
     ui: {
       tapToTalk: "Zum Sprechen tippen",
       placeholder: "Frage eingeben…",
@@ -106,7 +117,7 @@ export const LANGUAGES: Language[] = [
     tag: "fr-FR",
     dir: "ltr",
     promptName: "French",
-    greeting: "Bienvenue chez Halyx AI. Comment puis-je vous aider aujourd’hui ?",
+    greeting: "Bonjour, ici Halyx AI. Sur quoi travaillez-vous en ce moment ?",
     ui: {
       tapToTalk: "Touchez pour parler",
       placeholder: "Posez une question…",
@@ -124,7 +135,7 @@ export const LANGUAGES: Language[] = [
     tag: "es-ES",
     dir: "ltr",
     promptName: "Spanish",
-    greeting: "Bienvenido a Halyx AI. ¿En qué puedo ayudarle hoy?",
+    greeting: "Hola, soy Halyx AI. ¿En qué está trabajando?",
     ui: {
       tapToTalk: "Toca para hablar",
       placeholder: "Escribe una pregunta…",
@@ -142,7 +153,7 @@ export const LANGUAGES: Language[] = [
     tag: "pt-BR",
     dir: "ltr",
     promptName: "Portuguese",
-    greeting: "Bem-vindo à Halyx AI. Como posso ajudá-lo hoje?",
+    greeting: "Olá, aqui é a Halyx AI. Em que está a trabalhar?",
     ui: {
       tapToTalk: "Toque para falar",
       placeholder: "Escreva uma pergunta…",
@@ -160,7 +171,7 @@ export const LANGUAGES: Language[] = [
     tag: "it-IT",
     dir: "ltr",
     promptName: "Italian",
-    greeting: "Benvenuto in Halyx AI. Come posso aiutarla oggi?",
+    greeting: "Salve, sono Halyx AI. A cosa sta lavorando?",
     ui: {
       tapToTalk: "Tocca per parlare",
       placeholder: "Scrivi una domanda…",
@@ -178,7 +189,7 @@ export const LANGUAGES: Language[] = [
     tag: "nl-NL",
     dir: "ltr",
     promptName: "Dutch",
-    greeting: "Welkom bij Halyx AI. Waarmee kan ik u vandaag helpen?",
+    greeting: "Hoi, dit is Halyx AI. Waar werk je aan?",
     ui: {
       tapToTalk: "Tik om te praten",
       placeholder: "Stel een vraag…",
@@ -196,7 +207,7 @@ export const LANGUAGES: Language[] = [
     tag: "tr-TR",
     dir: "ltr",
     promptName: "Turkish",
-    greeting: "Halyx AI’ya hoş geldiniz. Bugün size nasıl yardımcı olabilirim?",
+    greeting: "Merhaba, ben Halyx AI. Ne üzerinde çalışıyorsunuz?",
     ui: {
       tapToTalk: "Konuşmak için dokunun",
       placeholder: "Bir soru yazın…",
@@ -215,7 +226,7 @@ export const LANGUAGES: Language[] = [
     dir: "ltr",
     promptName: "Russian",
     greeting:
-      "Добро пожаловать в Halyx AI. Чем я могу вам помочь сегодня?",
+      "Здравствуйте, это Halyx AI. Над чем вы сейчас работаете?",
     ui: {
       tapToTalk:
         "Нажмите, чтобы говорить",
@@ -236,7 +247,7 @@ export const LANGUAGES: Language[] = [
     dir: "ltr",
     promptName: "Chinese (simplified)",
     greeting:
-      "欢迎来到 Halyx AI。今天我能为您做些什么？",
+      "你好，我是 Halyx AI。你在做什么项目？",
     ui: {
       tapToTalk: "点击开始说话",
       placeholder: "输入问题…",
@@ -255,7 +266,7 @@ export const LANGUAGES: Language[] = [
     dir: "ltr",
     promptName: "Japanese",
     greeting:
-      "Halyx AI へようこそ。本日はどのようなご用件でしょうか。",
+      "こんにちは、Halyx AI です。今どんなものを作っていますか？",
     ui: {
       tapToTalk: "タップして話しかけてください",
       placeholder: "質問を入力…",
@@ -274,7 +285,7 @@ export const LANGUAGES: Language[] = [
     dir: "ltr",
     promptName: "Korean",
     greeting:
-      "Halyx AI에 오신 것을 환영합니다. 오늘 무엇을 도와드릴까요?",
+      "안녕하세요, Halyx AI입니다. 어떤 걸 만들고 계세요?",
     ui: {
       tapToTalk: "탭하여 말하기",
       placeholder: "질문을 입력하세요…",
@@ -293,7 +304,7 @@ export const LANGUAGES: Language[] = [
     dir: "rtl",
     promptName: "Arabic",
     greeting:
-      "مرحبًا بك في هاليكس. كيف يمكنني مساعدتك اليوم؟",
+      "أهلًا، أنا هاليكس. على ماذا تعمل حاليًا؟",
     ui: {
       tapToTalk: "اضغط للتحدث",
       placeholder: "اكتب سؤالًا…",
@@ -312,7 +323,7 @@ export const LANGUAGES: Language[] = [
     dir: "rtl",
     promptName: "Urdu",
     greeting:
-      "ہیلیکس اے آئی میں خوش آمدید۔ میں آج آپ کی کیا مدد کر سکتا ہوں؟",
+      "ہیلو، میں ہیلیکس اے آئی ہوں۔ آپ آج کل کس چیز پر کام کر رہے ہیں؟",
     ui: {
       tapToTalk:
         "بات کرنے کے لیے ٹیپ کریں",
@@ -333,7 +344,7 @@ export const LANGUAGES: Language[] = [
     dir: "ltr",
     promptName: "Hindi",
     greeting:
-      "हैलिक्स एआई में आपका स्वागत है। मैं आज आपकी क्या मदद कर सकता हूँ?",
+      "नमस्ते, मैं हैलिक्स एआई हूँ। आप किस चीज़ पर काम कर रहे हैं?",
     ui: {
       tapToTalk:
         "बात करने के लिए टैप करें",

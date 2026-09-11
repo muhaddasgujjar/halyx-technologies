@@ -346,6 +346,67 @@ a.source:focus-visible {
   border-color: rgba(188, 178, 255, 0.75);
 }
 
+/* --- Microphone toggle ------------------------------------------------ */
+
+.mic {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--hx-muted);
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.mic:hover {
+  color: var(--hx-ink-strong);
+  border-color: rgba(188, 178, 255, 0.5);
+}
+
+.micActive {
+  color: var(--hx-accent-100);
+  border-color: rgba(188, 178, 255, 0.75);
+  box-shadow: 0 0 18px rgba(150, 136, 255, 0.35);
+}
+
+/* A mic drawn with pure CSS: capsule, stem, and a yoke for the stand. */
+.micGlyph {
+  position: relative;
+  width: 9px;
+  height: 13px;
+  border: 1.5px solid currentColor;
+  border-radius: 5px;
+}
+
+.micGlyph::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -4.5px;
+  width: 2px;
+  height: 5px;
+  margin-left: -1px;
+  background: currentColor;
+  border-radius: 1px;
+}
+
+.micGlyph::after {
+  content: "";
+  position: absolute;
+  left: -3.5px;
+  bottom: -3px;
+  width: 13px;
+  height: 4px;
+  border: 1px solid currentColor;
+  border-top: none;
+  border-radius: 0 0 7px 7px;
+}
+
 /* --- Launcher ----------------------------------------------------------- */
 
 .launcher {
@@ -471,6 +532,11 @@ a.source:focus-visible {
   }
 
   .send {
+    width: var(--hx-tap);
+    height: var(--hx-tap);
+  }
+
+  .mic {
     width: var(--hx-tap);
     height: var(--hx-tap);
   }

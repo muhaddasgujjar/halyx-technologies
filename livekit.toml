@@ -1,0 +1,20 @@
+# LiveKit Cloud Agents deployment.
+#
+#   lk agent create        # first time — links this directory to a new agent
+#   lk agent deploy        # every time after
+#   lk agent logs          # what the worker is doing in production
+#   lk agent status
+#
+# `agent_name` must match `AGENT_NAME` in `agent.py` and in
+# `app/api/livekit/token/route.ts`. A named worker is never auto-dispatched, so
+# the browser's token asks for this exact string; if the three drift, a visitor
+# joins a room nothing else ever joins — silently.
+#
+# `id` is filled in by `lk agent create`. Leave it empty until then.
+
+[project]
+  subdomain = "halyx-technologies-vawf7udz"
+
+[agent]
+  id = ""
+  agent_name = "halyx-agent"

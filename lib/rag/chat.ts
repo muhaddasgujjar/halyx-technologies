@@ -130,7 +130,7 @@ function describeFailure(error: unknown): {
           event: {
             type: "error",
             code: "not_configured",
-            message: "The assistant is not available right now. Email hello@halyx.tech and the team will pick it up.",
+            message: "The assistant is not available right now. Email halyxtechnologies@gmail.com and the team will pick it up.",
           },
           log,
         };
@@ -148,7 +148,7 @@ function describeFailure(error: unknown): {
           event: {
             type: "error",
             code: "upstream",
-            message: "That did not go through. Ask me again, or email hello@halyx.tech.",
+            message: "That did not go through. Ask me again, or email halyxtechnologies@gmail.com.",
           },
           log,
         };
@@ -159,7 +159,7 @@ function describeFailure(error: unknown): {
     event: {
       type: "error",
       code: "internal",
-      message: "Something went wrong on my side. Email hello@halyx.tech and the team will pick it up.",
+      message: "Something went wrong on my side. Email halyxtechnologies@gmail.com and the team will pick it up.",
     },
     log: error instanceof Error ? error.message : String(error),
   };
@@ -192,7 +192,7 @@ export async function* runChat(
     yield {
       type: "error",
       code: "not_configured",
-      message: "The assistant is offline right now. Email hello@halyx.tech and the team will pick it up.",
+      message: "The assistant is offline right now. Email halyxtechnologies@gmail.com and the team will pick it up.",
     };
     return;
   }

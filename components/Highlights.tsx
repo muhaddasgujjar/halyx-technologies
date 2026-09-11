@@ -15,7 +15,8 @@ export function Highlights() {
 
   return (
     <RevealScope variant="tilt">
-      <section className={styles.section}>
+      {/* `#highlights` — the anchor the assistant cites for headline numbers. */}
+      <section id="highlights" className={styles.section}>
         <div className={styles.inner}>
           <Reveal className={styles.header}>
             <h2 className={styles.h2}>{t("Key highlights")}</h2>

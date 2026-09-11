@@ -43,10 +43,17 @@ export default function HomePage() {
         <CaseStudies />
         <TrustedBy />
         <Story />
+        {/*
+          Straight after the story, not before the contact form.
+          The story is where a visitor decides the studio is real; the agent is
+          the proof, and it lands hardest while that is still the last thing
+          they read. Down at the bottom it was competing with the CTA it was
+          supposed to feed.
+        */}
+        <HalyxAI />
         <Highlights />
         <Team />
         <Beliefs />
-        <HalyxAI />
         <ContactForm />
         <ClosingCTA />
       </main>

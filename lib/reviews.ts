@@ -15,6 +15,16 @@ export interface ProofPoint {
    */
   cat: string;
   host: string;
+  /**
+   * The live product's address.
+   *
+   * Carried alongside `host` because the two are used for different jobs: the
+   * host is a label to render, the url is a destination to open. The assistant
+   * cites these chunks as sources, and without a url the citation falls back to
+   * a page anchor — which is how "Proof of work — Maiku AI" ended up scrolling
+   * people to Our Story.
+   */
+  url: string;
   /** The claim itself. */
   q: string;
 }
@@ -49,5 +59,6 @@ export const PROOF_POINTS: ProofPoint[] = PROJECTS.map((project) => ({
   name: project.name,
   cat: project.cat,
   host: project.host,
+  url: project.url,
   q: project.solution,
 }));

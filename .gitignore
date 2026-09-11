@@ -10,3 +10,8 @@ next-env.d.ts
 .DS_Store
 tsconfig.tsbuildinfo
 scratch/
+
+# Python — the voice agent relay (agent.py, preflight.py)
+.venv/
+__pycache__/
+*.py[cod]

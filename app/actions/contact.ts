@@ -80,7 +80,7 @@ export async function submitContact(
     });
     return {
       status: "error",
-      message: "Something went wrong sending that. Email hello@halyx.tech and we'll pick it up.",
+      message: "Something went wrong sending that. Email halyxtechnologies@gmail.com and we'll pick it up.",
       fieldErrors: {},
       values,
     };

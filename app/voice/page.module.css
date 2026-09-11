@@ -1,0 +1,73 @@
+.page {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: clamp(24px, 5vh, 40px);
+  min-height: 100dvh;
+  padding: clamp(24px, 6vw, 64px) 20px;
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(107, 92, 240, 0.18) 0%, rgba(6, 6, 8, 0) 60%),
+    var(--hx-bg);
+}
+
+.head {
+  display: grid;
+  gap: 10px;
+  max-width: 44ch;
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(26px, 5vw, 38px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--hx-ink-strong);
+}
+
+.sub {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--hx-ink-3);
+}
+
+.foot {
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  max-width: 48ch;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--hx-muted);
+}
+
+.foot p {
+  margin: 0;
+}
+
+.foot code {
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--hx-accent-200);
+  font-size: 11px;
+}
+
+.back {
+  color: var(--hx-ink-3);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.back:hover {
+  border-bottom-color: var(--hx-accent-200);
+}
+
+/* The console is a wide card; give it the room the homepage section gives it. */
+.stage {
+  width: 100%;
+  max-width: 980px;
+}

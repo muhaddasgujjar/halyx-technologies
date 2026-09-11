@@ -25,7 +25,8 @@ export function Team() {
 
   return (
     <RevealScope variant="rise">
-      <section className={styles.section}>
+      {/* `#team` — the anchor the assistant cites when asked who runs Halyx. */}
+      <section id="team" className={styles.section}>
         <div className={styles.inner}>
           <Reveal as="h2" className={styles.h2}>
             {t("Meet the Team")}

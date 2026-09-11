@@ -9,7 +9,17 @@ export interface KbEntry {
  */
 export const KB: KbEntry[] = [
   {
-    k: ["what", "who", "about", "company", "halyx", "do"],
+    /*
+     * No bare "what", "who" or "do" here.
+     *
+     * This entry is the catch-all, and with one-word keys that broad it caught
+     * everything: "what is the weather in Karachi" scored on "what" and was
+     * answered with a description of the studio. That was survivable while this
+     * file was only the chat dock's offline net; it is not now that the voice
+     * agent falls back to it whenever the model is out of budget, because a
+     * spoken non-sequitur is the most machine-like thing the agent can do.
+     */
+    k: ["about", "company", "halyx", "who are you", "what do you do", "tell me about"],
     a: "Halyx Technologies builds AI-powered digital solutions for businesses that want to automate, scale, and work smarter. We cover AI and machine learning, custom software, web and mobile apps, business automation, and data and cloud.",
   },
   {
@@ -37,12 +47,12 @@ export const KB: KbEntry[] = [
     a: "We work with startups, growing companies and established operators. Shipped work spans real-time AI copilots, generative design with CAD export, research agents, low-latency voice assistants and lead-capture storefronts.",
   },
   {
-    k: ["case", "project", "portfolio", "work", "example"],
+    k: ["case", "project", "portfolio", "work", "example", "ship", "built", "build for"],
     a: "Five shipped products you can open right now: Maiku AI (real-time interview copilot, maiku.app), ArchitectXpert (AI floor plan generator with DXF export, architectxpert.tech), Axiom (research agent that keeps every claim linked to its source), Cartesia Assistant (low-latency voice assistant) and H&B Event Solution (event production storefront, hbevents.me).",
   },
   {
     k: ["contact", "email", "reach", "talk", "call", "hire", "start"],
-    a: "Use the Let's talk form on this page, or email hello@halyx.tech. We reply within two working days.",
+    a: "Use the Let's talk form on this page, or email halyxtechnologies@gmail.com. We reply within two working days.",
   },
   {
     k: ["time", "long", "timeline", "fast", "duration", "deadline"],
@@ -62,8 +72,19 @@ export const KB: KbEntry[] = [
   },
 ];
 
-/** Highest-scoring keyword match wins; score is the summed length of hit keywords. */
-export function answerFor(question: string): string {
+/**
+ * The best canned answer for a question, or null when nothing matched.
+ *
+ * Split out from {@link answerFor} because the two callers want opposite things
+ * from a miss. A typed chat can afford to print "I can only answer questions
+ * about Halyx"; the voice agent cannot say that out loud as a substitute for a
+ * model that is merely unavailable, because it is not true — it would be
+ * blaming the visitor's question for the studio's billing. It needs to know
+ * there was no match so it can say something honest instead.
+ *
+ * Highest-scoring keyword match wins; score is the summed length of hit keywords.
+ */
+export function matchFor(question: string): string | null {
   const s = question.toLowerCase();
   let best: KbEntry | null = null;
   let bestScore = 0;
@@ -75,6 +96,12 @@ export function answerFor(question: string): string {
       best = entry;
     }
   }
-  if (best && bestScore >= 3) return best.a;
-  return "I can only answer questions about Halyx Technologies \u2014 our services, work, team, process or how to get in touch. Try asking what we do, or how a project usually starts.";
+  return best && bestScore >= 3 ? best.a : null;
+}
+
+export function answerFor(question: string): string {
+  return (
+    matchFor(question) ??
+    "I can only answer questions about Halyx Technologies \u2014 our services, work, team, process or how to get in touch. Try asking what we do, or how a project usually starts."
+  );
 }

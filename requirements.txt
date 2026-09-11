@@ -1,0 +1,31 @@
+# Halyx Technologies — voice agent relay
+#
+# Pinned to the versions this file was written and verified against. The
+# `livekit-agents` 1.x API is still moving (AgentSession replaced
+# VoicePipelineAgent; AgentServer replaced the bare WorkerOptions entrypoint),
+# so a floating `>=1.0` will eventually install something `agent.py` does not
+# match. Bump deliberately, and re-run `python agent.py console` after you do.
+#
+#   python -m venv .venv
+#   .venv\Scripts\pip install -r requirements.txt     (Windows)
+#   .venv/bin/pip install -r requirements.txt         (macOS / Linux)
+
+livekit-agents==1.8.1
+
+# Pipeline plugins. Each is versioned in lockstep with livekit-agents.
+livekit-plugins-silero==1.8.1      # VAD — runs locally, no API key
+livekit-plugins-deepgram==1.8.1    # STT — nova-3
+livekit-plugins-openai==1.8.1      # LLM — gpt-4o-mini, and the TTS fallback
+livekit-plugins-cartesia==1.8.1    # TTS — sonic-3 (preferred; falls back to OpenAI)
+
+# Semantic end-of-turn detection. Without it, turn-taking is pure VAD silence
+# timing and the agent cuts people off mid-sentence whenever they pause to
+# think. Ships an ONNX model that is downloaded once by `download-files`.
+livekit-plugins-turn-detector==1.8.1
+
+# Reads .env.local so the agent and the Next.js app share one set of keys.
+python-dotenv==1.2.3
+
+# NOTE: `livekit-server-sdk` is a *Node* package and is not installable here —
+# it is already in package.json for the Next.js token route. The Python
+# equivalent is `livekit-api`, which livekit-agents installs as a dependency.

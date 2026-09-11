@@ -111,14 +111,12 @@ export async function deliverLead(input: unknown, mode: ChatMode = "text"): Prom
     phone: "",
     // Mirrors the contact form's interest field so the notification email reads
     // the same way, and so the studio can tell chat leads from form leads.
-    interest: mode === "voice" ? "Halyx AI voice console" : "Halyx AI assistant",
+    interest: "Halyx AI assistant",
     brief: [
       lead.need,
       lead.budget ? `\nBudget indication: ${lead.budget}` : "",
       lead.timeline ? `\nTimeline: ${lead.timeline}` : "",
-      mode === "voice"
-        ? "\n\n— captured by the Halyx AI voice console. The visitor spoke to the agent, which defers all pricing to the CEO, so they are expecting figures back from him personally."
-        : "\n\n— captured by the Halyx AI assistant during a homepage conversation.",
+      "\n\n— captured by the Halyx AI assistant during a homepage conversation.",
     ]
       .filter(Boolean)
       .join(""),
@@ -134,7 +132,7 @@ export async function deliverLead(input: unknown, mode: ChatMode = "text"): Prom
       return {
         ok: false,
         detail:
-          "Delivery failed on our side. Apologise briefly, give the visitor hello@halyx.tech directly, and suggest the contact form as a backup. Do not retry this tool.",
+          "Delivery failed on our side. Apologise briefly, give the visitor halyxtechnologies@gmail.com directly, and suggest the contact form as a backup. Do not retry this tool.",
         visitorMessage: "",
       };
     }
@@ -158,7 +156,7 @@ export async function deliverLead(input: unknown, mode: ChatMode = "text"): Prom
     return {
       ok: false,
       detail:
-        "Delivery failed unexpectedly. Give the visitor hello@halyx.tech and the contact form. Do not retry this tool.",
+        "Delivery failed unexpectedly. Give the visitor halyxtechnologies@gmail.com and the contact form. Do not retry this tool.",
       visitorMessage: "",
     };
   }

@@ -53,11 +53,11 @@ export async function POST(request: Request): Promise<Response> {
     return fail(
       503,
       "not_configured",
-      "The assistant is offline right now. Email hello@halyx.tech and the team will pick it up.",
+      "The assistant is offline right now. Email halyxtechnologies@gmail.com and the team will pick it up.",
     );
   }
 
-  const limit = hit(clientKey(request.headers));
+  const limit = hit(clientKey(request.headers), "chat");
   if (!limit.ok) {
     return fail(
       429,
@@ -94,7 +94,7 @@ export async function POST(request: Request): Promise<Response> {
             frame({
               type: "error",
               code: "internal",
-              message: "Something went wrong on my side. Email hello@halyx.tech and the team will pick it up.",
+              message: "Something went wrong on my side. Email halyxtechnologies@gmail.com and the team will pick it up.",
             }),
           );
         } catch {

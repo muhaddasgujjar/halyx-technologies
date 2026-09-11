@@ -99,7 +99,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
        * provider updates it once a stored choice is read.
        */}
       <body suppressHydrationWarning>
-        <LocaleProvider>{children}</LocaleProvider>
+        {/*
+         * One speech agent for the whole app: the console near the foot of the
+         * page and the floating chat dock must drive the same loop, or the
+         * visitor gets two sessions — two microphones, two greetings, two of
+         * everything. The provider is the single place the loop is mounted.
+         */}
+        <LocaleProvider>
+          {children}
+        </LocaleProvider>
       </body>
     </html>
   );

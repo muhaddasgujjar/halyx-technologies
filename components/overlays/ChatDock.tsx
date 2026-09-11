@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChatRequestError, streamChat } from "@/lib/chat-client";
-import { answerFor } from "@/lib/kb";
+import { answerFor, matchFor } from "@/lib/kb";
 import type { ChatEvent, Turn } from "@/lib/rag/types";
 import { useLocale } from "@/components/LocaleProvider";
 import { useSite } from "@/components/SiteProvider";
@@ -90,6 +90,11 @@ const GREETING: Msg = { id: 0, who: "bot", text: DOCK_COPY.greeting };
  * canned matcher in `lib/kb.ts` rather than showing a dead widget — a visitor
  * who asks about pricing still gets an answer, just a blunter one.
  *
+ * Typed only. It used to carry a microphone too, sharing a browser-side speech
+ * loop with the homepage console; both are gone. Voice now lives entirely in
+ * the LiveKit agent (`components/VoiceAgent.tsx` and `agent.py`), which is a
+ * real-time call rather than something a chat widget can borrow.
+ *
  * The launcher is draggable; a `moved` flag keeps a drag from registering as a
  * click and toggling the panel.
  */
@@ -114,6 +119,10 @@ export function ChatDock() {
 
   const nextId = useRef(1);
   const abortRef = useRef<AbortController | null>(null);
+  /** Maps shared-hook line ids to dock bubble ids, so streaming updates land in place. */
+  const mirror = useRef(new Map<number, number>());
+  /** Repeats of the same voice-loop error become one bubble, not a spam of them. */
+  const lastVoiceError = useRef<string | null>(null);
 
   /*
    * Token deltas arrive far faster than the screen refreshes — Groq streams
@@ -216,16 +225,23 @@ export function ChatDock() {
           ]);
           break;
 
-        case "error":
+        case "error": {
           if (frame.current !== null) {
             cancelAnimationFrame(frame.current);
             frame.current = null;
           }
           /*
-           * Anything already streamed stays and the failure is appended after
-           * it — but a turn that failed before saying anything must not leave
-           * an empty bubble sitting above the error, so that one is dropped.
+           * A turn that failed before saying a word is not an error the visitor
+           * needs to read — it is a question that still deserves an answer. The
+           * canned matcher covers the common ones, and it is the same recovery
+           * the thrown-error path below already does; it just never reached
+           * here, because an upstream 429 arrives as a frame inside a
+           * successful stream rather than as a rejected request. That gap is
+           * why an out-of-budget model showed a red banner and said nothing.
            */
+          const rescued = buffer.current ? null : matchFor(question);
+          if (rescued) buffer.current = rescued;
+
           setMsgs((all) => [
             ...all.flatMap((m) =>
               m.id === replyId
@@ -234,9 +250,12 @@ export function ChatDock() {
                   : []
                 : [m],
             ),
-            { id: nextId.current++, who: "bot", text: event.message, failed: true },
+            ...(rescued
+              ? []
+              : [{ id: nextId.current++, who: "bot" as const, text: event.message, failed: true }]),
           ]);
           break;
+        }
 
         case "done":
           break;
@@ -259,14 +278,18 @@ export function ChatDock() {
        */
       const offline =
         error instanceof ChatRequestError &&
-        (error.code === "not_configured" || error.status >= 500);
+        (error.code === "not_configured" ||
+          // A daily token cap reads as "not for hours", so retrying is not the
+          // advice to give; answering from the brief is.
+          error.code === "rate_limited" ||
+          error.status >= 500);
 
       if (offline) {
         buffer.current = answerFor(question);
       } else if (error instanceof ChatRequestError) {
         buffer.current = error.message;
       } else {
-        buffer.current = "I could not reach the studio just now. Email hello@halyx.tech and the team will pick it up.";
+        buffer.current = "I could not reach the studio just now. Email halyxtechnologies@gmail.com and the team will pick it up.";
       }
 
       patch(replyId, { text: buffer.current, pending: false, failed: !offline });
@@ -296,6 +319,14 @@ export function ChatDock() {
   }, [busy, flushBuffer, msgs, patch]);
 
   const stop = useCallback(() => abortRef.current?.abort(), []);
+
+  const submitText = useCallback(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    if (!el.value.trim()) return;
+    void send();
+  }, [send]);
+
 
   /**
    * Dragging is a mouse affordance only.
@@ -353,7 +384,9 @@ export function ChatDock() {
 
   const headerStatus = bot.min
     ? t(DOCK_COPY.minimised)
-    : (status ? t(status) : t(DOCK_COPY.idle));
+    : status
+      ? t(status)
+      : t(DOCK_COPY.idle);
 
   return (
     <div
@@ -493,18 +526,26 @@ export function ChatDock() {
           </div>
 
           <div className={styles.inputRow}>
+
             <input
               ref={inputRef}
               type="text"
               className={styles.input}
               placeholder={t(DOCK_COPY.placeholder)}
               aria-label={t(DOCK_COPY.ask)}
+              /*
+               * Typing stays open through a voice session. Locking the field
+               * whenever the microphone was live meant a visitor who wanted to
+               * spell out an email address had to hang up first — and typing is
+               * itself an interruption the agent now handles, so there is
+               * nothing left to protect.
+               */
               disabled={busy}
               maxLength={1200}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
-                  void send();
+                  submitText();
                 }
               }}
             />
@@ -522,7 +563,7 @@ export function ChatDock() {
               <button
                 type="button"
                 className={styles.send}
-                onClick={() => void send()}
+                onClick={submitText}
                 aria-label={t(DOCK_COPY.send)}
               >
                 &#8594;

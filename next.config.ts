@@ -15,8 +15,10 @@ const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   // Send the origin to other sites, the full URL to our own.
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  // The site asks for none of these.
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), interest-cohort=()" },
+  // The voice agent asks for the microphone, so it is allowlisted for this
+  // document. Everything not in the list stays denied — that is the point of
+  // the header.
+  { key: "Permissions-Policy", value: "microphone=(self), camera=(), geolocation=(), interest-cohort=()" },
   // Preload is intentionally omitted until the domain is confirmed HTTPS-only.
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
 ];

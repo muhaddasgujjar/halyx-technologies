@@ -223,9 +223,20 @@
   transition: transform 90ms linear;
 }
 
+/*
+ * Speaking is a meter too, now.
+ *
+ * This used to be a CSS cycle, because the old browser-side agent synthesised
+ * speech through `speechSynthesis`, which exposes no audio graph at all — there
+ * was no signal to read, so the bars animated on a timer and were an indicator
+ * rather than a measurement. The agent's voice now arrives as a real WebRTC
+ * track, so `--level` is its actual amplitude and the bars move with the words.
+ * The per-bar `--i` spread stays, so the nine of them still read as a voice
+ * rather than one block rising and falling together.
+ */
 .wave[data-state="speaking"] i {
-  animation: var(--hx-kf-wave) 0.85s ease-in-out infinite;
-  animation-delay: calc(var(--i) * -0.14s);
+  transform: scaleY(calc(0.16 + var(--level, 0) * (0.7 + var(--i) * 0.16)));
+  transition: transform 80ms linear;
 }
 
 /* Thinking is a slower, shallower version of the same idea. */

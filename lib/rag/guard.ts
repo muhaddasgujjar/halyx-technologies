@@ -144,7 +144,8 @@ export function validate(body: unknown): Validation {
     history = kept;
   }
 
-  const mode: ChatMode = raw.mode === "voice" ? "voice" : "text";
+  // Only one persona remains; anything a caller sends is normalised to it.
+  const mode: ChatMode = "text";
   const locale = isLanguageCode(raw.locale) ? raw.locale : DEFAULT_LOCALE;
 
   return { ok: true, value: { message, history, mode, locale } };

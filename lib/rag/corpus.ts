@@ -62,7 +62,7 @@ const identity: Chunk[] = [
     id: "co:proof",
     section: "company",
     title: "Headline numbers",
-    href: "#company",
+    href: "#highlights",
     weight: 1.2,
     text: `The three positioning statements Halyx puts on the homepage, with what each one means: ${HIGHLIGHTS.map((h) => `${h.metric} ${h.metricLabel.toLowerCase()} — ${h.title}: ${h.blurb} ${h.more}`).join(" ")} Treat those figures as the studio's own marketing headline, not as audited numbers, and never extend them with a statistic of your own. The hard, checkable proof is different and better: ${PROJECTS.length} products that are live right now, each one linkable. Lead with those.`,
     keywords: [
@@ -109,7 +109,7 @@ const team: Chunk[] = [
     id: "team:leadership",
     section: "team",
     title: "Who runs Halyx",
-    href: "#company",
+    href: "#team",
     weight: 1.2,
     text: `Halyx's named leadership: ${TEAM.map((m) => `${m.name}, ${m.title} (${m.tag}) — ${m.bio}${m.linkedin ? ` LinkedIn: ${m.linkedin}` : ""}`).join(" ")} These three are the people a client deals with directly; the CEO stays on every engagement from first brief through to what ships, and the Manager owns the reporting cadence against the metric agreed up front.`,
     keywords: [
@@ -135,7 +135,10 @@ const proof: Chunk[] = PROOF_POINTS.map((p) => ({
   id: `proof:${p.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`,
   section: "testimonial" as const,
   title: `Proof of work — ${p.name}`,
-  href: "#company",
+  // The case-study section, not Our Story — and the live product first, since
+  // the whole claim of these chunks is that a prospect can open the thing.
+  href: "#work",
+  url: p.url,
   // The corpus is English by definition, so it composes the label itself rather
   // than reading a pre-joined one off the record.
   text: `${p.name} (${p.cat.toUpperCase()} · ${p.host}) is live and a prospect can open it right now. What it does: ${p.q}`,
