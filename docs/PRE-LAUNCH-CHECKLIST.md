@@ -195,11 +195,15 @@ correctly omits in-page anchors, which are not separate URLs.
 site served `noindex, nofollow` on every page *and* a blanket `Disallow: /`.
 The guard in `lib/site.ts` was correct; it had simply never been switched on.
 
-**Search Console verified 2026-09-21** by DNS TXT on the apex. The record must
-stay in place — see `docs/DEPLOY.md` §4, which records the exact value.
+**Search Console set up 2026-09-21.** Domain property, verified by DNS TXT on
+the apex; that record must stay in place, and `docs/DEPLOY.md` §4 records its
+exact value and why it looks deletable. Sitemap submitted and accepted, 8 URLs.
 
-**Still to do:** submit `sitemap.xml` in Search Console and request indexing.
-Nothing is crawled until that happens.
+**Still to do:** request indexing on `/` and `/services/ai-machine-learning` to
+seed the first crawl, then leave it for 3–7 days. After that, watch **Pages**
+for `Excluded by 'noindex'` — if that appears later it means
+`NEXT_PUBLIC_SITE_URL` was dropped from the Vercel environment and the site has
+silently re-blocked itself.
 
 ---
 
