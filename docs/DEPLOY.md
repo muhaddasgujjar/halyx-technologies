@@ -254,9 +254,17 @@ it cannot drift out of date.
   and do not go hunting for a bug. Google caches `robots.txt` for up to 24
   hours, and this site served `Disallow: /` until the morning of 2026-09-21 —
   so the first inspection after switching indexing on reads the cached block
-  while the live file already says `Allow: /`. **Settings → robots.txt** shows
-  which version Google holds and lets you request a recrawl. It also clears on
-  its own within a day.
+  while the live file already says `Allow: /`. It clears on its own within a
+  day. **Settings → robots.txt** would normally let you force a recrawl, but
+  on a property this new that report says *"No robots.txt file"* — it is
+  scoped to fetches Google has recorded **since the property was created**, so
+  there is nothing there to act on yet. Wait rather than hunt for a fault.
+- **Expect "No robots.txt file" and "No data available yet" for Crawl Stats**
+  in the first days. Same cause: both reports are property-scoped and
+  historical. Crawl Stats needs several days of fetches before it shows
+  anything. Verified 2026-09-21 that all four host/scheme combinations serve
+  `robots.txt` with a final 200, so an empty report is not evidence of a
+  problem.
 - **Expect "Discovered – currently not indexed" with `Last crawl: N/A`** on
   pages submitted minutes earlier. That is the crawl queue, not a rejection.
   It becomes worth investigating only if it persists past about a month, and
