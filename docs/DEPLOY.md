@@ -127,6 +127,102 @@ variables, run it. It needs no inbound port — it dials out to LiveKit.
 
 ---
 
+## 4. Google Search Console
+
+Do this once, after the site is indexable. It is the only way to see what the
+site actually ranks for, and the only place Google tells you it has stopped
+indexing you.
+
+### Check indexing is actually on first
+
+Search Console will happily verify a site Google is forbidden to crawl, and
+then report nothing for weeks. Confirm both of these before starting:
+
+```bash
+curl -s https://www.halyxtechnologies.com/robots.txt          # must say Allow: /
+curl -s https://www.halyxtechnologies.com/ | grep 'name="robots"'   # must say index, follow
+```
+
+If either says otherwise, `NEXT_PUBLIC_SITE_URL` is missing from the Vercel
+production environment. `IS_INDEXABLE` in `lib/site.ts` gates both on it, and
+until it is set the site serves `noindex` **and** a blanket disallow.
+
+### Add the property
+
+Go to <https://search.google.com/search-console> and sign in with the Google
+account that should own this — use a real company account, not a personal one
+you will lose access to.
+
+Choose **Domain**, not URL prefix, and enter `halyxtechnologies.com` with no
+`https://` and no `www`.
+
+A Domain property covers the apex, `www`, every subdomain and both protocols as
+one property. That matters here specifically: the apex `308`s to `www`, so a
+URL-prefix property on the wrong one of the two reports almost nothing. It is
+DNS-verified, so it also survives moving off Vercel.
+
+### Verify by DNS TXT
+
+Google shows a record like `google-site-verification=xxxxxxxxxxxx`. Add it
+wherever this domain's DNS lives — in the Vercel dashboard that is
+**Project → Settings → Domains → the domain → DNS Records**:
+
+| Field | Value |
+|-------|-------|
+| Type | `TXT` |
+| Name | `@` (the apex, not `www`) |
+| Value | `google-site-verification=xxxxxxxxxxxx` |
+| TTL | leave the default |
+
+Save, wait a minute or two, then press **Verify**. If it fails, propagation is
+usually the cause — check with `nslookup -type=TXT halyxtechnologies.com` and
+try again rather than adding a second record.
+
+**Leave the record in place permanently.** Deleting it un-verifies the
+property, and Google rechecks periodically.
+
+#### If you cannot reach DNS
+
+There is an HTML-tag fallback already wired. Pick **HTML tag** in Search
+Console, copy only the `content="..."` value, and set it in Vercel:
+
+```bash
+npx vercel env add NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION production
+npx vercel --prod          # or push to main
+```
+
+`app/layout.tsx` emits the tag only when that variable is set. Prefer DNS where
+possible — the tag route verifies one hostname, not the domain.
+
+### Submit the sitemap
+
+Once verified, open **Sitemaps** in the sidebar and submit:
+
+```
+sitemap.xml
+```
+
+Just that — the property already knows the domain. It should report
+**Success** and 3 discovered URLs (`/`, `/privacy`, `/terms`). `app/sitemap.ts`
+generates it, so it cannot drift.
+
+### Then, and this is the part people skip
+
+- **URL Inspection** on `https://www.halyxtechnologies.com/` → **Request
+  indexing**. Seeds the first crawl instead of waiting.
+- Come back in **3–7 days**. Indexing is not immediate and an empty report on
+  day one means nothing.
+- Check **Pages** for anything under *Not indexed*. `Excluded by 'noindex'`
+  appearing later means `NEXT_PUBLIC_SITE_URL` was lost from the environment.
+- Set the **email preferences** on, so Google can tell you about a manual
+  action or a coverage collapse. That notification is the main reason to have
+  done any of this.
+
+Bing has an equivalent at <https://www.bing.com/webmasters>, and it can import
+the Search Console property directly once this is done.
+
+---
+
 ## What the build already guarantees
 
 `npm run build` runs six checks before it compiles, and two of them exist

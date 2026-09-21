@@ -56,6 +56,17 @@ export const metadata: Metadata = {
     index: IS_INDEXABLE,
     follow: IS_INDEXABLE,
   },
+  /*
+   * Search Console's HTML-tag verification, if that route is used.
+   *
+   * Only emitted when the token is set, so previews and local runs carry
+   * nothing. The DNS-TXT route is preferable — it verifies the apex and `www`
+   * as one property and survives a host change — but this is here because the
+   * tag route needs no DNS access, and an unset variable costs nothing.
+   */
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export const viewport: Viewport = {
