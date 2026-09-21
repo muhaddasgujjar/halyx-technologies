@@ -6,6 +6,16 @@ import { sendAcknowledgement, sendEnquiry } from "@/lib/email";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
+/**
+ * Nobody reads six fields and writes a brief in under this.
+ *
+ * The second gate alongside the honeypot, and it catches a different bot: one
+ * that parses the form properly and skips the hidden field still posts the
+ * instant it arrives. `started_at` is stamped by the client on mount, so the
+ * elapsed time is measured from when the form became interactive.
+ */
+const MIN_FILL_MS = 2500;
+
 function str(data: FormData, key: string) {
   const v = data.get(key);
   return typeof v === "string" ? v.trim() : "";
@@ -15,9 +25,26 @@ export async function submitContact(
   _prev: ContactState,
   data: FormData,
 ): Promise<ContactState> {
-  // Honeypot: a real person never fills a field they cannot see. Answer with a
-  // success shape so bots learn nothing from the difference.
-  if (str(data, "company_website")) {
+  /*
+   * Two gates, both silent.
+   *
+   * A tripped submission gets the ordinary success shape: telling a bot it was
+   * caught only teaches whoever wrote it what to change.
+   *
+   *   1. Honeypot — a real person never fills a field they cannot see.
+   *   2. Fill time — measured from when the form mounted in the browser.
+   *
+   * The timestamp is deliberately permissive when absent or unparseable. The
+   * form is a real POST and works with JavaScript disabled, and in that case
+   * nothing stamps `started_at`; rejecting on a missing value would silently
+   * drop every no-JS enquiry, which is a far worse failure than letting a bot
+   * through.
+   */
+  const startedAt = Number(str(data, "started_at"));
+  const tooFast =
+    Number.isFinite(startedAt) && startedAt > 0 && Date.now() - startedAt < MIN_FILL_MS;
+
+  if (str(data, "company_website") || tooFast) {
     return {
       status: "success",
       message: "Thanks — we'll be in touch.",

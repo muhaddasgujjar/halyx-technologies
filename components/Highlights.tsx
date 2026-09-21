@@ -36,8 +36,8 @@ export function Highlights() {
                   <span className={styles.shine} aria-hidden="true" />
 
                   <span className={styles.cardTop}>
-                    <span className={styles.metric}>{h.metric}</span>
-                    <span className={`${styles.metricLabel} hx-mono`}>{t(h.metricLabel)}</span>
+                    <span className={styles.num}>{h.num}</span>
+                    <span className={`${styles.label} hx-mono`}>{t(h.label)}</span>
                   </span>
 
                   <span className={styles.cardBody}>

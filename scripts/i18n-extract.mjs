@@ -36,7 +36,7 @@ const ROOT = process.cwd();
  * numerals; `host`, `url`, `img`, `focus` and `linkedin` are addresses.
  */
 const DATA_FIELDS = {
-  "lib/content.ts": ["metricLabel", "title", "blurb", "more", "lead", "trail", "bio", "label", "text"],
+  "lib/content.ts": ["title", "blurb", "more", "lead", "trail", "bio", "label", "text"],
   "lib/services.ts": ["title", "blurb", "services"],
   "lib/projects.ts": ["cat", "note", "tags", "problem", "solution", "facts"],
   "lib/people.ts": ["name", "quote"],

@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { submitContact } from "@/app/actions/contact";
 import { CONTACT_INITIAL_STATE, EMPTY_CONTACT_VALUES } from "@/lib/contact-state";
@@ -24,6 +24,17 @@ export function ContactForm() {
   const [state, formAction] = useActionState(submitContact, CONTACT_INITIAL_STATE);
   const [interest, setInterest] = useState(0);
   const { t } = useLocale();
+  const startedAt = useRef<HTMLInputElement | null>(null);
+
+  /*
+   * Stamped in an effect rather than rendered as a value: this page is
+   * prerendered, so anything computed during render carries the *build* time,
+   * which would make every submission look hours old and disable the gate.
+   * Writing it on mount measures from when the form became interactive.
+   */
+  useEffect(() => {
+    if (startedAt.current) startedAt.current.value = String(Date.now());
+  }, []);
 
   // Defensive: a stale client (an open tab across a deploy) can hand back a
   // state shape from an older build. Falling back beats throwing mid-render.
@@ -76,6 +87,9 @@ export function ContactForm() {
                 <h3 className={styles.h3}>{t("Let’s talk")}</h3>
 
                 <form action={formAction} noValidate>
+                  {/* When the form became interactive. See `MIN_FILL_MS`. */}
+                  <input ref={startedAt} type="hidden" name="started_at" defaultValue="" />
+
                   {/* Bots fill this; people never see it. */}
                   <div className={styles.honeypot} aria-hidden="true">
                     <label htmlFor="company_website">{t("Leave this empty")}</label>

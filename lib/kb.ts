@@ -64,7 +64,7 @@ export const KB: KbEntry[] = [
   },
   {
     k: ["support", "maintain", "after", "handover", "sla"],
-    a: "24/7 support coverage. Every build ships with documentation, CI, observability and a handover so your team can run it without us.",
+    a: "Support hours and any availability target are agreed per engagement rather than promised up front. Every build ships with documentation, CI, observability and a handover so your team can run it without us.",
   },
   {
     k: ["hello", "hi", "hey", "greet"],

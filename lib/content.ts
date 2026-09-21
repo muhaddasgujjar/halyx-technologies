@@ -1,6 +1,17 @@
 export interface Highlight {
-  metric: string;
-  metricLabel: string;
+  /**
+   * Position marker, not a measurement.
+   *
+   * These cards used to lead with `40+ INTERFACES SHIPPED`, `99.9% PLATFORM
+   * UPTIME` and `4x MEDIAN ROI`. Nothing in the repo backed any of them, no
+   * monitoring exists to back the uptime figure, and the hero claimed a
+   * different products number on the same scroll. They are replaced with the
+   * same `01`/`02` numbering the Beliefs section uses: it keeps the card's
+   * visual anchor and claims nothing.
+   */
+  num: string;
+  /** Category, for the right of the card head. Also not a claim. */
+  label: string;
   title: string;
   blurb: string;
   more: string;
@@ -8,22 +19,22 @@ export interface Highlight {
 
 export const HIGHLIGHTS: Highlight[] = [
   {
-    metric: "40+",
-    metricLabel: "INTERFACES SHIPPED",
+    num: "01",
+    label: "DESIGN",
     title: "Design\u2013First Innovation",
     blurb: "Award-winning UI/UX and interface work that makes complex systems feel obvious.",
     more: "Discovery, UX flows, design systems and prototypes that survive contact with engineering.",
   },
   {
-    metric: "99.9%",
-    metricLabel: "PLATFORM UPTIME",
+    num: "02",
+    label: "ENGINEERING",
     title: "Engineering Excellence",
     blurb: "Typed codebases, tested pipelines, and scalable AI architecture built to hand over.",
     more: "Every build leaves with documentation, CI, observability and a team that can run it without us.",
   },
   {
-    metric: "4x",
-    metricLabel: "MEDIAN ROI",
+    num: "03",
+    label: "IMPACT",
     title: "Real\u2013World Impact",
     blurb: "From healthcare to enterprise AI, our work drives measurable business outcomes.",
     more: "We agree the metric before the first sprint and report against it until it moves.",

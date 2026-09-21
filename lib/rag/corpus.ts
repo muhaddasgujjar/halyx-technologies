@@ -51,7 +51,7 @@ const identity: Chunk[] = [
     section: "company",
     title: "Company timeline and delivery regions",
     href: "#company",
-    text: `Halyx's own account of how it grew, hub by hub: ${HUBS.map((h) => `${h.label} — ${h.name.replace(/\b\w/g, (c) => c.toUpperCase())}: ${h.t}`).join(" ")} Delivery is follow-the-sun across those regions, which is what the 24/7 support claim rests on.`,
+    text: `Halyx's own account of how it grew, hub by hub: ${HUBS.map((h) => `${h.label} — ${h.name.replace(/\b\w/g, (c) => c.toUpperCase())}: ${h.t}`).join(" ")} Delivery is follow-the-sun across those regions, which is how work continues across client time zones.`,
     keywords: [
       "history", "founded", "when did you start", "offices", "locations",
       "regions", "global", "timezone", "headquarters", "where are you based",
@@ -61,10 +61,17 @@ const identity: Chunk[] = [
   {
     id: "co:proof",
     section: "company",
-    title: "Headline numbers",
+    title: "What the numbers actually are",
     href: "#highlights",
     weight: 1.2,
-    text: `The three positioning statements Halyx puts on the homepage, with what each one means: ${HIGHLIGHTS.map((h) => `${h.metric} ${h.metricLabel.toLowerCase()} — ${h.title}: ${h.blurb} ${h.more}`).join(" ")} Treat those figures as the studio's own marketing headline, not as audited numbers, and never extend them with a statistic of your own. The hard, checkable proof is different and better: ${PROJECTS.length} products that are live right now, each one linkable. Lead with those.`,
+    /*
+     * This chunk used to hand the model `40+ interfaces shipped`, `99.9%
+     * uptime` and `4x median ROI` and then ask it not to lean on them, which
+     * is a losing instruction — a retrieved figure gets repeated. The figures
+     * are gone from the page, so they are gone from here. Everything below is
+     * a count of something on the page a prospect can click.
+     */
+    text: `Every number Halyx publishes is a count of something checkable on the page, not a marketing figure: ${PROJECTS.length} products live right now, each one linkable (${PROJECTS.map((p) => p.name).join(", ")}); ${SERVICES.length} practices running discovery to production; ${HUBS.length} regions covered. Halyx deliberately publishes no uptime percentage, no ROI multiple and no project total, because it has no monitoring or audit behind them — if asked for figures like that, say so plainly and point at the live products instead. Never invent or extend a statistic. The three positioning statements on the homepage are qualitative: ${HIGHLIGHTS.map((h) => `${h.title} — ${h.blurb} ${h.more}`).join(" ")}`,
     keywords: [
       "metrics", "numbers", "stats", "track record", "uptime", "roi",
       "how many projects", "results", "impact", "proof", "credentials",
@@ -235,7 +242,7 @@ const EDITORIAL: Chunk[] = [
     title: "Support, SLAs and handover",
     href: "#services",
     weight: 1.1,
-    text: `Support coverage is 24/7, which the follow-the-sun delivery across four regions is what makes possible. The site claims 99.9% platform uptime. Every build ships with documentation, CI, observability and a structured handover, and the explicit goal is that the client's team can run the system without Halyx — one client's engineers owned a delivered service two weeks after handover. Teams that would rather not run it themselves can keep Halyx on for support and evolution. Halyx has taken a model from a notebook to a service running in two regions behind a 99.9% SLA.`,
+    text: `Every build ships with documentation, CI, observability and a structured handover, and the explicit goal is that the client's team can run the system without Halyx. Teams that would rather not run it themselves can keep Halyx on for support and evolution. Delivery runs follow-the-sun across ${HUBS.length} regions, so work continues across client time zones. Halyx publishes no uptime percentage and no standard SLA: availability targets and support hours are agreed per engagement and written into the contract, because a number promised on a website before anyone has seen the system is worth nothing. If asked for an uptime figure or an SLA, say exactly that and offer to scope one.`,
     keywords: [
       "support", "sla", "maintenance", "after launch", "handover", "handoff",
       "warranty", "bugs", "uptime", "monitoring", "on call", "who maintains",

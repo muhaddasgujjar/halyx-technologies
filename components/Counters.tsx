@@ -1,23 +1,30 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { COUNTER_TARGETS } from "@/lib/config";
+import { HUBS } from "@/lib/hubs";
+import { PROJECTS } from "@/lib/projects";
+import { SERVICES } from "@/lib/services";
 import { useLocale } from "./LocaleProvider";
 import { useSite } from "./SiteProvider";
 import styles from "./Hero.module.css";
 
-const LABELS = [
-  ["Products", "Shipped"],
-  ["Industries", "Served"],
-  ["Support", "Coverage"],
+/*
+ * Counted off the same arrays the rest of the page renders, so a visitor can
+ * check every one of them on this page: the products are linkable, the
+ * practices are listed under Services, and the regions are the pins on the
+ * map. TrustedBy derives the same three from the same source — they agree by
+ * construction rather than by somebody remembering to update both.
+ *
+ * No `+` and no `/7`. A suffix on a derived count turns it back into a claim.
+ */
+const STATS = [
+  { value: PROJECTS.length, label: ["Products", "Live"] },
+  { value: SERVICES.length, label: ["Practices", "End to end"] },
+  { value: HUBS.length, label: ["Regions", "Covered"] },
 ] as const;
 
-/** `60+`, `12`, `24/7` — the suffixes are part of the design, not the data. */
-function format(value: number, i: number) {
-  if (i === 0) return `${value}+`;
-  if (i === 2) return `${value}/7`;
-  return String(value);
-}
+const TARGETS = STATS.map((s) => s.value);
+const LABELS = STATS.map((s) => s.label);
 
 const DURATION = 1700;
 
@@ -25,11 +32,11 @@ export function Counters() {
   const { t } = useLocale();
   const { motion } = useSite();
   const ref = useRef<HTMLDivElement | null>(null);
-  const [counts, setCounts] = useState<number[]>(motion ? [0, 0, 0] : [...COUNTER_TARGETS]);
+  const [counts, setCounts] = useState<number[]>(motion ? TARGETS.map(() => 0) : [...TARGETS]);
 
   useEffect(() => {
     if (!motion) {
-      setCounts([...COUNTER_TARGETS]);
+      setCounts([...TARGETS]);
       return;
     }
 
@@ -46,7 +53,7 @@ export function Counters() {
       const step = () => {
         const p = Math.min(1, (performance.now() - t0) / DURATION);
         const e = 1 - Math.pow(1 - p, 3);
-        setCounts(COUNTER_TARGETS.map((t) => Math.round(t * e)));
+        setCounts(TARGETS.map((t) => Math.round(t * e)));
         if (p < 1) raf = requestAnimationFrame(step);
         else running = false;
       };
@@ -85,7 +92,7 @@ export function Counters() {
     <div ref={ref} className={styles.stats} data-counters="1">
       {LABELS.map(([a, b], i) => (
         <div key={a} className={styles.stat}>
-          <div className={styles.statValue}>{format(counts[i] ?? 0, i)}</div>
+          <div className={styles.statValue}>{counts[i] ?? 0}</div>
           <div className={styles.statLabel}>
             {t(a)}
             <br />
