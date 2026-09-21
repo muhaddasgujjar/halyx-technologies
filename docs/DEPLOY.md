@@ -230,15 +230,21 @@ possible — the tag route verifies one hostname, not the domain.
 
 ### Submit the sitemap
 
-Once verified, open **Sitemaps** in the sidebar and submit:
+Once verified, open **Sitemaps** in the sidebar and submit the **full URL**:
 
 ```
-sitemap.xml
+https://www.halyxtechnologies.com/sitemap.xml
 ```
 
-Just that — the property already knows the domain. It should report
-**Success** and 3 discovered URLs (`/`, `/privacy`, `/terms`). `app/sitemap.ts`
-generates it, so it cannot drift.
+**Not** a bare `sitemap.xml`. That form works only in a URL-prefix property,
+where the field is pre-filled with the hostname. This is a **Domain** property,
+which spans http and https, the apex and every subdomain — so Google cannot
+infer which host is meant and answers *"Invalid sitemap address. Please enter a
+valid path to a sitemap in your site."*
+
+It should report **Success** and 8 discovered URLs: `/`, the five
+`/services/*` pages, `/privacy` and `/terms`. `app/sitemap.ts` generates it, so
+it cannot drift out of date.
 
 ### Then, and this is the part people skip
 
