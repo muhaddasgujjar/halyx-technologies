@@ -61,8 +61,14 @@ export const LOCATION = {
  * privacy policy, and a Google Business Profile needs the address anyway.
  */
 export const LEGAL_ENTITY = {
-  /** As confirmed by the company. Check this matches the SECP certificate exactly. */
-  name: "Halyx Technologies",
+  /**
+   * The registered name, as on the SECP certificate — not the trading name.
+   *
+   * `SITE.name` ("Halyx Technologies") is the brand and belongs in copy; this
+   * belongs in the clauses that have to identify a legal person. Use this at
+   * first mention on a legal page, then the short form the page defines.
+   */
+  name: "Halyx Technologies (Private) Limited",
   /** Governing law and the courts with jurisdiction. */
   jurisdiction: "Pakistan",
   courts: "Lahore, Punjab",

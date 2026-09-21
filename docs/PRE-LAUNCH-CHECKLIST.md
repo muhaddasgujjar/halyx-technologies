@@ -51,8 +51,10 @@ Also documented honestly: no cookies, no analytics, no database, and the
 language preference held in `localStorage`.
 
 **Completed 2026-09-21** with the confirmed entity: the controller is named as
-Halyx Technologies, a company incorporated in Pakistan, registered with the
-SECP and based in Lahore, Punjab.
+**Halyx Technologies (Private) Limited**, incorporated in Pakistan, registered
+with the SECP and based in Lahore, Punjab. The registered name appears once at
+first mention; the page then uses the short form it defines, which is why
+`LEGAL_ENTITY.name` and `SITE.name` are separate constants.
 
 The international-transfer clause is the one that changed most. With a
 Pakistan-based controller and seven US processors, a UK or EEA visitor’s data
@@ -88,9 +90,9 @@ liability clauses now bind to `LEGAL_ENTITY.name`, so a rename on the SECP
 certificate does not leave them naming a brand instead of a company.
 
 **Remaining:** incorporation number, registered office address, and a lawyer’s
-read. Also confirm the exact registered name — if it is a private limited
-company the certificate probably reads "Halyx Technologies (Private) Limited",
-and the legal pages should match the certificate character for character.
+read. The registered name is confirmed as **Halyx Technologies (Private)
+Limited** and is set in `LEGAL_ENTITY.name`; the schema carries it as
+`legalName` while `name` stays the trading name.
 
 ### `[x]` 5. Cookie consent banner — **not needed, close this item**
 

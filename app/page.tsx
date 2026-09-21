@@ -21,7 +21,7 @@ import { PROJECTS } from "@/lib/projects";
 import { SERVICE_PAGES } from "@/lib/service-pages";
 import { SERVICES } from "@/lib/services";
 import { TEAM } from "@/lib/content";
-import { LOCATION, SITE, SOCIAL_LINKS } from "@/lib/site";
+import { LEGAL_ENTITY, LOCATION, SITE, SOCIAL_LINKS } from "@/lib/site";
 
 /**
  * One continuous scroll. `<SiteProvider>` holds the handful of pieces of state
@@ -87,7 +87,11 @@ export default function HomePage() {
             "@context": "https://schema.org",
             "@type": "ProfessionalService",
             "@id": `${SITE.url}/#organization`,
+            // `name` is what people call it; `legalName` is what the SECP
+            // certificate says. Search engines want the first and use the
+            // second to disambiguate the entity from similarly named ones.
             name: SITE.name,
+            legalName: LEGAL_ENTITY.name,
             alternateName: "Halyx",
             description: SITE.description,
             slogan: SITE.tagline,

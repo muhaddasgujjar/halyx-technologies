@@ -43,17 +43,18 @@ export default function TermsPage() {
           <span className={styles.term}>{LEGAL_ENTITY.name}</span>, a company
           incorporated in {LEGAL_ENTITY.jurisdiction} and registered with the{" "}
           {LEGAL_ENTITY.registrar}, based in {LOCATION.city}, {LOCATION.region}.
-          &ldquo;Halyx&rdquo;, &ldquo;we&rdquo; and &ldquo;us&rdquo; below mean that
-          company.
+          &ldquo;Halyx&rdquo;, &ldquo;we&rdquo; and &ldquo;us&rdquo; everywhere below
+          mean that company. &ldquo;Halyx Technologies&rdquo; on its own is the trading
+          name.
         </p>
 
         <h2 className={styles.h2}>What these terms cover</h2>
         <p className={styles.p}>
           They govern your use of this <span className={styles.term}>website</span>. They
-          are not the contract for client work. If {LEGAL_ENTITY.name} builds something
-          for you, that engagement is governed by a separate signed agreement &mdash; a
-          master services agreement and a statement of work &mdash; and where that
-          agreement and this page disagree, that agreement wins. Nothing here narrows it.
+          are not the contract for client work. If we build something for you, that
+          engagement is governed by a separate signed agreement &mdash; a master
+          services agreement and a statement of work &mdash; and where that agreement
+          and this page disagree, that agreement wins. Nothing here narrows it.
         </p>
 
         <h2 className={styles.h2}>The site is informational</h2>
@@ -74,8 +75,8 @@ export default function TermsPage() {
           The text and voice assistants are generative AI. They are grounded in the
           studio&rsquo;s own material, but like any such system they can be wrong,
           incomplete, or out of date. Treat what they tell you as a starting point rather
-          than a commitment by Halyx Technologies, and confirm anything that matters with
-          a person. Nothing an assistant says forms a contract or binds the studio.
+          than a commitment by us, and confirm anything that matters with a person.
+          Nothing an assistant says forms a contract or binds the studio.
         </p>
         <p className={styles.p}>
           Please do not paste confidential or personal information about other people
@@ -88,9 +89,9 @@ export default function TermsPage() {
 
         <h2 className={styles.h2}>Ownership</h2>
         <p className={styles.p}>
-          The design, code, copy, brand marks and imagery on this site belong to{" "}
-          {LEGAL_ENTITY.name}, except where a third party&rsquo;s name or mark is shown,
-          which remains theirs. You are welcome to read, link to, and quote the site with
+          The design, code, copy, brand marks and imagery on this site belong to us,
+          except where a third party&rsquo;s name or mark is shown, which remains
+          theirs. You are welcome to read, link to, and quote the site with
           attribution. You may not republish it wholesale, or present it as your own.
         </p>
 
@@ -128,8 +129,8 @@ export default function TermsPage() {
 
         <h2 className={styles.h2}>Liability</h2>
         <p className={styles.p}>
-          To the extent the law allows, {LEGAL_ENTITY.name} is not liable for loss
-          arising from your use of this site or reliance on its content, including lost profit,
+          To the extent the law allows, we are not liable for loss arising from your
+          use of this site or reliance on its content, including lost profit,
           lost business or lost data. Nothing here excludes liability that cannot legally
           be excluded &mdash; notably for death or personal injury caused by negligence,
           or for fraud.
@@ -138,8 +139,8 @@ export default function TermsPage() {
         <h2 className={styles.h2}>Links out</h2>
         <p className={styles.p}>
           This site links to client projects and to the studio&rsquo;s social profiles.
-          Those are run by other people. Halyx Technologies does not control them and is
-          not responsible for their content.
+          Those are run by other people. We do not control them and are not responsible
+          for their content.
         </p>
 
         <h2 className={styles.h2}>Changes to these terms</h2>

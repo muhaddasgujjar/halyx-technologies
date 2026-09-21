@@ -57,7 +57,8 @@ export default function PrivacyPage() {
           <span className={styles.term}>{LEGAL_ENTITY.name}</span>, a company
           incorporated in {LEGAL_ENTITY.jurisdiction}, registered with the{" "}
           {LEGAL_ENTITY.registrar} and based in {LOCATION.city}, {LOCATION.region}.
-          Anything on this page can be raised by email at{" "}
+          &ldquo;Halyx&rdquo;, &ldquo;we&rdquo; and &ldquo;us&rdquo; below mean that
+          company. Anything on this page can be raised by email at{" "}
           <a href={`mailto:${SITE.email}`} className={styles.link}>
             {SITE.email}
           </a>
@@ -141,8 +142,8 @@ export default function PrivacyPage() {
         </div>
         <p className={styles.p}>
           <span className={styles.term}>International transfers.</span> Two of them,
-          stated plainly. {LEGAL_ENTITY.name} is in {LOCATION.country}, and every
-          provider in the table above is a United States company. So if you are in the
+          stated plainly. We are in {LOCATION.country}, and every provider in the table
+          above is a United States company. So if you are in the
           UK or the EEA, your data leaves it twice over &mdash; once to
           {" "}{LOCATION.country} and once to the United States &mdash; and neither is
           covered by a UK or EU adequacy decision. Transfers to the providers rely on
