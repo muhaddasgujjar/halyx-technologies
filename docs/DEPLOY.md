@@ -250,6 +250,17 @@ it cannot drift out of date.
 
 - **URL Inspection** on `https://www.halyxtechnologies.com/` → **Request
   indexing**. Seeds the first crawl instead of waiting.
+- **Expect "Indexed, though blocked by robots.txt" on the first inspection,**
+  and do not go hunting for a bug. Google caches `robots.txt` for up to 24
+  hours, and this site served `Disallow: /` until the morning of 2026-09-21 —
+  so the first inspection after switching indexing on reads the cached block
+  while the live file already says `Allow: /`. **Settings → robots.txt** shows
+  which version Google holds and lets you request a recrawl. It also clears on
+  its own within a day.
+- **Expect "Discovered – currently not indexed" with `Last crawl: N/A`** on
+  pages submitted minutes earlier. That is the crawl queue, not a rejection.
+  It becomes worth investigating only if it persists past about a month, and
+  the answer then is usually links or content, never resubmitting.
 - Come back in **3–7 days**. Indexing is not immediate and an empty report on
   day one means nothing.
 - Check **Pages** for anything under *Not indexed*. `Excluded by 'noindex'`
