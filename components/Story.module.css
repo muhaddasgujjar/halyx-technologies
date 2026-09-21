@@ -61,6 +61,16 @@
   background: radial-gradient(ellipse at 50% 40%, rgba(107, 92, 240, 0.1), rgba(6, 6, 8, 0) 70%);
 }
 
+/*
+ * Stands in while the map chunk loads. `.mapPanel` already fixes the height,
+ * so this only has to fill it — there is no shift to guard against, and the
+ * panel's own gradient keeps the space from reading as broken.
+ */
+.mapPlaceholder {
+  width: 100%;
+  height: 100%;
+}
+
 /* --------------------------------------------------------------------------
    Small screens.
    -------------------------------------------------------------------------- */

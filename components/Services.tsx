@@ -1,9 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { SERVICES } from "@/lib/services";
 import { useLocale } from "./LocaleProvider";
 import { Reveal, RevealScope } from "./Reveal";
 import { useSite } from "./SiteProvider";
+import { SERVICE_PAGES } from "@/lib/service-pages";
 import styles from "./Services.module.css";
 
 /**
@@ -99,6 +101,25 @@ export function Services() {
                   </span>
                 </button>
               ))}
+            </Reveal>
+
+            {/*
+              The cards above are carousel buttons, so they cannot contain a
+              link. These are the crawlable route into each practice page —
+              and, until this existed, `#services` was an anchor rather than a
+              URL, so none of this content could rank on its own.
+            */}
+            <Reveal delay={200} className={styles.readMore}>
+              <span className={`${styles.readMoreLabel} hx-mono`}>{t("READ IN FULL")}</span>
+              <ul className={styles.readMoreList}>
+                {SERVICE_PAGES.map((p) => (
+                  <li key={p.slug}>
+                    <Link href={`/services/${p.slug}`} className={styles.readMoreLink}>
+                      {t(p.title)} &#8599;
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </Reveal>
           </div>
         </div>

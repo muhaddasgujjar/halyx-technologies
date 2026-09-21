@@ -141,14 +141,23 @@ export const FOOTER_COLUMNS = [
     ],
   },
   {
+    /*
+     * The five practices, each pointing at its own page rather than at the
+     * `#services` anchor they all used to share. These are real internal
+     * links to real URLs, which is what makes the service pages reachable —
+     * by a visitor and by a crawler.
+     *
+     * The list is the practices in `lib/services.ts`, not a longer wish list:
+     * a footer link to something the studio does not have a page for is the
+     * same broken promise as a dead social icon.
+     */
     label: "SERVICES",
     links: [
-      { text: "Product Design", href: "#services" },
-      { text: "Custom Software", href: "#services" },
-      { text: "AI Development", href: "#services" },
-      { text: "Data Engineering", href: "#services" },
-      { text: "Cloud & DevOps", href: "#services" },
-      { text: "Go-to-Market", href: "#services" },
+      { text: "AI & Machine Learning", href: "/services/ai-machine-learning" },
+      { text: "Custom Software", href: "/services/custom-software" },
+      { text: "Web & Mobile Apps", href: "/services/web-mobile-apps" },
+      { text: "Business Automation", href: "/services/business-automation" },
+      { text: "Data & Cloud", href: "/services/data-cloud" },
     ],
   },
   {

@@ -1,9 +1,24 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useLocale } from "./LocaleProvider";
 import { Reveal, RevealScope } from "./Reveal";
-import { DottedMap } from "./DottedMap";
 import styles from "./Story.module.css";
+
+/*
+ * The map pulls in d3-geo, topojson-client and world-atlas — roughly a fifth
+ * of the page's JavaScript, for a decorative element well below the fold that
+ * cannot render on the server anyway (it rasterises countries to a dot grid
+ * against a canvas). Loading it on demand keeps that weight out of the initial
+ * bundle and off the critical path to LCP.
+ *
+ * `loading` reserves the panel's height so pulling it out of the main chunk
+ * does not introduce the layout shift it was meant to avoid.
+ */
+const DottedMap = dynamic(() => import("./DottedMap").then((m) => m.DottedMap), {
+  ssr: false,
+  loading: () => <div className={styles.mapPlaceholder} aria-hidden="true" />,
+});
 
 export function Story() {
   const { t } = useLocale();

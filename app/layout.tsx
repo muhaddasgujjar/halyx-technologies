@@ -23,10 +23,17 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: "Halyx Technologies — We Build Intelligent Systems That Matter",
+    /*
+     * Leads with the category, not the tagline. "We Build Intelligent Systems
+     * That Matter" is good positioning and a poor title tag: it contains no
+     * term anyone searches for. The tagline still carries the brand in the
+     * OpenGraph title below, where it is read rather than matched.
+     */
+    default: "Applied AI & Software Studio | Halyx Technologies",
     template: "%s — Halyx Technologies",
   },
-  description: SITE.description,
+  description:
+    "We build AI systems and custom software that ship and hold up in production. Five products live now. Free scoping call, and a reply within two working days.",
   applicationName: SITE.name,
   keywords: [
     "applied AI",

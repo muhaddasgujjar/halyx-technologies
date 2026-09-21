@@ -1,0 +1,305 @@
+/*
+ * Long-form reading, not marketing surface. Wider measure than the legal
+ * pages because these carry a card grid, but still capped well short of the
+ * homepage's full-bleed sections.
+ */
+
+.main {
+  padding: clamp(56px, 8vw, 116px) var(--hx-gutter) clamp(60px, 8vw, 110px);
+}
+
+.inner {
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  color: var(--hx-mono-dim);
+  min-height: 44px;
+}
+
+.crumb {
+  color: var(--hx-muted-2);
+  transition: color 0.3s ease;
+}
+
+.crumb:hover {
+  color: var(--hx-ink-strong);
+}
+
+.crumbCurrent {
+  color: var(--hx-ink-2);
+}
+
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--hx-accent-400);
+  margin: 18px 0 16px;
+}
+
+.h1 {
+  font-size: clamp(34px, 5.6vw, 62px);
+  font-weight: 500;
+  line-height: 1.03;
+  letter-spacing: -0.025em;
+  color: var(--hx-ink-strong);
+  margin: 0;
+}
+
+.lede {
+  margin: 24px 0 0;
+  font-size: clamp(16px, 1.8vw, 20px);
+  line-height: 1.62;
+  color: var(--hx-ink-2);
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 22px;
+  margin-top: 32px;
+}
+
+.primary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 0 28px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--hx-accent) 0%, var(--hx-accent-deep) 100%);
+  color: var(--hx-ink-strong);
+  font-size: 15px;
+  transition: box-shadow 0.4s ease;
+}
+
+.primary:hover {
+  box-shadow: 0 0 34px rgba(107, 92, 240, 0.7);
+}
+
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 15px;
+  color: var(--hx-ink-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.3s ease;
+}
+
+.secondary:hover {
+  color: var(--hx-ink-strong);
+}
+
+.ctaNote {
+  font-size: 13.5px;
+  color: var(--hx-mono-dim);
+}
+
+.capabilities {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 34px 0 0;
+  padding: 0;
+}
+
+.capability {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 13px;
+  color: var(--hx-ink-2);
+}
+
+.section {
+  margin-top: clamp(48px, 6vw, 80px);
+}
+
+.closing {
+  margin-top: clamp(52px, 7vw, 92px);
+  padding: clamp(26px, 3.5vw, 40px);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(143, 131, 239, 0.06);
+}
+
+.h2 {
+  font-size: clamp(22px, 2.8vw, 31px);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.18;
+  color: var(--hx-ink-strong);
+  margin: 0 0 16px;
+}
+
+.closingH2 {
+  composes: h2;
+}
+
+.h3 {
+  font-size: clamp(16px, 1.7vw, 18px);
+  font-weight: 500;
+  color: var(--hx-ink-strong);
+  margin: 0 0 8px;
+}
+
+.body {
+  margin: 0;
+  font-size: clamp(15px, 1.55vw, 17px);
+  line-height: 1.68;
+  color: var(--hx-ink-2);
+}
+
+.points {
+  display: grid;
+  gap: 24px;
+  margin-top: 28px;
+}
+
+.point {
+  padding-left: 18px;
+  border-left: 2px solid rgba(143, 131, 239, 0.4);
+}
+
+.pointBody {
+  margin: 0;
+  font-size: 15.5px;
+  line-height: 1.62;
+  color: var(--hx-muted-2);
+}
+
+/* ── Proof ───────────────────────────────────────────────────────────── */
+
+.proofGrid {
+  list-style: none;
+  padding: 0;
+  margin: 26px 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 18px;
+}
+
+.proofCard {
+  padding: 22px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.proofName {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--hx-ink-strong);
+  margin: 0;
+}
+
+.proofCat {
+  margin: 4px 0 12px;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  color: var(--hx-accent-400);
+}
+
+.proofNote {
+  margin: 0 0 16px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--hx-muted-2);
+}
+
+.proofLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 13.5px;
+  color: var(--hx-ink-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.proofLink:hover {
+  color: var(--hx-ink-strong);
+  text-shadow: 0 0 22px rgba(160, 146, 255, 0.9);
+}
+
+/* ── Stack ───────────────────────────────────────────────────────────── */
+
+.stack {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0;
+  margin: 0 0 20px;
+}
+
+.stackItem {
+  padding: 7px 14px;
+  border-radius: 8px;
+  background: rgba(143, 131, 239, 0.12);
+  font-size: 13px;
+  color: var(--hx-accent-100);
+}
+
+/* ── FAQ ─────────────────────────────────────────────────────────────── */
+
+.faq {
+  margin: 26px 0 0;
+}
+
+.faqItem {
+  padding: 20px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.faqItem:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.faqQ {
+  font-size: clamp(16px, 1.7vw, 18px);
+  font-weight: 500;
+  color: var(--hx-ink-strong);
+}
+
+.faqA {
+  margin: 10px 0 0;
+  font-size: 15.5px;
+  line-height: 1.66;
+  color: var(--hx-muted-2);
+}
+
+/* ── Related ─────────────────────────────────────────────────────────── */
+
+.related {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.relatedLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: clamp(16px, 1.7vw, 19px);
+  color: var(--hx-ink-2);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.relatedLink:hover {
+  color: var(--hx-ink-strong);
+  text-shadow: 0 0 22px rgba(160, 146, 255, 0.9);
+}
