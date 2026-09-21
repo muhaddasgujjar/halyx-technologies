@@ -10,11 +10,13 @@
 # the browser's token asks for this exact string; if the three drift, a visitor
 # joins a room nothing else ever joins — silently.
 #
-# `id` is filled in by `lk agent create`. Leave it empty until then.
+# `lk agent create` rewrites this file and drops both this comment block and
+# `agent_name`. Put them back after running it — `npm run build` fails on the
+# missing name, which is the check doing its job.
 
 [project]
   subdomain = "halyx-technologies-vawf7udz"
 
 [agent]
-  id = ""
+  id = "CA_7kqHnsc8dCqJ"
   agent_name = "halyx-agent"
