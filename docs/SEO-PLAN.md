@@ -16,12 +16,11 @@ technical foundation this plan assumes.
    saw one document about five different things and could rank it for none of
    them. `/services/[slug]` now exists; see "What has been built" below.
 
-**Assumption to confirm:** remote-first, targeting US and UK B2B buyers in
-English. Geography could not be derived from the repo — `lib/hubs.ts` lists
-eight regions but they read as coverage claims, not offices. **If Halyx has a
-registered office anywhere, Phase 5 changes substantially** — local packs are
-far less competitive than national commercial terms and would be the fastest
-route to page one.
+**Confirmed 2026-09-21:** the studio is in **Lahore, Pakistan**, selling mostly
+to the **US, UK and Gulf**. Phase 5 is written around that and is the section
+to read first — it is the part of this plan that geography changes most.
+`LOCATION` in `lib/site.ts` now carries the city and the export markets, and
+the homepage schema states them.
 
 ---
 
@@ -143,44 +142,171 @@ Do not reorder. Articles 1–3 rank fast and build the DR that 4–6 need.
 
 ---
 
-## Phase 5 — Off-page
+## Phase 5 — Off-page, geography and authority
 
-### Directories
+**Confirmed 2026-09-21: the studio is in Lahore, Pakistan, selling mostly to
+the US, UK and Gulf.** That combination decides everything in this phase, and
+it is not the same problem as an agency competing at home.
 
-| Platform | Status |
+### The thing to understand before spending a rupee
+
+**There is no global ranking.** Google returns a different first page for the
+same query in Lahore, London, New York and Dubai. "AI development company"
+searched in Chicago returns Chicago agencies, because Google reads commercial
+intent as local intent and weights proximity, local links and local reviews
+heavily. A Lahore studio is not competing against US agencies on merit in that
+SERP — it is competing against a localisation signal it does not have.
+
+So the goal "appear on page one anywhere in the world" splits into three
+different problems, only one of which is winnable quickly:
+
+| Query type | Localised? | Page 1 worldwide? |
+|---|---|---|
+| Technical / informational — `named LiveKit worker vs auto dispatch` | **No.** Same results everywhere | **Yes, and fast.** The genuine global play |
+| Offshore-intent commercial — `hire AI developers Pakistan` | Weakly | **Yes**, 3–6 months |
+| Local-intent commercial — `AI development company` in a US city | **Heavily** | **No**, not without years of authority and US links |
+
+The honest route to worldwide page-one presence is therefore **the technical
+content in Phase 4**, not the commercial terms. A post about excluding a window
+from screen capture ranks identically in Lahore and Los Angeles, because Google
+has no local intent to satisfy. That is how a studio this size gets seen
+globally, and it is the same reason the Phase 4 order is not negotiable.
+
+### 5a. Lahore local — fastest wins available, and mostly not about revenue
+
+Local competition in Lahore is far weaker than any international SERP, so this
+ranks in weeks rather than quarters. Treat it as a **credibility and recruiting
+asset**: a verified local presence is also what US buyers check when deciding
+whether an offshore studio is real.
+
+**Google Business Profile — do this first.**
+
+- Category: *Software company*. Secondary: *Website designer*, *Business to
+  business service*.
+- **Needs a real, verifiable address in Lahore.** Postcard verification to a
+  physical location. Do not invent one and do not use a virtual office — a
+  suspended profile is much harder to recover than a slow one is to build.
+- Set a **service area** covering Lahore and Punjab, plus the export countries.
+- Post the Phase 4 articles to GBP Posts. Almost no Pakistani software house
+  does this, and it is a live ranking signal.
+- Add the five practice pages as GBP **Services**, named exactly as
+  `/services/[slug]`.
+
+**Lahore keyword set** — add to Phase 1, all Low difficulty:
+
+| Keyword | Target |
 |---|---|
-| **Clutch.co** | **Blocked** — requires verified client reviews and there are none. Highest ROI item on this page and it cannot start today |
-| Crunchbase | Claim now; free, no reviews needed |
-| GoodFirms | Lower barrier than Clutch; do while reviews accumulate |
-| LinkedIn company page | ✅ Live, linked via `sameAs` |
-| GitHub org | Maiku AI core is open source — devs check this before enquiring |
+| software company in Lahore | Homepage + GBP |
+| AI development company Lahore | `/services/ai-machine-learning` |
+| custom software development Lahore | `/services/custom-software` |
+| mobile app development company Lahore | `/services/web-mobile-apps` |
+| best software house in Lahore | Homepage |
 
-### PR angles
+**NAP consistency is the whole game locally.** Name, address and phone must be
+byte-identical everywhere. Note the site currently publishes **no phone number
+and no address** — both are needed before citations are worth building, and
+`LOCATION` in `lib/site.ts` is where they belong so every surface reads one
+source.
+
+**Pakistani citation sites:**
+
+| Site | Why |
+|---|---|
+| Google Business Profile | Non-negotiable, do first |
+| Pakistan Software Houses Association **(P@SHA)** | A credibility signal for export buyers, not just a link |
+| Pakistan Software Export Board **(PSEB)** registration | Government listing; also unlocks export incentives, and serious Gulf buyers verify it |
+| Bing Places | Trivial, and Bing localises less aggressively — useful for export queries |
+| Rozee.pk employer profile | High-authority Pakistani domain, and it doubles as recruiting |
+| LinkedIn company page | Already live — set the location to Lahore |
+
+### 5b. Export authority — where the revenue actually is
+
+| Platform | Priority | Note |
+|---|---|---|
+| **Clutch.co** | **Highest** | Has dedicated *Pakistan* and *Lahore* leaderboards where competition is a fraction of the US board. **Still blocked on client reviews — there are none.** The single highest-ROI unstarted item |
+| **PSEB** | High | Registration gives export credibility a directory link cannot |
+| GoodFirms | High | Strong Pakistani agency presence; lower barrier than Clutch |
+| Crunchbase | Medium | Free, no reviews needed, feeds brand SERPs — claim today |
+| GitHub org | Medium | Maiku AI core is open source. For an offshore studio this is the strongest possible "we can actually build" signal, and it is free |
+| Upwork / Toptal agency profile | Medium | Worth it at this stage as a lead channel rather than a link |
+
+**The offshore-intent keyword set** — where commercial terms are genuinely
+winnable, because the searcher is explicitly looking outside their own country
+and Google stops localising:
+
+| Keyword | Difficulty |
+|---|---|
+| hire AI developers Pakistan | Low |
+| offshore AI development team | Medium |
+| software development outsourcing Pakistan | Low |
+| dedicated development team Pakistan | Low |
+| Pakistan software house for US clients | Low |
+
+Build these into `/hire/ai-developers` (already on the P2 list) rather than
+scattering them across the practice pages.
+
+**Do not hide where you are.** The instinct for an offshore studio is to look
+American. It fails twice: you lose the offshore-intent queries above, which are
+the winnable ones, and you cannot win the US-local queries anyway. Buyers
+searching those terms have already decided to hire offshore — being clearly and
+confidently Lahore-based is the match, not the obstacle.
+
+### 5c. Digital PR
+
+The three original angles stand, and Pakistan adds reach rather than replacing
+them: Pakistani tech press is markedly easier to place in than US tech press,
+and a `.pk` outlet still passes a real editorial link.
 
 1. **"The software built not to be seen."** Maiku AI's Display Affinity
-   exclusion is newsworthy *and* contentious. Pitch tech-ethics and
-   future-of-work desks. Publish an actual position — hedging kills it.
-2. **"We removed every number from our website."** The invented metrics
-   (`60+`, `99.9%`, `4x`) were deleted on 2026-09-21 and replaced with counts
-   derived from live data. A page that cannot state a number it can't prove.
-3. **"Our AI agent tells prospects what we can't do."** The RAG corpus now
-   instructs the assistant to decline to invent figures. The live demo is the
-   proof, which is what makes it linkable.
+   exclusion — newsworthy and contentious. Pitch tech-ethics and
+   future-of-work desks internationally; pitch *TechJuice*, *ProPakistani* and
+   *Dawn* business desks domestically.
+2. **"We removed every number from our website."** The invented metrics were
+   deleted on 2026-09-21 and replaced with counts derived from live data. In a
+   market where inflated agency claims are routine, this is a domestic
+   business-press story as much as an international one.
+3. **"Our AI agent tells prospects what we cannot do."** The RAG corpus now
+   refuses to invent figures. The live demo is the proof, which is what makes
+   it linkable rather than merely claimed.
 
-All three are true, verifiable in ten seconds, and cannot be copied without
-doing the work.
+**A fourth angle, available only because of the location:** a Lahore studio
+shipping a production voice agent with sub-second turn-taking is a story
+*ProPakistani* and *TechJuice* will take — and it is the kind of coverage that
+makes a US buyer's due-diligence search return something reassuring.
 
----
+### 5d. Two technical items this location adds
+
+- **Do not use hreflang, and do not move to a `.pk` domain.** `.com` with a
+  single English locale is correct for an export business. A ccTLD would
+  geo-lock the site to Pakistan, which is the opposite of the goal.
+- **Schema now carries `addressLocality: Lahore`, `addressRegion: Punjab` and
+  `areaServed`** for the export markets. Street address is still absent on
+  purpose: GBP needs a verifiable one, and that is not something to invent.
+
 
 ## Honest expectations
 
-- Quick wins (Phase 1, second table): **30–60 days**, realistic.
-- Commercial head terms (Phase 1, rows 1–10): **9–18 months**, and only with
-  the remaining pages built and links earned.
-- **The real bottleneck is not SEO.** No case studies, no testimonials, no
-  client reviews. That blocks Clutch, weakens every service page and caps
-  conversion on whatever traffic this plan produces. Two real client reviews
-  would move revenue more in 90 days than half of Phase 4.
+Split by the three query types in Phase 5, because a single timeline across all
+of them would be meaningless:
+
+| Target | Realistic timeline |
+|---|---|
+| Lahore local pack — `software company in Lahore` | **3–8 weeks** after GBP verification. The fastest win available |
+| Technical long-tail, worldwide — the Phase 1 quick-wins table | **30–60 days.** Not localised, so page 1 everywhere at once |
+| Offshore-intent commercial — `hire AI developers Pakistan` | **3–6 months**, once `/hire/ai-developers` exists |
+| International head terms — `AI agent development company` in a US SERP | **12–24 months**, and only with US links and reviews. Possibly never for the most competitive of them, and that is an acceptable answer |
+
+**On ranking page 1 "anywhere in the world":** achievable, but only for queries
+Google does not localise — which means the technical content, not the money
+terms. See the table at the top of Phase 5. Any agency promising worldwide
+page-one for commercial keywords is describing something Google does not
+offer.
+
+**The real bottleneck is still not SEO.** No case studies, no testimonials and
+no client reviews. That blocks Clutch — including the Pakistan and Lahore
+leaderboards, which are the easiest version of it — weakens every service page,
+and caps conversion on whatever traffic this plan produces. Two real client
+reviews would move revenue more in 90 days than half of Phase 4.
 
 ---
 

@@ -21,7 +21,7 @@ import { PROJECTS } from "@/lib/projects";
 import { SERVICE_PAGES } from "@/lib/service-pages";
 import { SERVICES } from "@/lib/services";
 import { TEAM } from "@/lib/content";
-import { SITE, SOCIAL_LINKS } from "@/lib/site";
+import { LOCATION, SITE, SOCIAL_LINKS } from "@/lib/site";
 
 /**
  * One continuous scroll. `<SiteProvider>` holds the handful of pieces of state
@@ -70,11 +70,17 @@ export default function HomePage() {
          * pages point their `provider` at — so the five service pages and this
          * one describe one organisation rather than six unrelated ones.
          *
-         * Two deliberate omissions. There is no `address` or `areaServed`,
-         * because the registered entity is not settled (see /privacy) and a
-         * wrong address is worse than none. There is no `aggregateRating`,
-         * because there are no reviews — review markup without reviews is a
-         * manual action, not a grey area.
+         * `address` carries city and country but no street. Google localises
+         * commercial results, so stating where the studio is lets it compete
+         * in the one SERP it can realistically win; inventing a street
+         * address to look more established would be the kind of claim the
+         * rest of this codebase exists to avoid, and a Google Business
+         * Profile needs a verifiable one anyway.
+         *
+         * `areaServed` is the export markets, because that is where the
+         * clients are. Still no `aggregateRating`: there are no reviews, and
+         * review markup without reviews is a manual action rather than a grey
+         * area.
          */
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
@@ -103,10 +109,22 @@ export default function HomePage() {
             // Ties the official profiles to this domain, so a search engine
             // treats them as the same entity rather than look-alikes.
             sameAs: SOCIAL_LINKS.map((s) => s.url),
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: LOCATION.city,
+              addressRegion: LOCATION.region,
+              addressCountry: LOCATION.countryCode,
+            },
+            areaServed: [
+              ...LOCATION.servesGlobally.map((name) => ({ "@type": "Country", name })),
+              { "@type": "Country", name: LOCATION.country },
+            ],
             contactPoint: {
               "@type": "ContactPoint",
               contactType: "sales",
               email: SITE.email,
+              areaServed: "Worldwide",
+              availableLanguage: ["en", "ur"],
             },
             hasOfferCatalog: {
               "@type": "OfferCatalog",

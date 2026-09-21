@@ -25,6 +25,29 @@ function resolveSiteUrl(): string {
   return "http://localhost:3000";
 }
 
+/**
+ * Where the studio actually is, and who it sells to.
+ *
+ * Both matter to more than the footer. Google localises commercial results,
+ * so an agency in Lahore and an agency in Chicago see different SERPs for the
+ * same query — the location has to be stated for the local results it can win,
+ * and `servesGlobally` is why the site is written in international English and
+ * priced in no currency.
+ *
+ * `streetAddress` is deliberately absent. A Google Business Profile needs a
+ * real, verifiable one and this is not the place to invent it; `addressLocality`
+ * and `addressCountry` are true today and enough for the entity markup.
+ */
+export const LOCATION = {
+  city: "Lahore",
+  region: "Punjab",
+  country: "Pakistan",
+  /** ISO 3166-1 alpha-2, which is what schema.org and hreflang expect. */
+  countryCode: "PK",
+  /** Primary export markets, in the order they matter commercially. */
+  servesGlobally: ["United States", "United Kingdom", "United Arab Emirates", "Saudi Arabia"],
+} as const;
+
 export const SITE = {
   name: "Halyx Technologies",
   url: resolveSiteUrl(),
