@@ -3,7 +3,7 @@ import { HUBS } from "@/lib/hubs";
 import { PROJECTS } from "@/lib/projects";
 import { PROOF_POINTS } from "@/lib/reviews";
 import { SERVICES } from "@/lib/services";
-import { SITE } from "@/lib/site";
+import { SITE, SOCIAL_LINKS } from "@/lib/site";
 import type { Chunk } from "./types";
 
 /**
@@ -314,11 +314,13 @@ const EDITORIAL: Chunk[] = [
     title: "How to start a conversation with Halyx",
     href: "#contact",
     weight: 1.4,
-    text: `Two routes in. The "Let's talk" form on this page is the fast one: name, email, what you are trying to build, and Halyx replies within two working days — the brief goes straight to the studio inbox. Or email ${SITE.email} directly. The first conversation is free and is a scoping call, not a pitch: what you are trying to move, what already exists, what the constraint is. It ends with either a range and a proposed first step, or a straight answer that Halyx is not the right fit. The assistant on this page can also take your details directly and pass them to the team — faster than filling the form.`,
+    text: `Two routes in. The "Let's talk" form on this page is the fast one: name, email, what you are trying to build, and Halyx replies within two working days — the brief goes straight to the studio inbox. Or email ${SITE.email} directly. The first conversation is free and is a scoping call, not a pitch: what you are trying to move, what already exists, what the constraint is. It ends with either a range and a proposed first step, or a straight answer that Halyx is not the right fit. The assistant on this page can also take your details directly and pass them to the team — faster than filling the form. To follow the studio rather than brief it, the official accounts are ${SOCIAL_LINKS.map((s) => `${s.name}: ${s.url}`).join(", ")} — these are the only ones Halyx runs.`,
     keywords: [
       "contact", "get in touch", "reach", "email", "phone", "call", "book",
       "meeting", "schedule", "talk to someone", "sales", "enquiry", "quote",
       "next step", "how do i start", "hire you", "work with you", "demo",
+      "social", "socials", "linkedin", "instagram", "insta", "tiktok",
+      "twitter", "x", "follow", "profile", "page", "handle",
     ],
   },
 ];

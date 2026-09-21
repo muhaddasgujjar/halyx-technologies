@@ -18,7 +18,7 @@ import { ContactForm } from "@/components/ContactForm";
 import { ClosingCTA } from "@/components/ClosingCTA";
 import { Footer } from "@/components/Footer";
 import { PROJECTS } from "@/lib/projects";
-import { SITE } from "@/lib/site";
+import { SITE, SOCIAL_LINKS } from "@/lib/site";
 
 /**
  * One continuous scroll. `<SiteProvider>` holds the handful of pieces of state
@@ -71,6 +71,9 @@ export default function HomePage() {
             description: SITE.description,
             url: SITE.url,
             email: SITE.email,
+            // Ties the official profiles to this domain, so a search engine
+            // treats them as the same entity rather than look-alikes.
+            sameAs: SOCIAL_LINKS.map((s) => s.url),
             makesOffer: PROJECTS.map((p) => ({
               "@type": "Offer",
               itemOffered: { "@type": "SoftwareApplication", name: p.name, url: p.url },

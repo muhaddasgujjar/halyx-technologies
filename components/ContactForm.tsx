@@ -4,7 +4,8 @@ import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { submitContact } from "@/app/actions/contact";
 import { CONTACT_INITIAL_STATE, EMPTY_CONTACT_VALUES } from "@/lib/contact-state";
-import { INTERESTS, SOCIALS } from "@/lib/content";
+import { INTERESTS } from "@/lib/content";
+import { SOCIAL_LINKS } from "@/lib/site";
 import { useLocale } from "./LocaleProvider";
 import { Reveal, RevealScope } from "./Reveal";
 import styles from "./ContactForm.module.css";
@@ -54,9 +55,18 @@ export function ContactForm() {
                 </div>
 
                 <div className={styles.socials}>
-                  {SOCIALS.map((s) => (
-                    <a key={s} href="#contact" className={styles.social} aria-label={s}>
-                      {s}
+                  {SOCIAL_LINKS.map((s) => (
+                    <a
+                      key={s.name}
+                      href={s.url}
+                      className={styles.social}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      // The badge is an abbreviation, so the accessible name
+                      // has to carry the full platform instead.
+                      aria-label={`Halyx Technologies on ${s.name}`}
+                    >
+                      {s.badge}
                     </a>
                   ))}
                 </div>

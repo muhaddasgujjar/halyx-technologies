@@ -63,6 +63,35 @@
   text-shadow: 0 0 22px rgba(160, 146, 255, 0.9);
 }
 
+/*
+ * Sits below "Start a conversation" in the same column, so it needs its own
+ * top gap — `.colLabel`'s margin only pushes downward.
+ */
+.followLabel {
+  margin-top: 26px;
+}
+
+.socials {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+}
+
+.social {
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  color: var(--hx-muted-2);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.social:hover {
+  color: var(--hx-ink-strong);
+  text-shadow: 0 0 22px rgba(160, 146, 255, 0.9);
+}
+
 .divider {
   margin-top: clamp(34px, 5vw, 64px);
   height: 1px;
@@ -164,6 +193,15 @@
 
   .colLabel {
     margin-bottom: 14px;
+  }
+
+  .followLabel {
+    margin-top: 20px;
+  }
+
+  .social {
+    font-size: 14px;
+    padding: 3px 0;
   }
 
   .touchHead {

@@ -37,3 +37,30 @@ export const SITE = {
 /** Only index the real production domain — never a preview URL. */
 export const IS_INDEXABLE =
   Boolean(process.env.NEXT_PUBLIC_SITE_URL) && process.env.VERCEL_ENV !== "preview";
+
+/**
+ * Public profiles, in display order.
+ *
+ * One list feeds all three consumers: the badges on the contact panel, the
+ * footer row, and `sameAs` in the homepage JSON-LD — so a new account is one
+ * entry here rather than three edits that drift apart.
+ *
+ * URLs are stored bare. The share links these came from carried session
+ * parameters (`?viewAsMember`, `?stkn=…`) that are scoped to whoever copied
+ * them and mean nothing to a visitor.
+ */
+export const SOCIAL_LINKS = [
+  {
+    /** The two-letter badge the contact panel renders. */
+    badge: "in",
+    name: "LinkedIn",
+    url: "https://www.linkedin.com/company/halyx-technologies/",
+  },
+  { badge: "X", name: "X", url: "https://x.com/HalyxOfficial" },
+  {
+    badge: "IG",
+    name: "Instagram",
+    url: "https://www.instagram.com/halyxtechnologies_official",
+  },
+  { badge: "TT", name: "TikTok", url: "https://www.tiktok.com/@halyx.technologies" },
+] as const;

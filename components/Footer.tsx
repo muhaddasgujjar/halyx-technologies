@@ -1,6 +1,7 @@
 "use client";
 
 import { SITE_CONFIG } from "@/lib/config";
+import { SOCIAL_LINKS } from "@/lib/site";
 import { FOOTER_COLUMNS } from "@/lib/content";
 import { useLocale } from "./LocaleProvider";
 import { Reveal } from "./Reveal";
@@ -41,6 +42,24 @@ export function Footer() {
             <a href="#contact" className={styles.link}>
               {t("Start a conversation")}
             </a>
+
+            <div className={`${styles.colLabel} hx-mono ${styles.followLabel}`}>
+              {t("FOLLOW")}
+            </div>
+            <ul className={styles.socials}>
+              {SOCIAL_LINKS.map((s) => (
+                <li key={s.name}>
+                  <a
+                    href={s.url}
+                    className={styles.social}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {s.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 

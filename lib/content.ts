@@ -160,4 +160,3 @@ export const NAV_LINKS = [
   { text: "Contact", href: "#contact" },
 ] as const;
 
-export const SOCIALS = ["in", "X", "IG", "YT", "FB", "TT"] as const;
