@@ -87,18 +87,19 @@ Full audit lives in `PRE-LAUNCH-CHECKLIST.md`. SEO-specific items only here.
 - Homepage title changed from the tagline to the category. *"We Build
   Intelligent Systems That Matter"* is good positioning and a poor title tag:
   no term in it is one anyone searches for.
-- Map lazy-loaded (`next/dynamic`, `ssr: false`) — `d3-geo`, `topojson-client`
-  and `world-atlas` were in the initial bundle for a decorative element below
-  the fold.
+- Map lazy-loaded (`next/dynamic`, `ssr: false`). Smaller win than estimated:
+  `world-atlas` was never bundled (`DottedMap` fetches the topojson at runtime),
+  so this split out ~10 KB gzipped of `d3-geo`/`topojson-client` and deferred a
+  106 KB JSON fetch. Worth doing; not the 100 KB+ first claimed.
 
 ### Still open
 
 | Priority | Item |
 |---|---|
 | **P0** | Google Search Console — Domain property, DNS TXT. `docs/DEPLOY.md` §4 |
-| **P1** | Lazy-load the LiveKit client; nothing should download a WebRTC stack before the orb is pressed |
+| ~~P1~~ | ~~Lazy-load the LiveKit client~~ — **already deferred.** The 601 KB chunk is not on the homepage; `VoiceAgent` is only on `/voice` |
 | **P1** | Downsize `public/media` portraits — 3 × ~2 MB PNGs, should be ~1200px WebP |
-| **P1** | Lighthouse on **mobile**, throttled, against production |
+| **P1** | Lighthouse on **mobile**, throttled, against production. Initial payload measured at 387 KB compressed across 12 scripts |
 | **P2** | `/hire/ai-developers`, `/compare/ai-agency-vs-in-house`, `/pricing/ai-agent-cost` |
 | **P2** | `/work/[slug]` case-study routes — currently `#work` anchors only |
 | **P2** | Blog infrastructure; none exists |

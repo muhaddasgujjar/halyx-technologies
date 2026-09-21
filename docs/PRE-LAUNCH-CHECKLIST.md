@@ -236,7 +236,17 @@ legal links carry 44 px minimum targets.
 
 ### `[~]` 12. Page load speed
 
-Measured against live production, compressed, as a browser receives it:
+Measured against live production, compressed, as a browser receives it.
+**Corrected 2026-09-21 after a second measurement** — the first pass summed
+every `/_next/static/` URL referenced in the HTML, which counts prefetched
+chunks a browser fetches at idle, not the blocking payload:
+
+| | KB |
+|---|---|
+| document | 20 |
+| initial `<script>` tags (12 files) | **387** |
+| …plus prefetched chunks | ~103 |
+| total referenced | 490 |
 
 | | KB |
 |---|---|
@@ -246,10 +256,23 @@ Measured against live production, compressed, as a browser receives it:
 
 Images and video load lazily and are not in that figure.
 
-**That is up from the 303 KB previously recorded** — roughly +62%, and it is
-the LiveKit client, `d3-geo`, `topojson-client` and `world-atlas`. The voice
-agent and the dotted map are the two features paying for it. Worth confirming
-the map libraries are dynamically imported rather than in the initial chunk.
+**Up from the 303 KB previously recorded**, though less dramatically than the
+first measurement suggested. Two corrections to that entry, both found by
+actually checking rather than inferring from `package.json`:
+
+- **The LiveKit client was never on the homepage.** It is a 601 KB raw chunk,
+  and it is already deferred — `VoiceAgent` lives on `/voice`, while the
+  homepage mounts the older Groq console. No work needed.
+- **`world-atlas` is not bundled.** `DottedMap` fetches
+  `/media/countries-110m.json` at runtime, so the topojson data was never in
+  the JavaScript. Lazy-loading the map split out ~10 KB gzipped of `d3-geo` and
+  `topojson-client`, and deferred the 106 KB JSON fetch until the map mounts —
+  worth doing, but an order of magnitude smaller than first estimated.
+
+The remaining weight is a single 159 KB chunk (React, the Next runtime and the
+app's own client components) plus four chunks of 38–71 KB. There is no single
+heavy dependency left to remove; further reduction means shipping fewer client
+components, which is a design decision rather than a config one.
 
 **Still to do, and it needs a browser:** Lighthouse on **mobile**, throttled,
 against the deployed build. Targets LCP < 2.5 s, CLS < 0.1, INP < 200 ms.
