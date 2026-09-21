@@ -441,22 +441,32 @@ fabricated endorsement is a regulatory problem rather than a marketing one.
 
 ## Blockers — do not promote the site until these are true
 
-1. **Resend has no verified domain. Confirmed 2026-09-21, and this is now the
-   most urgent open item.** Two independent checks agree: `halyxtechnologies.com`
-   has **zero** TXT records — no SPF, no DKIM, no DMARC — and the Resend API
-   reports no domains on the account at all.
+1. **`halyxtechnologies.com` is not verified for sending. Confirmed by DNS on
+   2026-09-21, and this is the most urgent open item.**
 
-   What that means in practice: `CONTACT_FROM` must still be the sandbox sender
-   `onboarding@resend.dev`, which Resend only delivers to the account
-   owner’s own address. So an enquiry probably *does* reach the studio inbox
-   — but the **acknowledgement to the client is not delivered**. Someone who
-   fills in the form gets silence, and indexing is now switched on, so search
-   traffic is arriving at that form today.
+   The evidence is DNS, and it is conclusive for this domain: there are **zero
+   TXT records** on the apex, none at `resend._domainkey`, and none at `send.`
+   — so no SPF, no DKIM, no DMARC. Resend cannot mark a domain verified
+   without a DKIM TXT record, so this one is not verified.
+
+   **What is *not* established:** whether some *other* domain is verified on
+   the Resend account. An earlier note here claimed the account had no domains
+   at all — that was wrong. The API key in `.env` is send-only, so
+   `GET /domains` returns 401, and the check that produced that claim misread
+   the error object as an empty list. The production `CONTACT_FROM` is
+   sensitive-flagged and still cannot be read, so it may point at a different
+   verified domain.
+
+   **The risk, stated accurately:** if `CONTACT_FROM` is the sandbox sender
+   `onboarding@resend.dev`, Resend delivers only to the account owner’s own
+   address — enquiries reach the studio inbox, but the **acknowledgement to
+   the client never arrives**, and the visitor gets silence. Indexing is now
+   on, so the form is taking real traffic. One end-to-end test from an outside
+   address settles it in two minutes and nothing else will.
 
    Fix: add `halyxtechnologies.com` in the Resend dashboard, paste the MX, SPF
-   and DKIM records it generates into Spaceship DNS, then switch `CONTACT_FROM`
-   to an address on the verified domain and send one real end-to-end enquiry.
-   Add a DMARC record while in the panel.
+   and DKIM records it generates into Spaceship DNS, point `CONTACT_FROM` at an
+   address on it, and add a DMARC record in the same session.
 2. **Registered entity, address, jurisdiction and supervisory authority** in
    `/privacy` and `/terms`, then a solicitor's read.
 3. **Google Search Console** — verify the domain and submit the sitemap. See
