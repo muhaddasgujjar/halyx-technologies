@@ -1,7 +1,7 @@
 "use client";
 
 import { SITE_CONFIG } from "@/lib/config";
-import { SOCIAL_LINKS } from "@/lib/site";
+import { LOCATION, SITE, SOCIAL_LINKS } from "@/lib/site";
 import { FOOTER_COLUMNS } from "@/lib/content";
 import { useLocale } from "./LocaleProvider";
 import { Reveal } from "./Reveal";
@@ -35,13 +35,37 @@ export function Footer() {
               <div className={`${styles.colLabel} hx-mono`} style={{ marginBottom: 0 }}>
                 {t("GET IN TOUCH")}
               </div>
-              <a href="#contact" className={styles.bookCall}>
+              <a href="/#contact" className={styles.bookCall}>
                 {t("Book a call")} &#8599;
               </a>
             </div>
-            <a href="#contact" className={styles.link}>
+            <a href="/#contact" className={styles.link}>
               {t("Start a conversation")}
             </a>
+
+            {/*
+              The studio's location, in text, on every page.
+              Until this existed the word "Lahore" appeared nowhere a crawler
+              could weigh it — only inside the JSON-LD — so a search for the
+              studio by name and city had nothing to match. Schema alone does
+              not carry a location query; the visible NAP block does.
+
+              `address` is the correct element even without a street line, and
+              it is not italic here because the reset handles that.
+            */}
+            <address className={styles.address}>
+              <div className={`${styles.colLabel} hx-mono ${styles.followLabel}`}>
+                {t("STUDIO")}
+              </div>
+              <div className={styles.addressLine}>
+                {LOCATION.city}, {LOCATION.region}
+                <br />
+                {LOCATION.country}
+              </div>
+              <a href={`mailto:${SITE.email}`} className={styles.addressMail}>
+                {SITE.email}
+              </a>
+            </address>
 
             <div className={`${styles.colLabel} hx-mono ${styles.followLabel}`}>
               {t("FOLLOW")}

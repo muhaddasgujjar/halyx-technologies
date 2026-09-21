@@ -214,6 +214,7 @@
   "Streaming speech synthesis": "音声合成ストリーミング",
   "Streaming turn-taking on synthesised speech, so the reply starts speaking while the rest of it is still being generated.": "合成音声でのターンテイキングストリーミング。返信は残りが生成されている間に話し始めます。",
   "Structured enquiry capture": "構造化問い合わせキャプチャ",
+  "STUDIO": "スタジオ",
   "Support": "サポート",
   "System Overview": "システム概要",
   "Systems Integration": "システム統合",

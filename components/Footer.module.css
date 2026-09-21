@@ -92,6 +92,34 @@
   text-shadow: 0 0 22px rgba(160, 146, 255, 0.9);
 }
 
+/*
+ * The NAP block. `font-style: normal` because <address> is italic by default
+ * in every browser, and this is a contact block rather than an aside.
+ */
+.address {
+  font-style: normal;
+}
+
+.addressLine {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--hx-muted-2);
+}
+
+.addressMail {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 13.5px;
+  color: var(--hx-ink-2);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.addressMail:hover {
+  color: var(--hx-ink-strong);
+  text-shadow: 0 0 22px rgba(160, 146, 255, 0.9);
+}
+
 .divider {
   margin-top: clamp(34px, 5vw, 64px);
   height: 1px;

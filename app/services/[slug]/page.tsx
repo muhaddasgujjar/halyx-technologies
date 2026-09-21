@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Footer } from "@/components/Footer";
 import { PROJECTS } from "@/lib/projects";
 import {
   SERVICE_PAGES,
@@ -100,8 +101,9 @@ export default async function ServiceDetailPage({
   const others = SERVICE_PAGES.filter((p) => p.slug !== page.slug);
 
   return (
-    <main className={styles.main}>
-      <div className={styles.inner}>
+    <>
+      <main className={styles.main}>
+        <div className={styles.inner}>
         <nav className={styles.crumbs} aria-label="Breadcrumb">
           <Link href="/" className={styles.crumb}>
             Halyx Technologies
@@ -209,7 +211,16 @@ export default async function ServiceDetailPage({
             </a>
           </div>
         </section>
-      </div>
+        </div>
+      </main>
+
+      {/*
+        The footer belongs here as much as on the homepage: it carries the
+        studio's location in text, the links to the other four practices, and
+        a way out of a page a visitor may have landed on directly from search.
+        Its anchors are root-relative for exactly this reason.
+      */}
+      <Footer />
 
       <script
         type="application/ld+json"
@@ -254,6 +265,6 @@ export default async function ServiceDetailPage({
           }),
         }}
       />
-    </main>
+    </>
   );
 }

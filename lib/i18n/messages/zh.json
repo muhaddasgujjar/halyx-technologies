@@ -214,6 +214,7 @@
   "Streaming speech synthesis": "语音合成流式传输",
   "Streaming turn-taking on synthesised speech, so the reply starts speaking while the rest of it is still being generated.": "在合成语音中进行轮流流式传输，使回复在其余部分仍在生成时开始朗读。",
   "Structured enquiry capture": "结构化查询捕获",
+  "STUDIO": "工作室",
   "Support": "支持",
   "System Overview": "系统概览",
   "Systems Integration": "系统集成",

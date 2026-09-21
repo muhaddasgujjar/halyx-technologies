@@ -131,13 +131,20 @@ export const TEAM: TeamMember[] = [
 
 export const INTERESTS = ["UI/UX", "Development", "AI Systems", "Branding", "Business automation"];
 
+/*
+ * Root-relative anchors ("/#company", not "#company").
+ *
+ * The footer renders on the service pages too, where a bare "#company" points
+ * at an element that does not exist on that route and silently does nothing.
+ * The leading slash sends the visitor to the homepage and then to the section.
+ */
 export const FOOTER_COLUMNS = [
   {
     label: "ABOUT US",
     links: [
-      { text: "Team", href: "#company" },
-      { text: "Vision", href: "#company" },
-      { text: "Projects", href: "#company" },
+      { text: "Team", href: "/#company" },
+      { text: "Vision", href: "/#company" },
+      { text: "Projects", href: "/#company" },
     ],
   },
   {
@@ -163,11 +170,11 @@ export const FOOTER_COLUMNS = [
   {
     label: "OTHER SERVICES",
     links: [
-      { text: "Voice Agents", href: "#services" },
-      { text: "Sentiment AI", href: "#services" },
-      { text: "IoT Development", href: "#services" },
-      { text: "Brand Identity", href: "#services" },
-      { text: "Motion Design", href: "#services" },
+      { text: "Voice Agents", href: "/#services" },
+      { text: "Sentiment AI", href: "/#services" },
+      { text: "IoT Development", href: "/#services" },
+      { text: "Brand Identity", href: "/#services" },
+      { text: "Motion Design", href: "/#services" },
     ],
   },
 ] as const;

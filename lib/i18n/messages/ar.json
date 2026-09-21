@@ -214,6 +214,7 @@
   "Streaming speech synthesis": "توليد الكلام عبر البث",
   "Streaming turn-taking on synthesised speech, so the reply starts speaking while the rest of it is still being generated.": "التناوب في البث على الكلام المُصنَّع، بحيث يبدأ الرد بالتحدث بينما لا يزال الباقي يُولَّد.",
   "Structured enquiry capture": "التقاط الاستفسار المنظم",
+  "STUDIO": "الاستوديو",
   "Support": "الدعم",
   "System Overview": "نظرة عامة على النظام",
   "Systems Integration": "تكامل الأنظمة",
