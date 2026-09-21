@@ -147,6 +147,28 @@ If either says otherwise, `NEXT_PUBLIC_SITE_URL` is missing from the Vercel
 production environment. `IS_INDEXABLE` in `lib/site.ts` gates both on it, and
 until it is set the site serves `noindex` **and** a blanket disallow.
 
+### Status: verified 2026-09-21
+
+Verified by the **Domain name provider** (DNS TXT) method. The live record is
+on the apex of `halyxtechnologies.com`:
+
+```
+@   TXT   google-site-verification=6nlwagkDORK8bicqP-4yaA66hkLGiJ_fj8KJpanXgTc
+```
+
+**Do not delete that record.** Google re-checks it periodically and removing it
+un-verifies the property, which silently stops the reporting this section
+exists to switch on. It is the single most deletable-looking line in the DNS
+panel, so it is written down here on purpose.
+
+A second method is already available at no cost: `public/google1f4542f1f8253268.html`
+is committed and served at the site root. Register it under **Settings →
+Ownership verification** as a fallback, so a DNS edit cannot un-verify the
+property on its own.
+
+The rest of this section is the original walkthrough, kept for the next
+property (a `www` URL-prefix property, or a new domain).
+
 ### Add the property
 
 Go to <https://search.google.com/search-console> and sign in with the Google

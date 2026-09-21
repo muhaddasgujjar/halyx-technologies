@@ -195,8 +195,11 @@ correctly omits in-page anchors, which are not separate URLs.
 site served `noindex, nofollow` on every page *and* a blanket `Disallow: /`.
 The guard in `lib/site.ts` was correct; it had simply never been switched on.
 
-**Still to do:** submit the sitemap in Google Search Console — see
-`docs/DEPLOY.md`.
+**Search Console verified 2026-09-21** by DNS TXT on the apex. The record must
+stay in place — see `docs/DEPLOY.md` §4, which records the exact value.
+
+**Still to do:** submit `sitemap.xml` in Search Console and request indexing.
+Nothing is crawled until that happens.
 
 ---
 
