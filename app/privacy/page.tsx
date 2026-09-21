@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SITE } from "@/lib/site";
+import { LEGAL_ENTITY, LOCATION, SITE } from "@/lib/site";
 import styles from "../legal.module.css";
 
 /**
@@ -43,12 +43,25 @@ export default function PrivacyPage() {
         <p className={styles.updated}>Last updated {LAST_UPDATED}</p>
 
         <p className={styles.gap}>
-          <strong>Before this is relied on:</strong> the registered entity behind Halyx
-          Technologies, its address, its governing jurisdiction and its supervisory
-          authority are not yet named below, because they have not been supplied. This
+          <strong>Still outstanding:</strong> the SECP incorporation number and the
+          registered office address are not printed below, because they have not been
+          supplied &mdash; a privacy policy is ordinarily expected to carry both. This
           page accurately describes the data flows in the site&rsquo;s code, but it has
-          not been reviewed by a solicitor. Both should be settled before the site is
-          promoted.
+          not been reviewed by a lawyer, and the paragraph on Pakistani data-protection
+          law below should be confirmed against the statute in force today.
+        </p>
+
+        <h2 className={styles.h2}>Who is responsible for your data</h2>
+        <p className={styles.p}>
+          The data controller is{" "}
+          <span className={styles.term}>{LEGAL_ENTITY.name}</span>, a company
+          incorporated in {LEGAL_ENTITY.jurisdiction}, registered with the{" "}
+          {LEGAL_ENTITY.registrar} and based in {LOCATION.city}, {LOCATION.region}.
+          Anything on this page can be raised by email at{" "}
+          <a href={`mailto:${SITE.email}`} className={styles.link}>
+            {SITE.email}
+          </a>
+          .
         </p>
 
         <h2 className={styles.h2}>The short version</h2>
@@ -127,12 +140,15 @@ export default function PrivacyPage() {
           </table>
         </div>
         <p className={styles.p}>
-          <span className={styles.term}>International transfers.</span> All of the above
-          are United States companies, so if you are in the UK or the EEA your data is
-          transferred outside it. Those transfers rely on the providers&rsquo; own
-          safeguards, typically Standard Contractual Clauses under their data processing
-          agreements. If that matters to you, email before using the form or the
-          assistant and the studio will answer by another route.
+          <span className={styles.term}>International transfers.</span> Two of them,
+          stated plainly. {LEGAL_ENTITY.name} is in {LOCATION.country}, and every
+          provider in the table above is a United States company. So if you are in the
+          UK or the EEA, your data leaves it twice over &mdash; once to
+          {" "}{LOCATION.country} and once to the United States &mdash; and neither is
+          covered by a UK or EU adequacy decision. Transfers to the providers rely on
+          their own safeguards, typically Standard Contractual Clauses under their data
+          processing agreements. If that matters to you, email before using the form or
+          the assistant and we will take your enquiry by another route.
         </p>
 
         <h2 className={styles.h2}>How long it is kept</h2>
@@ -151,15 +167,32 @@ export default function PrivacyPage() {
 
         <h2 className={styles.h2}>Your rights</h2>
         <p className={styles.p}>
-          You can ask for a copy of what is held about you, ask for it to be corrected or
-          deleted, or object to it being held at all. Email{" "}
+          Wherever you are, and whatever your local law entitles you to, you can ask for
+          a copy of what is held about you, ask for it to be corrected or deleted, or
+          object to it being held at all. Email{" "}
           <a href={`mailto:${SITE.email}`} className={styles.link}>
             {SITE.email}
           </a>{" "}
           and say what you want done. There is no form and no account to log into
-          &mdash; a plain email is enough, and the studio will act on it within 30 days.
-          If you are unhappy with the response you can complain to your national data
-          protection authority.
+          &mdash; a plain email is enough, and we will act on it within 30 days. We
+          offer this as a matter of policy rather than only where a statute compels it,
+          because the alternative is deciding which visitors deserve an answer.
+        </p>
+        <p className={styles.p}>
+          <span className={styles.term}>If you are in the UK or the EEA</span> and the
+          UK GDPR or the GDPR applies to this processing, you additionally keep your
+          statutory rights, including the right to complain to your own supervisory
+          authority &mdash; the Information Commissioner&rsquo;s Office in the UK, or
+          your national data protection authority in the EEA. You do not have to come to
+          us first.
+        </p>
+        <p className={styles.p}>
+          <span className={styles.term}>If you are in {LOCATION.country}</span>, the
+          applicable regime is {LOCATION.country}&rsquo;s own law on electronic crime and
+          data protection, which has been undergoing reform. Rather than name an
+          authority that may not be the right one by the time you read this, we will
+          tell you the current route on request &mdash; and the rights above apply to
+          you regardless of what the statute requires.
         </p>
 
         <h2 className={styles.h2}>Changes</h2>

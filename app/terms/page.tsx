@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SITE } from "@/lib/site";
+import { LEGAL_ENTITY, LOCATION, SITE } from "@/lib/site";
 import styles from "../legal.module.css";
 
 /**
@@ -30,17 +30,27 @@ export default function TermsPage() {
         <p className={styles.updated}>Last updated {LAST_UPDATED}</p>
 
         <p className={styles.gap}>
-          <strong>Before this is relied on:</strong> the governing law and jurisdiction
-          below name no country, and the registered entity behind Halyx Technologies is
-          not stated, because neither has been supplied. A governing-law clause that
-          names nowhere is close to useless in a dispute. Settle both, and have a
-          solicitor read this once, before the site is promoted.
+          <strong>Still outstanding:</strong> the company&rsquo;s SECP incorporation
+          number and registered office address are not printed below, because they have
+          not been supplied. Both are ordinarily expected. These terms have also not
+          been reviewed by a lawyer &mdash; worth one read before the site is promoted
+          hard.
+        </p>
+
+        <h2 className={styles.h2}>Who you are contracting with</h2>
+        <p className={styles.p}>
+          This website is operated by{" "}
+          <span className={styles.term}>{LEGAL_ENTITY.name}</span>, a company
+          incorporated in {LEGAL_ENTITY.jurisdiction} and registered with the{" "}
+          {LEGAL_ENTITY.registrar}, based in {LOCATION.city}, {LOCATION.region}.
+          &ldquo;Halyx&rdquo;, &ldquo;we&rdquo; and &ldquo;us&rdquo; below mean that
+          company.
         </p>
 
         <h2 className={styles.h2}>What these terms cover</h2>
         <p className={styles.p}>
           They govern your use of this <span className={styles.term}>website</span>. They
-          are not the contract for client work. If Halyx Technologies builds something
+          are not the contract for client work. If {LEGAL_ENTITY.name} builds something
           for you, that engagement is governed by a separate signed agreement &mdash; a
           master services agreement and a statement of work &mdash; and where that
           agreement and this page disagree, that agreement wins. Nothing here narrows it.
@@ -78,9 +88,9 @@ export default function TermsPage() {
 
         <h2 className={styles.h2}>Ownership</h2>
         <p className={styles.p}>
-          The design, code, copy, brand marks and imagery on this site belong to Halyx
-          Technologies, except where a third party&rsquo;s name or mark is shown, which
-          remains theirs. You are welcome to read, link to, and quote the site with
+          The design, code, copy, brand marks and imagery on this site belong to{" "}
+          {LEGAL_ENTITY.name}, except where a third party&rsquo;s name or mark is shown,
+          which remains theirs. You are welcome to read, link to, and quote the site with
           attribution. You may not republish it wholesale, or present it as your own.
         </p>
 
@@ -118,8 +128,8 @@ export default function TermsPage() {
 
         <h2 className={styles.h2}>Liability</h2>
         <p className={styles.p}>
-          To the extent the law allows, Halyx Technologies is not liable for loss arising
-          from your use of this site or reliance on its content, including lost profit,
+          To the extent the law allows, {LEGAL_ENTITY.name} is not liable for loss
+          arising from your use of this site or reliance on its content, including lost profit,
           lost business or lost data. Nothing here excludes liability that cannot legally
           be excluded &mdash; notably for death or personal injury caused by negligence,
           or for fraud.
@@ -139,12 +149,17 @@ export default function TermsPage() {
           after a change means you accept it.
         </p>
 
-        <h2 className={styles.h2}>Governing law</h2>
+        <h2 className={styles.h2}>Governing law and jurisdiction</h2>
         <p className={styles.p}>
-          These terms, and any dispute arising from them, are governed by the laws of the
-          jurisdiction in which Halyx Technologies is registered, and the courts of that
-          jurisdiction have exclusive jurisdiction. That jurisdiction is not yet named
-          here &mdash; see the note at the top of this page.
+          These terms, and any dispute or claim arising out of them or their subject
+          matter, are governed by the laws of {LEGAL_ENTITY.jurisdiction}. The courts of{" "}
+          {LEGAL_ENTITY.courts} have exclusive jurisdiction to settle any such dispute.
+        </p>
+        <p className={styles.p}>
+          If you are a consumer resident somewhere that gives you the benefit of
+          mandatory local protections, nothing here removes them &mdash; you keep any
+          right to bring proceedings in your own courts that the law of your country
+          gives you.
         </p>
 
         <h2 className={styles.h2}>Contact</h2>

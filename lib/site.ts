@@ -48,6 +48,27 @@ export const LOCATION = {
   servesGlobally: ["United States", "United Kingdom", "United Arab Emirates", "Saudi Arabia"],
 } as const;
 
+/**
+ * The contracting entity, for the legal pages.
+ *
+ * Separate from `SITE.name` on purpose: the brand and the legal person are
+ * usually different strings, and the pages that carry legal weight must name
+ * the second one. Keeping them apart here means a future rename of one does
+ * not silently rewrite the other.
+ *
+ * Still outstanding and deliberately not invented: the SECP incorporation
+ * number and the registered office address. Both are usually expected on a
+ * privacy policy, and a Google Business Profile needs the address anyway.
+ */
+export const LEGAL_ENTITY = {
+  /** As confirmed by the company. Check this matches the SECP certificate exactly. */
+  name: "Halyx Technologies",
+  /** Governing law and the courts with jurisdiction. */
+  jurisdiction: "Pakistan",
+  courts: "Lahore, Punjab",
+  registrar: "Securities and Exchange Commission of Pakistan (SECP)",
+} as const;
+
 export const SITE = {
   name: "Halyx Technologies",
   url: resolveSiteUrl(),

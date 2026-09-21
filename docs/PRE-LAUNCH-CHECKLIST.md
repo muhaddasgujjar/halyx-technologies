@@ -20,7 +20,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started
 
 | # | Item | Was | Now | Why |
 |---|------|-----|-----|-----|
-| 1, 2 | Privacy / Terms | `[~]` live | `[~]` live | Pages did not exist; rewritten and shipped |
+| 1, 2 | Privacy / Terms | `[~]` live | `[~]` live | Pages did not exist; rewritten, shipped, and completed with the entity and jurisdiction |
 | 7 | OG image | `[x]` | `[x]` | Did not exist; no `og:image` was served at all |
 | 8 | Favicon | `[~]` | `[~]` | `manifest` route did not exist either |
 | 11 | Image weight | `[x]` "not one PNG" | `[~]` | 13 MB of raster is now in `public/media` |
@@ -50,9 +50,26 @@ agent — voice is personal data, and none of it was disclosed.
 Also documented honestly: no cookies, no analytics, no database, and the
 language preference held in `localStorage`.
 
-**Remaining:** registered entity name and address, governing jurisdiction, and
-the supervisory authority. A visible note on the page says so. Have a solicitor
-read it once.
+**Completed 2026-09-21** with the confirmed entity: the controller is named as
+Halyx Technologies, a company incorporated in Pakistan, registered with the
+SECP and based in Lahore, Punjab.
+
+The international-transfer clause is the one that changed most. With a
+Pakistan-based controller and seven US processors, a UK or EEA visitor’s data
+leaves the UK/EEA **twice** — to Pakistan and to the United States — and
+neither has a UK or EU adequacy decision. The page says exactly that.
+
+On supervisory authorities: the page offers the access, correction, deletion
+and objection rights **unconditionally as a matter of policy**, then routes UK
+and EEA visitors to the ICO or their own national authority. It deliberately
+does **not** name a Pakistani authority, because the country’s data-protection
+regime has been under reform and naming the wrong one is worse than offering to
+confirm the current route on request.
+
+**Remaining:** the SECP incorporation number and the registered office address
+— both ordinarily expected, and the address is needed for Google Business
+Profile anyway. Then one read by a lawyer, who should also confirm the
+Pakistani data-protection paragraph against the statute in force.
 
 **Re-check with:** compare the table against `lib/email.ts`,
 `lib/rag/providers/` and `agent/agent.py` after any provider change.
@@ -63,8 +80,17 @@ Live at `/terms`, linked, in the sitemap. States plainly that it governs the
 **website** and does not replace an MSA/SOW, and disclaims the AI assistants —
 they are generative, can be wrong, and bind nobody.
 
-**Remaining:** the governing-law clause names no jurisdiction, and the
-registered entity is not stated. Flagged in a note on the page.
+**Completed 2026-09-21.** Opens with a "Who you are contracting with" section
+naming the entity, and closes with governing law of Pakistan and exclusive
+jurisdiction in the courts of Lahore, Punjab — with a carve-out preserving any
+mandatory local consumer protections a visitor has at home. The ownership and
+liability clauses now bind to `LEGAL_ENTITY.name`, so a rename on the SECP
+certificate does not leave them naming a brand instead of a company.
+
+**Remaining:** incorporation number, registered office address, and a lawyer’s
+read. Also confirm the exact registered name — if it is a private limited
+company the certificate probably reads "Halyx Technologies (Private) Limited",
+and the legal pages should match the certificate character for character.
 
 ### `[x]` 5. Cookie consent banner — **not needed, close this item**
 
