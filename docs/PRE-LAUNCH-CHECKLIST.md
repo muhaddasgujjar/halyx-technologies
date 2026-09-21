@@ -224,7 +224,7 @@ PNG". That is no longer true. `public/media` is now **13 MB**:
 
 | File | Size |
 |------|------|
-| `team-numan.jpg` | 2.3 MB |
+| `team-numan.jpeg` | 94 KB |
 | `team-muhaddas.png` | 2.0 MB |
 | `case-hbevents.png` | 2.0 MB |
 | `team-aleem.png` | 1.8 MB |

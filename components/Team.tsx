@@ -37,7 +37,7 @@ export function Team() {
           <div className={styles.grid}>
             {TEAM.map((m, i) => (
               <Reveal
-                key={m.title}
+                key={m.name}
                 delay={DELAYS[i]}
                 className={styles.card}
                 dataOpen={open === i}

@@ -36,7 +36,7 @@ export const KB: KbEntry[] = [
   },
   {
     k: ["team", "employee", "people", "size", "staff"],
-    a: "Halyx is a small, senior studio. The people you deal with are named on the site: Muhammad Muhaddas (CEO), Muhammad Aleem Azam (CTO) and Muhammad Numan Ali (Manager). The CEO stays on every engagement from first brief to what ships.",
+    a: "Halyx is a small, senior studio. The people you deal with are named on the site: Muhammad Muhaddas (CEO), with co-founders Muhammad Aleem Azam and Muhammad Numan Ali. The CEO stays on every engagement from first brief to what ships.",
   },
   {
     k: ["found", "history", "story", "start", "began", "year"],

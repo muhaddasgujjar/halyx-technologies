@@ -118,7 +118,7 @@ const team: Chunk[] = [
     title: "Who runs Halyx",
     href: "#team",
     weight: 1.2,
-    text: `Halyx's named leadership: ${TEAM.map((m) => `${m.name}, ${m.title} (${m.tag}) — ${m.bio}${m.linkedin ? ` LinkedIn: ${m.linkedin}` : ""}`).join(" ")} These three are the people a client deals with directly; the CEO stays on every engagement from first brief through to what ships, and the Manager owns the reporting cadence against the metric agreed up front.`,
+    text: `Halyx's named leadership: ${TEAM.map((m) => `${m.name}, ${m.title} (${m.tag}) — ${m.bio}${m.linkedin ? ` LinkedIn: ${m.linkedin}` : ""}`).join(" ")} These three are the people a client deals with directly; the CEO stays on every engagement from first brief through to what ships, and Muhammad Numan Ali owns the reporting cadence against the metric agreed up front.`,
     keywords: [
       "team", "leadership", "founders", "ceo", "cto", "manager", "who runs",
       "management", "staff", "people", "muhaddas", "aleem", "numan", "linkedin",
