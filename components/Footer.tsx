@@ -90,10 +90,10 @@ export function Footer() {
         <div className={styles.bottom}>
           <div>2026 Halyx Technologies. {t("All rights reserved.")}</div>
           <div className={styles.legal}>
-            <a href="#contact" className={styles.legalLink}>
+            <a href="/privacy" className={styles.legalLink}>
               {t("Privacy Policy")}
             </a>
-            <a href="#contact" className={styles.legalLink}>
+            <a href="/terms" className={styles.legalLink}>
               {t("Terms & Conditions")}
             </a>
           </div>

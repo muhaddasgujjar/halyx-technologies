@@ -1,0 +1,73 @@
+.main {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(40px, 8vw, 96px) var(--hx-gutter);
+}
+
+.inner {
+  max-width: 620px;
+}
+
+.code {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: var(--hx-accent-400);
+  margin: 0 0 22px;
+}
+
+.title {
+  font-size: clamp(32px, 5.2vw, 56px);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  color: var(--hx-ink-strong);
+  margin: 0;
+}
+
+.lead {
+  margin: 20px 0 0;
+  font-size: clamp(15px, 1.5vw, 18px);
+  line-height: 1.6;
+  color: var(--hx-muted-2);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 26px;
+  align-items: center;
+  margin-top: 38px;
+}
+
+.primary {
+  display: inline-flex;
+  align-items: center;
+  /* 44px min target: this is the only way off the page on a phone. */
+  min-height: 44px;
+  padding: 0 26px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--hx-accent) 0%, var(--hx-accent-deep) 100%);
+  color: var(--hx-ink-strong);
+  font-size: 15px;
+  transition: box-shadow 0.4s ease;
+}
+
+.primary:hover {
+  box-shadow: 0 0 34px rgba(107, 92, 240, 0.7);
+}
+
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 15px;
+  color: var(--hx-ink-2);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.secondary:hover {
+  color: var(--hx-ink-strong);
+  text-shadow: 0 0 22px rgba(160, 146, 255, 0.9);
+}

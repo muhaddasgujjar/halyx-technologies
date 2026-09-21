@@ -1,0 +1,144 @@
+/*
+ * Shared by /privacy and /terms. Both are long-form reading rather than
+ * marketing surface, so the measure is capped and the type is larger and
+ * looser than the homepage's.
+ */
+
+.main {
+  padding: clamp(60px, 9vw, 130px) var(--hx-gutter) clamp(60px, 8vw, 110px);
+}
+
+.inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 13px;
+  color: var(--hx-muted-2);
+  transition: color 0.3s ease;
+}
+
+.back:hover {
+  color: var(--hx-ink-strong);
+}
+
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--hx-accent-400);
+  margin: 26px 0 16px;
+}
+
+.h1 {
+  font-size: clamp(34px, 5.4vw, 58px);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  color: var(--hx-ink-strong);
+  margin: 0;
+}
+
+.updated {
+  margin: 18px 0 0;
+  font-size: 13px;
+  color: var(--hx-mono-dim);
+}
+
+/*
+ * An unresolved point a reader is entitled to see, rather than something
+ * papered over with confident-sounding boilerplate.
+ */
+.gap {
+  margin: 34px 0 0;
+  padding: 18px 22px;
+  border-left: 2px solid var(--hx-accent-300);
+  background: rgba(143, 131, 239, 0.07);
+  border-radius: 0 10px 10px 0;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--hx-ink-2);
+}
+
+.h2 {
+  font-size: clamp(20px, 2.4vw, 26px);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--hx-ink-strong);
+  margin: clamp(42px, 5vw, 62px) 0 0;
+}
+
+.p {
+  margin: 16px 0 0;
+  font-size: clamp(15px, 1.5vw, 17px);
+  line-height: 1.7;
+  color: var(--hx-ink-2);
+}
+
+.list {
+  margin: 16px 0 0;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  font-size: clamp(15px, 1.5vw, 17px);
+  line-height: 1.65;
+  color: var(--hx-ink-2);
+}
+
+.term {
+  color: var(--hx-ink-strong);
+}
+
+.table {
+  width: 100%;
+  margin-top: 18px;
+  border-collapse: collapse;
+  font-size: 15px;
+  text-align: left;
+}
+
+.table th,
+.table td {
+  padding: 13px 14px 13px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  vertical-align: top;
+  line-height: 1.55;
+}
+
+.table th {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--hx-mono-dim);
+  font-weight: 400;
+}
+
+.table td {
+  color: var(--hx-ink-2);
+}
+
+.link {
+  color: var(--hx-accent-100);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.link:hover {
+  color: var(--hx-ink-strong);
+}
+
+@media (max-width: 640px) {
+  /* The processor table has three columns and will not fit; let it scroll. */
+  .scroller {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table {
+    min-width: 520px;
+  }
+}
