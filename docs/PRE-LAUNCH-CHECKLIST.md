@@ -441,12 +441,22 @@ fabricated endorsement is a regulatory problem rather than a marketing one.
 
 ## Blockers — do not promote the site until these are true
 
-1. **One real enquiry sent through the production form and confirmed to
-   arrive**, with the acknowledgement landing in an external inbox. This is the
-   top item. Resend domain verification (DKIM + SPF + DMARC) and `CONTACT_FROM`
-   off the sandbox sender cannot be checked from outside — the Vercel variables
-   are sensitive-flagged and `vercel env pull` returns them empty by design.
-   Search traffic is now arriving at that form.
+1. **Resend has no verified domain. Confirmed 2026-09-21, and this is now the
+   most urgent open item.** Two independent checks agree: `halyxtechnologies.com`
+   has **zero** TXT records — no SPF, no DKIM, no DMARC — and the Resend API
+   reports no domains on the account at all.
+
+   What that means in practice: `CONTACT_FROM` must still be the sandbox sender
+   `onboarding@resend.dev`, which Resend only delivers to the account
+   owner’s own address. So an enquiry probably *does* reach the studio inbox
+   — but the **acknowledgement to the client is not delivered**. Someone who
+   fills in the form gets silence, and indexing is now switched on, so search
+   traffic is arriving at that form today.
+
+   Fix: add `halyxtechnologies.com` in the Resend dashboard, paste the MX, SPF
+   and DKIM records it generates into Spaceship DNS, then switch `CONTACT_FROM`
+   to an address on the verified domain and send one real end-to-end enquiry.
+   Add a DMARC record while in the panel.
 2. **Registered entity, address, jurisdiction and supervisory authority** in
    `/privacy` and `/terms`, then a solicitor's read.
 3. **Google Search Console** — verify the domain and submit the sitemap. See

@@ -163,9 +163,13 @@ DNS-verified, so it also survives moving off Vercel.
 
 ### Verify by DNS TXT
 
-Google shows a record like `google-site-verification=xxxxxxxxxxxx`. Add it
-wherever this domain's DNS lives — in the Vercel dashboard that is
-**Project → Settings → Domains → the domain → DNS Records**:
+Google shows a record like `google-site-verification=xxxxxxxxxxxx`.
+
+**This domain's DNS is at Spaceship, not Vercel.** The nameservers are
+`launch1.spaceship.net` and `launch2.spaceship.net`, so the Vercel dashboard
+has nothing to edit — adding it there does nothing. Go to
+**spaceship.com → Domains → halyxtechnologies.com → Advanced DNS → DNS
+Records → Add record**:
 
 | Field | Value |
 |-------|-------|
@@ -174,9 +178,17 @@ wherever this domain's DNS lives — in the Vercel dashboard that is
 | Value | `google-site-verification=xxxxxxxxxxxx` |
 | TTL | leave the default |
 
+Spaceship may label the apex field `@` or leave it blank — either means the
+root domain. Do **not** enter `www`.
+
 Save, wait a minute or two, then press **Verify**. If it fails, propagation is
 usually the cause — check with `nslookup -type=TXT halyxtechnologies.com` and
 try again rather than adding a second record.
+
+**While you are in that DNS panel, add the Resend records too** (see the
+Contact form section). The domain currently has no TXT records at all, which
+means no SPF, no DKIM and no DMARC — one trip through the panel is better than
+three.
 
 **Leave the record in place permanently.** Deleting it un-verifies the
 property, and Google rechecks periodically.
