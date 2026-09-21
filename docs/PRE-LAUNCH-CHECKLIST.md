@@ -27,10 +27,10 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started
 | 12 | Page speed | `[~]` 303 KB | `[~]` 490 KB | LiveKit, d3-geo and topojson added |
 | 13 | Colour contrast | `[x]` measured | `[ ]` | `npm run audit:contrast` does not exist here |
 | 15 | 404 page | `[x]` | `[x]` | Did not exist; shipped |
-| 18 | Spam protection | `[x]` two gates | `[~]` | The timing gate is gone; honeypot only |
+| 18 | Spam protection | `[x]` two gates | `[x]` | Timing gate restored |
 | 19 | Analytics | `[x]` wired | `[ ]` | `@vercel/analytics` is not a dependency |
 | 20 | One clear CTA | `[x]` two phrasings | `[~]` | Four phrasings are live |
-| 21 | Unverifiable claims | `[~]` removed | `[ ]` | Invented metrics returned, and contradict each other |
+| 21 | Unverifiable claims | `[~]` removed | `[x]` | Invented metrics removed; every number now derived |
 
 ---
 
@@ -290,14 +290,27 @@ required name and email, length caps on every field, an email shape check, and
 `interest` validated against the allowlist. Per-field errors are wired with
 `aria-invalid` and `aria-describedby`.
 
-### `[~]` 18. Spam protection — **regressed**
+### `[x]` 18. Spam protection
 
-Only **one** gate is present: the honeypot (`company_website`), which answers
-with a success shape so a bot learns nothing.
+Both gates present again in `app/actions/contact.ts`, both silent — a tripped
+submission gets the ordinary success shape, because telling a bot it was caught
+only teaches its author what to change.
 
-The **2.5-second minimum fill time is gone** — the previous checklist records
-both gates, and only the honeypot survives in `app/actions/contact.ts`. Worth
-restoring; it is a few lines and it catches a different class of bot.
+1. **Honeypot** (`company_website`) — a person never fills a field they cannot
+   see.
+2. **Minimum fill time**, 2.5 s, restored in this pass. `started_at` is stamped
+   in a mount effect, *not* during render: the page is prerendered, so a
+   render-time value would carry the build timestamp and disable the gate
+   entirely.
+
+A missing or unparseable stamp **passes** deliberately. The form is a real POST
+and works with JavaScript off, and nothing stamps it then; dropping every no-JS
+enquiry is a worse failure than letting a bot through.
+
+**Known trade-off:** a genuine visitor who submits in under 2.5 s is silently
+dropped and sees a success message. Inherent to the design — an error would
+defeat the gate — but it is a lost lead with no trace. 2.5 s is short enough
+that reading six fields will not hit it.
 
 Still **no rate limit**, accepted deliberately. Serverless has no shared memory,
 so a real one needs Vercel KV or Upstash keyed on IP. Note that
@@ -331,27 +344,42 @@ destinations.
 
 ## Content integrity
 
-### `[ ]` 21. No unverifiable claims — **open, and now self-contradictory**
+### `[x]` 21. No unverifiable claims — **closed in this pass**
 
 `TrustedBy` was cleaned up properly, and its comment explains the standard:
 invented figures were replaced with counts read off the same data the page
 renders. That is the right pattern.
 
-**The rest of the page did not follow it.** Still live:
+The rest of the page did not follow it, and has now been made to. What was
+live, and what replaced it:
 
-| Where | Claim |
-|-------|-------|
-| Hero (`COUNTER_TARGETS`) | `60+` Products Shipped · `12` Industries Served · `24/7` Support |
-| `HIGHLIGHTS` | `40+` Interfaces Shipped · `99.9%` Platform Uptime · `4x` Median ROI |
-| `TrustedBy` | `6` products live and linkable *(derived, true)* |
+| Where | Was | Now |
+|-------|-----|-----|
+| Hero | `60+` Products Shipped · `12` Industries Served · `24/7` Support | `5` Products Live · `5` Practices · `8` Regions — read from `PROJECTS`, `SERVICES`, `HUBS` |
+| `HIGHLIGHTS` | `40+` Interfaces · `99.9%` Uptime · `4x` Median ROI | `01` / `02` / `03`, the Beliefs numbering — a marker, not a measurement |
+| `TrustedBy` | `5` derived *(already correct)* | unchanged |
 
-The problem is worse than unverifiable. A prospect scrolling one page reads
-**60+**, then **40+**, then **6**, for what sounds like the same thing. There is
-no monitoring behind `99.9%` and no measurement behind `4x`.
+`COUNTER_TARGETS` is deleted from `lib/config.ts`, so there is no longer a
+place to type a number nobody can defend. The `+` and `/7` suffixes went with
+it: a suffix on a derived count turns it back into a claim.
 
-Fix the same way `TrustedBy` was fixed: derive from `PROJECTS` where a number
-can be derived, and delete the ones that cannot. One real number that survives
-checking does more than six that do not.
+**The assistant was repeating all of it**, which is worse than the page doing
+it — a figure inside a retrieved chunk comes back as an answer. Three fixes in
+`lib/rag/corpus.ts` and `lib/kb.ts`: `co:proof` handed the model the invented
+metrics and then asked it not to lean on them (a losing instruction);
+`proc:support` claimed a 99.9% SLA nobody signed, an unattributable client
+anecdote, and follow-the-sun "across four regions" when `HUBS` has eight; and
+the no-LLM fallback matcher made the same 24/7 claim. The corpus now states
+positively that Halyx publishes no uptime percentage and no ROI multiple, and
+to say so if asked.
+
+**Verified on live production:** zero occurrences of `60+`, `40+`, `99.9%`,
+`4x`, `24/7`, `INTERFACES SHIPPED`, `PLATFORM UPTIME` or `MEDIAN ROI`.
+
+**Still open, and the real content gap:** the page has no case studies, no
+client logos and no testimonials. That is honest but not persuasive. It closes
+when real material lands — one real engagement with one defensible number does
+more than six invented ones ever did.
 
 **The standing rule:** if you would not be comfortable with a prospect checking
 it, it does not ship. Anonymised is fine — "a UK clinical staffing platform,
@@ -370,10 +398,16 @@ fabricated endorsement is a regulatory problem rather than a marketing one.
    Search traffic is now arriving at that form.
 2. **Registered entity, address, jurisdiction and supervisory authority** in
    `/privacy` and `/terms`, then a solicitor's read.
-3. **The numeric claims in item 21**, which is the fastest credibility loss on
-   the page.
-4. **Google Search Console** — verify the domain and submit the sitemap.
+3. **Google Search Console** — verify the domain and submit the sitemap. See
+   `docs/DEPLOY.md` section 4.
 
 Closed in this pass: indexing (9), OG image (7), 404 (15), privacy and terms
-(1, 2), footer legal links and social links (16), security headers re-verified
-(4), no frontend secrets re-verified (3).
+(1, 2), footer legal links and social links (16), spam protection (18),
+unverifiable claims (21), security headers re-verified (4), no frontend secrets
+re-verified (3).
+
+Known minor gap, pre-existing: the hero counter labels pass through `t()` as
+variables, so `i18n-extract` cannot see them and they stay English in all 14
+languages. The previous labels had the same problem. Harmless by design — the
+translator falls back to the English it was given — but worth a fix if the
+hero is touched again.
